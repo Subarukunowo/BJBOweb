@@ -2,12 +2,10 @@
 
 return [
 
-  
     'entrypoints' => [
         'resources/js/app.js',
     ],
     'ignore_missing_entrypoints' => false,
-
 
     /*
     |--------------------------------------------------------------------------
@@ -51,8 +49,4 @@ return [
 
     'build_path' => 'build',
 
-
-    
 ];
-
-

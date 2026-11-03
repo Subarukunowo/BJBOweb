@@ -3,156 +3,236 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\AuthService;
+use App\Services\OtpService;
+use App\Services\PostinganService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    protected AuthService $authService;
+
+    protected PostinganService $postinganService;
+
+    protected OtpService $otpService;
+
+    public function __construct(
+        AuthService $authService,
+        PostinganService $postinganService,
+        OtpService $otpService
+    ) {
+        $this->authService = $authService;
+        $this->postinganService = $postinganService;
+        $this->otpService = $otpService;
+    }
+
+    public function showLogin()
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email:rfc,dns',
-            'password' => 'required|min:6|max:20',
-        ]);
-    
-        if ($validator->fails()) {
-            Alert::error('Error', 'Pastikan semua email dan password terisi dengan benar!');
-            return redirect()->back()->withErrors($validator)->withInput();
+        return view('auth.login');
+    }
+
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $throttleKey = Str::lower($request->input('email')).'|'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            Alert::warning('Akses Dibatasi!', "Terlalu banyak percobaan login gagal untuk mencegah serangan brute-force dan DDoS. Silakan coba lagi dalam {$seconds} detik.");
+
+            return redirect()->back()->withInput();
         }
-    
-        // Login Admin
-        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-            toast('Selamat datang, admin!', 'success');
+
+        $remember = $request->has('remember') ? $request->boolean('remember') : true;
+        $result = $this->authService->attemptLogin($request->only('email', 'password'), $remember);
+
+        if (! $result['success']) {
+            RateLimiter::hit($throttleKey, 60);
+            $remaining = RateLimiter::remaining($throttleKey, 5);
+            Alert::error('Login Gagal!', $result['message']." (Sisa percobaan aman: {$remaining})");
+
+            return redirect()->back()->withInput();
+        }
+
+        RateLimiter::clear($throttleKey);
+        $request->session()->regenerate();
+
+        if ($result['role'] === 'admin') {
+            toast($result['message'], 'success');
+
             return redirect()->route('admin.dashboard');
         }
-        
-        // Login User
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
-            
-            // Cek jika akun diblokir
-            if ($user->is_blocked) {
-                Auth::logout();
-                Alert::error('Akun Diblokir', 'Akun Anda telah diblokir!');
-                return redirect()->route('login')->withInput();
-            }
-    
-            toast('Selamat datang!', 'success');
-            return redirect()->route('user.dashboard');
-        }
-    
-        // Jika otentikasi gagal
-        Alert::error('Login Gagal!', 'Email atau password tidak valid!');
-        return redirect()->back()->withInput();
+
+        toast($result['message'], 'success');
+
+        return redirect()->route('user.dashboard');
     }
-    
 
     public function admin_logout()
     {
-        if (Auth::guard('admin')->check()) {
-            Auth::guard('admin')->logout();
-            toast('Berhasil logout!', 'success');
-        }
+        $this->authService->logoutAdmin();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        toast('Berhasil logout!', 'success');
+
         return redirect('/');
     }
 
     public function user_logout()
     {
-        if (Auth::check()) {
-            Auth::logout();
-            toast('Berhasil logout!', 'success');
-        }
+        $this->authService->logoutUser();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        toast('Berhasil logout!', 'success');
+
         return redirect('/');
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        // Validasi
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-        ]);
+        $registerKey = 'register|'.$request->ip();
+        if (RateLimiter::tooManyAttempts($registerKey, 3)) {
+            $seconds = RateLimiter::availableIn($registerKey);
 
-        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors(),
-            ], 422);
+                'message' => "Terlalu banyak pendaftaran akun dari IP Anda. Coba lagi dalam {$seconds} detik.",
+            ], 429);
         }
+        RateLimiter::hit($registerKey, 60);
 
-        // Simpan user
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $otpResult = $this->otpService->sendOtp($request->input('email'), $request->validated());
+        session(['pending_otp_email' => $request->input('email')]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Registrasi berhasil',
+            'message' => $otpResult['message'],
+            'redirect' => route('otp.verify.show'),
         ]);
     }
 
-    
+    public function post_register(RegisterRequest $request)
+    {
+        $registerKey = 'register|'.$request->ip();
+        if (RateLimiter::tooManyAttempts($registerKey, 3)) {
+            $seconds = RateLimiter::availableIn($registerKey);
+            Alert::warning('Akses Dibatasi!', "Terlalu banyak pendaftaran akun dari IP Anda. Coba lagi dalam {$seconds} detik.");
 
-   
+            return redirect()->back()->withInput();
+        }
+        RateLimiter::hit($registerKey, 60);
+
+        $otpResult = $this->otpService->sendOtp($request->input('email'), $request->validated());
+
+        if (! $otpResult['success']) {
+            Alert::error('Gagal Mengirim OTP!', $otpResult['message']);
+
+            return redirect()->back()->withInput();
+        }
+
+        session(['pending_otp_email' => $request->input('email')]);
+        Alert::info('Kode OTP Terkirim!', 'Kami telah mengirimkan 6 digit kode OTP verifikasi ke email '.$request->input('email').'. Silakan verifikasi untuk mengaktifkan akun.');
+
+        return redirect()->route('otp.verify.show');
+    }
+
+    public function showVerifyOtp()
+    {
+        $email = (string) session('pending_otp_email', '');
+        if (! $email) {
+            return redirect()->route('register');
+        }
+
+        $cooldown = $this->otpService->getRemainingCooldown($email);
+
+        return view('auth.verify-otp', compact('email', 'cooldown'));
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ], [
+            'otp.required' => 'Kode OTP wajib diisi.',
+            'otp.size' => 'Kode OTP harus berupa 6 digit angka.',
+        ]);
+
+        $email = (string) session('pending_otp_email', '');
+        if (! $email) {
+            Alert::error('Sesi Kedaluwarsa!', 'Sesi pendaftaran Anda telah kedaluwarsa. Silakan lakukan pendaftaran ulang.');
+
+            return redirect()->route('register');
+        }
+
+        $result = $this->otpService->verifyOtp($email, (string) $request->input('otp'));
+
+        if (! $result['success']) {
+            Alert::error('Verifikasi Gagal!', $result['message']);
+
+            return redirect()->back();
+        }
+
+        $user = $this->authService->registerUser($result['data']);
+        $user->markEmailAsVerified();
+
+        session()->forget('pending_otp_email');
+        Auth::login($user);
+
+        Alert::success('Pendaftaran Berhasil!', 'Akun Anda berhasil diverifikasi. Selamat datang di pasar komunitas BJBO Sedagho!');
+
+        return redirect()->route('user.dashboard');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $email = (string) session('pending_otp_email', '');
+        if (! $email) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Sesi tidak ditemukan.'], 400);
+            }
+
+            return redirect()->route('register');
+        }
+
+        $result = $this->otpService->resendOtp($email);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($result);
+        }
+
+        if (! $result['success']) {
+            Alert::warning('Tunggu Sebentar!', $result['message']);
+        } else {
+            Alert::success('Kode Terkirim!', $result['message']);
+        }
+
+        return redirect()->route('otp.verify.show');
+    }
+
     public function splash()
     {
         return view('splash');
     }
+
     public function layout()
     {
-        
-        return view('layout');
-    }
+        $postingans = $this->postinganService->getApprovedPostings();
 
-    public function post_register(Request $request)
-    {
-        // Validasi data input
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email:dns',
-            'password' => 'required|min:6|max:20',
-            
-        ]);
-    
-        // Jika validasi gagal, tampilkan pesan error dan redirect kembali
-        if ($validator->fails()) {
-            Alert::error('Gagal!', 'Pastikan semua terisi dengan benar!');
-            return redirect()->back();
-        }
-    
-        // Simpan data pengguna ke database
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            
-        ]);
-    
-        // Jika berhasil disimpan, tampilkan pesan sukses dan redirect
-        if ($user) {
-            Alert::success('Berhasil!', 'Akun baru berhasil dibuat, silahkan melakukan login!');
-            return redirect('/');
-        } else {
-            Alert::error('Gagal!', 'Akun gagal dibuat, silahkan coba lagi!');
-            return redirect()->back();
-        }
+        return view('layout', compact('postingans'));
     }
 
     public function about()
     {
-        
-        return view('about',);
+        return view('about');
     }
-
-  
-    }
-
-
+}

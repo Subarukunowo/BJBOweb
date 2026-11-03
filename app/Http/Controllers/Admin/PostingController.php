@@ -3,44 +3,40 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Postingan;
 
 class PostingController extends Controller
 {
     public function index()
     {
-        $postingans = Postingan::all();
-        confirmDelete('Hapus Data!', 'Yakin hapus?');
+        $postingans = Postingan::with('user')->latest()->get();
+        confirmDelete('Hapus Data!', 'Apakah Anda yakin ingin menghapus postingan ini?');
+
         return view('pages.admin.postingan.index', compact('postingans'));
     }
-    public function delete($id)
+
+    public function delete(int $id)
     {
         $postingan = Postingan::findOrFail($id);
         $postingan->delete();
 
-        return redirect()->route('admin.pengguna')->with('success', 'Pengguna berhasil dihapus');
+        return redirect()->route('admin.postings')->with('success', 'Postingan berhasil dihapus.');
     }
 
-    
-    
-    public function updateStatus($id)
+    public function updateStatus(int $id)
     {
-        // Temukan postingan berdasarkan ID
         $postingan = Postingan::findOrFail($id);
 
-        // Cek status saat ini dan toggle antara 'disetujui' dan 'belum disetujui'
-        if ($postingan->status === 'disetujui') {
-            $postingan->status = 'belum disetujui'; // Ganti ke 'belum disetujui'
+        if ($postingan->status === 'disetujui' && ! $postingan->is_auto_blocked) {
+            $postingan->status = 'belum disetujui';
         } else {
-            $postingan->status = 'disetujui'; // Ganti ke 'disetujui'
+            $postingan->status = 'disetujui';
+            $postingan->is_auto_blocked = false;
+            $postingan->block_reason = null;
         }
 
-        // Simpan perubahan ke database
         $postingan->save();
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->route('pages.admin.postingan.index')->with('success', 'Status produk berhasil diperbarui.');
+        return redirect()->route('admin.postings')->with('success', 'Status postingan berhasil diperbarui.');
     }
 }
-

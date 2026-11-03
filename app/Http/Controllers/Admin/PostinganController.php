@@ -1,116 +1,132 @@
 <?php
 
-    namespace App\Http\Controllers\Admin;
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
-    use App\Models\Postingan;
-    use App\Models\Ulasan;
-    use App\Models\User;
-    use Illuminate\Support\Facades\Validator;
-    use RealRashid\SweetAlert\Facades\Alert;
-    use Illuminate\Support\Facades\Auth;
-    
-    class PostinganController extends Controller
-    {
-    
-     public function index()
-     {
-         // Filter hanya yang statusnya 'disetujui'
-         $postingan = Postingan::where('status', 'disetujui')->get();
-        $ulasan = $postingan->ulasan; // Menampilkan semua ulasan yang terkait dengan produk
+namespace App\Http\Controllers\Admin;
 
-     
-         return view('pages.user.postingan.index', compact('postingan','ulasan'));
-     }
-     
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Postingan\StorePostinganRequest;
+use App\Services\PostinganService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
-        // Form untuk membuat postingan baru
-        public function create()
-        {
-            return view('pages.user.postingan.create');
-        }
-    
-        // Menyimpan postingan baru ke database
-        public function store(Request $request)
-        {
-            $user = Auth::user(); // Mendapatkan pengguna yang sedang login
-            $userId = $user->id; // Mendapatkan ID pengguna
-            $username = $user->name; // Mendapatkan username pengguna
-        
-            // Validasi input
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'price' => 'numeric',
-                'category' => 'required',
-                'description' => 'required',
-                'image' => 'required|image|mimes:png,jpeg,jpg|max:2048', // Maksimal 2MB
-                'lokasi' => 'required',
-                'status' => 'required',
-            ]);
-        
-            // Jika validasi gagal
-            if ($validator->fails()) {
-                Alert::error('Gagal!', 'Pastikan semua input terisi dengan benar!');
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
-        
-            // Penanganan file gambar
-            try {
-                $imageName = null;
-                if ($request->hasFile('image')) {
-                    $image = $request->file('image');
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('images'), $imageName);
-                }
-        
-                // Simpan data ke database dengan menambahkan user_id dan username
-                Postingan::create([
-                    'name' => $request->name,
-                    'price' => $request->price,
-                    'category' => $request->category,
-                    'description' => $request->description,
-                    'image' => $imageName,
-                    'lokasi' => $request->lokasi,
-                    'user_id' => $userId,  // Menyimpan ID pengguna
-                    'username' => $username,
-                    'status' => $request->status, // Menyimpan username pengguna
-                ]);
-        
-                Alert::success('Berhasil!', 'Produk berhasil ditambahkan!');
-                return redirect()->route('user.postingan.index');
-            } catch (\Exception $e) {
-                Alert::error('Gagal!', 'Terjadi kesalahan saat menyimpan data!');
-                return redirect()->back()->withInput()->with('error', $e->getMessage());
-            }
-        }
-
-        public function cari(Request $request)
-        {
-            $keyword = $request->input('keyword');
-        
-            // Query pencarian berdasarkan nama atau deskripsi
-            $postingan = Postingan::where('name', 'like', '%' . $keyword . '%')
-                            ->orWhere('description', 'like', '%' . $keyword . '%')
-                            ->get();
-        
-            // Tampilkan hasil ke view
-            return view('pages.user.cari', compact('postingan', 'keyword'));
-        }
-        
-
-        public function filterByCategory($category)
+class PostinganController extends Controller
 {
-    // Query produk berdasarkan kategori
-    $postingan = Postingan::where('category', $category)->get();
+    protected PostinganService $postinganService;
 
-    // Kirim data produk dan nama kategori ke view
-    return view('pages.user.postingan.kategori.index', [
-        'postingan' => $postingan,
-        'category' => ucfirst($category) // Untuk menampilkan nama kategori dengan huruf besar di awal
-    ]);
-}
-
-      
+    public function __construct(PostinganService $postinganService)
+    {
+        $this->postinganService = $postinganService;
     }
-    
 
+    public function index()
+    {
+        return redirect()->route('user.dashboard');
+    }
+
+    public function create()
+    {
+        $user = Auth::user();
+        if (! $user || ! $user->hasActiveStore()) {
+            Alert::warning(
+                'Buka Toko Terlebih Dahulu',
+                'Anda harus mendaftar dan memiliki toko aktif sebelum dapat menambahkan produk untuk dijual di BJBO Sedagho.'
+            );
+
+            return redirect()->route('user.toko.daftar');
+        }
+
+        return view('pages.user.postingan.create');
+    }
+
+    public function store(StorePostinganRequest $request)
+    {
+        $user = Auth::user();
+
+        if (! $user || ! $user->hasActiveStore()) {
+            Alert::error(
+                'Akses Ditolak',
+                'Anda harus mendaftarkan dan memiliki toko aktif sebelum dapat mengunggah produk ke etalase.'
+            );
+
+            return redirect()->route('user.toko.daftar');
+        }
+
+        // 1. Periksa moderasi konten barang terlarang sebelum menyimpan ke etalase
+        $moderation = app(\App\Services\ContentModerationService::class)->inspect(
+            $request->input('name', ''),
+            $request->input('category', ''),
+            $request->input('description', '')
+        );
+
+        if ($moderation['is_blocked']) {
+            // Catat otomatis ke Laporan Admin sebagai notifikasi pelanggaran hukum
+            \App\Models\Laporan::create([
+                'jenis_laporan' => 'Percobaan Penjualan Barang Terlarang (Otomatis Sistem)',
+                'teks_laporan' => 'Pengguna "'.$user->name.'" (ID: #'.$user->id.', Email: '.$user->email.') terdeteksi mencoba mengunggah barang terlarang: '.$moderation['reason'].' dengan judul produk: "'.$request->input('name').'".',
+                'user_id' => $user->id,
+                'status' => 'Pending',
+                'postingan_id' => null,
+            ]);
+
+            // Tampilkan peringatan yang sopan tanpa kata-kata eksplisit di profil
+            Alert::error(
+                'Unggahan Ditolak!',
+                'Produk tidak dapat diunggah karena memuat indikasi barang atau istilah yang dilarang oleh hukum dan kebijakan komunitas BJBO Sedagho.'
+            );
+
+            return redirect()->back()->withInput()->with('error', 'Produk tidak dapat diunggah karena terindikasi melanggar ketentuan hukum barang terlarang dan telah dilaporkan ke Admin.');
+        }
+
+        try {
+            $postingan = $this->postinganService->createPostingan(
+                $request->validated(),
+                $request->file('image'),
+                $user->id,
+                $user->name
+            );
+
+            Alert::success(
+                'Berhasil Diterbitkan!',
+                'Produk Anda lolos verifikasi otomatis BJBO dan langsung aktif di etalase tanpa menunggu ACC admin!'
+            );
+
+            return redirect()->route('user.profil');
+        } catch (\Exception $e) {
+            Alert::error('Gagal!', 'Terjadi kesalahan saat menyimpan data!');
+
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function cari(Request $request)
+    {
+        $keyword = (string) $request->input('keyword', '');
+        $postingan = $this->postinganService->searchPostings($keyword);
+
+        if (! empty($keyword)) {
+            app(\App\Services\RecommendationEngineService::class)->logSearch(
+                \Illuminate\Support\Facades\Auth::id(),
+                $keyword,
+                null,
+                $request->ip()
+            );
+        }
+
+        return view('pages.user.cari', compact('postingan', 'keyword'));
+    }
+
+    public function filterByCategory(string $kategori)
+    {
+        $postingan = $this->postinganService->getPostingsByCategory($kategori);
+        $category = ucfirst($kategori);
+
+        app(\App\Services\RecommendationEngineService::class)->logSearch(
+            \Illuminate\Support\Facades\Auth::id(),
+            $kategori,
+            $kategori,
+            request()->ip()
+        );
+
+        return view('pages.user.postingan.kategori.index', compact('postingan', 'category'));
+    }
+}

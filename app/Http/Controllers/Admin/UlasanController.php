@@ -2,58 +2,50 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\UlasanAdded;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Ulasan;
-
-use App\Models\Postingan;
+use App\Http\Requests\Ulasan\StoreUlasanRequest;
+use App\Services\UlasanService;
 use Illuminate\Support\Facades\Auth;
-
-
 
 class UlasanController extends Controller
 {
-    public function store(Request $request)
+    protected UlasanService $ulasanService;
+
+    public function __construct(UlasanService $ulasanService)
     {
+        $this->ulasanService = $ulasanService;
+    }
 
-        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
-        $userId = $user->id; // Me
-        // Validasi input
-        $validated = $request->validate([
-            'postingan_id' => 'required|exists:postingans,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'required|string|max:255',
-        ]);
+    public function store(StoreUlasanRequest $request)
+    {
+        $ulasan = $this->ulasanService->addUlasan($request->validated(), Auth::id());
+        $ulasan->load('user');
 
-        // Simpan ulasan
-        Ulasan::create([
-            'postingan_id' => $validated['postingan_id'],
-            'user_id' => $userId, // ID pengguna yang sedang login
-            'rating' => $validated['rating'],
-            'komentar' => $validated['komentar'],
-        ]);
+        broadcast(new UlasanAdded($ulasan))->toOthers();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Ulasan berhasil ditambahkan!',
+                'ulasan' => [
+                    'id' => $ulasan->id,
+                    'rating' => (int) $ulasan->rating,
+                    'komentar' => (string) $ulasan->komentar,
+                    'user_name' => $ulasan->user->name ?? 'Warga',
+                    'user_avatar' => $ulasan->user->profile_picture_url ?? asset('images/bjbo.png'),
+                    'created_at' => $ulasan->created_at ? $ulasan->created_at->format('d M Y') : 'Baru saja',
+                ],
+            ]);
+        }
 
         return back()->with('success', 'Ulasan berhasil ditambahkan!');
     }
 
-    // PostingController.php (Controller)
-public function show($id)
-{
-    $postingan = Postingan::with('ulasan')->findOrFail($id);  // Mengambil produk dan ulasannya
-    return view('postingan.show', compact('postingan'));
-}
-
-
-
     public function index()
     {
-        // Mengambil semua data ulasan dengan relasi postingan dan user
-        $ulasans = Ulasan::with(['postingan', 'user'])->get();
-        
-        // Mengirim data ke view
+        $ulasans = $this->ulasanService->getAllUlasans();
+
         return view('pages.admin.ulasan.index', compact('ulasans'));
     }
 }
-
-
-
