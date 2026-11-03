@@ -21,3 +21,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Internal AI / Spec docs
+/design.md
+/prd.md
+/skills.md
+phpstan.neon

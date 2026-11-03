@@ -1,66 +1,171 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BJBO Sedagho — Pasar Digital Komunitas Kabupaten Bengkalis
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/bjbo.png" alt="BJBO Sedagho Logo" width="140" style="border-radius: 16px;">
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Platform E-Commerce & Marketplace Komunitas Terpercaya untuk Kabupaten Bengkalis</strong><br>
+  Ditenagai oleh Laravel 11, Tailwind CSS, Laravel Reverb (Real-time WebSockets), dan Midtrans Payment Gateway.
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 11">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Laravel_Reverb-Real--time-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel Reverb">
+  <img src="https://img.shields.io/badge/Midtrans-Snap_%26_QRIS-002855?style=for-the-badge" alt="Midtrans">
+  <img src="https://img.shields.io/badge/PHPUnit-100%25_Passed-brightgreen?style=for-the-badge" alt="Tests">
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📌 Tentang Proyek
 
-## Learning Laravel
+**BJBO Sedagho** (Barang Jual Beli Online Sedagho) adalah platform *marketplace peer-to-peer* dan *official store* modern yang menghubungkan penjual lokal dan pembeli di seluruh wilayah Kabupaten Bengkalis (Bengkalis Kota, Mandau, Duri, Pinggir, Bukit Batu, Siak Kecil, Rupat, dan Bantan). 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Dibangun dengan standar UI/UX e-commerce terkemuka ala Tokopedia, sistem ini mengutamakan transaksi yang aman lewat **Rekening Bersama (Rekber/Escrow)**, **Verifikasi Identitas Toko**, **Moderasi Konten Otomatis**, dan **Komunikasi Real-time**.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ✨ Fitur Utama
 
-## Laravel Sponsors
+### 🛒 1. Pengalaman Belanja & Antarmuka Modern
+* **Tokopedia-Style Clean UI:** Tampilan katalog responsif dengan banner promosi komunitas, carousel rekomendasi, dan bilah filter kategori horizontal yang mudah digeser (*touch-friendly*).
+* **Mobile-First Bottom Navigation:** Bilah navigasi bawah mengambang khusus perangkat ponsel cerdas (*smartphone*) dengan akses instan ke Beranda, Chat, Toko, Pesanan, dan Akun.
+* **Smart Search & Filters:** Pencarian barang instan berdasarkan kata kunci produk, kategori, dan filter wilayah/kecamatan di Bengkalis.
+* **Wishlist & Favorit:** Simpan barang idaman dengan animasi interaktif tanpa me-refresh halaman.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🏪 2. Sistem Multi-Tier Toko & Verifikasi Penjual
+* **Toko Perorangan (UMKM & Penjual Mandiri):** Pendaftaran cepat dengan validasi Nomor Induk Kependudukan (NIK 16 digit) dan foto KTP asli.
+* **Official Store (Brand Resmi & Perusahaan):** Skema kurasi premium yang dilengkapi verifikasi legalitas NIB (Nomor Induk Berusaha), NPWP Perusahaan, serta Sertifikat HAKI resmi.
+* **Proteksi Seller:** Pengguna yang belum memiliki toko aktif otomatis dicegah menjual produk dan diarahkan untuk melengkapi data toko terlebih dahulu.
+* **Dashboard Seller Center (`/user/profil`):** Statistik performa toko (total produk, produk siap jual, pesanan masuk, saldo rekber), pengelolaan etalase, dan penanda status barang terjual (*sold out*).
 
-### Premium Partners
+### 💬 3. Chat Real-time Terenkripsi (Laravel Reverb & Echo)
+* **Real-time Messaging:** Pertukaran pesan instan antara pembeli dan penjual secara langsung tanpa perlu me-refresh halaman browser.
+* **Keamanan Privasi:** Sensor otomatis nomor HP dan kontak luar pada ruang obrolan untuk mencegah transaksi di luar platform yang berisiko penipuan.
+* **Pelaporan Otomatis:** Deteksi kata-kata mencurigakan atau barang terlarang pada obrolan yang otomatis diteruskan ke admin kurasi.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 💳 4. Integrasi Gerbang Pembayaran Midtrans & QRIS
+* **Midtrans Snap In-Page:** Jendela pembayaran popup modern langsung di dalam website tanpa meninggalkan halaman BJBO.
+* **QRIS Standar Nasional:** Pembayaran instan melalui scan QRIS yang kompatibel dengan seluruh aplikasi mobile banking (BCA, Mandiri, BRI, BNI) dan dompet digital (GoPay, OVO, Dana, ShopeePay).
+* **Virtual Account Bank:** Kemudahan transfer ke rekening virtual bank nasional terkemuka.
+* **Simulator Sandbox Terpadu:** Opsi pengujian pembayaran instan bebas biaya untuk mempermudah simulasi dan pengembangan.
 
-## Contributing
+### 🛡️ 5. Rekening Bersama (Rekber / Escrow) & Tarik Dana
+* **Perlindungan Pembeli:** Dana transaksi ditampung di dompet rekber hingga pesanan diterima dengan baik oleh pembeli.
+* **Pencairan Dana (Withdrawal):** Penjual dapat mendaftarkan nomor rekening bank lokal dan mengajukan penarikan saldo secara transparan dalam estimasi 2x24 jam kerja.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🤖 6. Mesin Rekomendasi Pintar (Recommendation Engine)
+* Algoritma rekomendasi personal berbasis riwayat pencarian pengguna (*User Search Logs*) dan interaksi produk.
+* **Filter Kepemilikan:** Menghindari produk milik penjual itu sendiri muncul di rekomendasi feed belanjanya.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠️ Arsitektur & Teknologi
 
-## Security Vulnerabilities
+| Komponen | Teknologi |
+| :--- | :--- |
+| **Backend Framework** | Laravel 11.x (PHP 8.2+) |
+| **Frontend Styling** | Tailwind CSS 3.4 & Vanilla JS Modern |
+| **Bundler & Build Tool** | Vite 5.x |
+| **Broadcasting / WebSocket** | Laravel Reverb & Laravel Echo |
+| **Payment Gateway** | Midtrans PHP SDK & Snap JS |
+| **Database** | PostgreSQL / MySQL / SQLite |
+| **Queue Worker** | Laravel Queue (`database` driver) |
+| **Testing Suite** | PHPUnit 11 (Unit Tests & Feature Tests) |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🚀 Panduan Instalasi & Menjalankan
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Kloning Repositori
+```bash
+git clone https://github.com/Subarukunowo/BJBOweb.git
+cd BJBOweb
+```
+
+### 2. Instalasi Dependensi PHP & JavaScript
+```bash
+composer install
+npm install
+```
+
+### 3. Konfigurasi Environment (`.env`)
+Salin file konfigurasi contoh:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Sesuaikan pengaturan database, Reverb, dan kredensial Midtrans di file `.env`:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=bjbo_db
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+
+# Konfigurasi Midtrans Sandbox
+MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxxxxx
+MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxxxxx
+MIDTRANS_IS_PRODUCTION=false
+
+# Konfigurasi Laravel Reverb
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=your_reverb_id
+REVERB_APP_KEY=your_reverb_key
+REVERB_APP_SECRET=your_reverb_secret
+REVERB_HOST="127.0.0.1"
+REVERB_PORT=8080
+REVERB_SCHEME=http
+```
+
+### 4. Migrasi & Seeder Database
+```bash
+php artisan migrate --seed
+php artisan storage:link
+```
+
+### 5. Kompilasi Aset Frontend
+```bash
+npm run build
+```
+
+### 6. Menjalankan Layanan (Development)
+Jalankan ketiga perintah berikut pada terminal terpisah:
+
+```bash
+# Terminal 1: Server Aplikasi Web
+php artisan serve
+
+# Terminal 2: Server WebSocket Real-time Reverb
+php artisan reverb:start --debug
+
+# Terminal 3: Worker Pemroses Antrean Notifikasi
+php artisan queue:listen
+```
+
+Buka peramban Anda di: `http://127.0.0.1:8000`.
+
+---
+
+## 🧪 Pengujian Otomatis (Testing)
+
+Proyek ini dilengkapi dengan *test suite* menyeluruh (Unit & Feature):
+```bash
+php artisan test
+```
+
+Cakupan pengujian meliputi:
+- `AuthFeatureTest`: Registrasi, Login, Remember Me, dan OTP.
+- `UserEcommerceFeatureTest`: Alur transaksi, wishlist, proteksi kepemilikan toko, dan toggle terjual.
+- `SecurityAndChatFeatureTest`: Enkripsi chat, sensor nomor HP, dan moderasi konten terlarang.
+- `AdminFeatureTest`: Kurasi toko perorangan/official, persetujuan penarikan rekber, dan moderasi laporan.
+
+---
+
+## 📄 Lisensi
+Hak cipta &copy; 2024–2026 **BJBO Sedagho**. Dikelola oleh **PT Subaru Technologi Bangsa**.
+Seluruh hak cipta dilindungi undang-undang.
