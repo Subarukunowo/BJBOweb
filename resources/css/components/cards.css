@@ -1,0 +1,17 @@
+@layer components {
+  .bjbo-card {
+    @apply bg-white border border-bjbo-border rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-150;
+  }
+
+  .bjbo-card-img-wrap {
+    @apply relative w-full aspect-[4/3] bg-gray-100 overflow-hidden;
+  }
+
+  .bjbo-card-img {
+    @apply w-full h-full object-cover transition duration-200;
+  }
+
+  .bjbo-card:hover .bjbo-card-img {
+    @apply scale-105;
+  }
+}

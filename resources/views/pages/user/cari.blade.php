@@ -1,309 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce Bekas</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <script src="https://unpkg.com/feather-icons"></script>
-
-
-    <style>
-
-.card {
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.05); /* Membuat kartu membesar */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Memberikan efek bayangan */
-    }
-    .card-img-top {
-      transition: transform 0.3s ease-in-out;
-    }
-    .card:hover .card-img-top {
-      transform: scale(1.1); /* Membuat gambar membesar */
-    }
-        .search-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input {
-            width: 300px;
-            height: 40px;
-            font-size: 16px;
-            padding-left: 30px; /* Memberikan ruang untuk ikon */
-            flex-grow: 1;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: #888;
-        }
-
-        .search-btn {
-            margin-left: 10px;
-            height: 40px;
-            font-size: 16px;
-        }
-    </style>
+    <title>Hasil Pencarian: "{{ $keyword }}" - BJBO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<body class="bg-bjbo-bg text-gray-900 font-sans min-h-screen flex flex-col">
 
-<body>
+@include('sweetalert::alert')
 
-<!-- Header -->
-<header class="p-3 bg-light border-bottom fixed-top">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <!-- Logo -->
-            <a href="/" class="logo d-flex align-items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" height="60">
-            </a>
+<!-- Header Navigasi -->
+@if(Auth::check())
+    @include('components.navbar-user')
+@else
+    @include('components.navbar-guest')
+@endif
 
-            <!-- Navigation Links -->
-            <nav class="d-flex align-items-center ms-3">
-                <div class="dropdown">
-                    <a 
-                        class="nav-link text-dark px-2 dropdown-toggle" 
-                        href="#" 
-                        role="button" 
-                        id="dropdownMenuLink" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                        Menu
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#postingan">Postingan</a></li>
-                        <li><a class="dropdown-item" href="#kp">FIlter Produk</a></li>
-                        <li><a class="dropdown-item" href="#"></a></li>
-                    </ul>
-                </div>
-            </nav>
-            
-
-            <!-- Search Bar -->
-            <div class="d-flex align-items-center flex-grow-1 mx-3">
-                <form action="{{ route('postingan.cari') }}" method="GET" class="d-flex">
-                    <i class="bi bi-search search-icon text-dark me-2"></i>
-                    <input 
-                        type="text" 
-                        name="keyword" 
-                        class="form-control search-input me-2" 
-                        id="search" 
-                        placeholder="Cari Postingan..." 
-                        style="max-width: 400px;" 
-                        value="{{ request('keyword') }}">
-                    <button class="btn btn-outline-secondary search-btn" type="submit">Cari</button>
-                </form>
-            </div>
-            
-
-            <!-- User Actions -->
-            <div class="d-flex align-items-center">
-                <a href="{{ route('user.postingan.create') }}" class="btn btn-warning btn-sm me-2"> Jual</a>
-                <ul class="navbar-nav navbar-right">
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img alt="image" src="{{ asset('assets/templates/admin/img/avatar/avatar-3.png') }}" class="rounded-circle" style="width: 40px; height: 40px;">
-                            <div class="d-sm-none d-lg-inline-block">Hi,</div>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a href="#" class="dropdown-item text-secondary">
-                                <i class="fas fa-sign-out-alt"></i>kelola postingan
-                            </a>
-                            <a href="{{ route('user.profil') }}" class="dropdown-item text-secondary">
-                                <i class="fas fa-sign-out-alt"></i> Profil
-                            </a>
-                            <a href="#" class="dropdown-item text-secondary">
-                                <i class="fas fa-sign-out-alt"></i> Bantuan
-                            </a>
-                            <a href="{{ route('user.logout') }}" class="dropdown-item text-danger">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                        </div>
-                    </li>
-                    
-                </ul>
-            </div>
-      
+<main class="container mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0">
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h1 class="text-lg sm:text-2xl font-extrabold text-gray-900 mb-1">
+                Hasil Pencarian: <span class="text-bjbo-primary">"{{ $keyword }}"</span>
+            </h1>
+            <span class="text-gray-500 text-xs">Ditemukan {{ $postingan->count() }} barang</span>
         </div>
-    </div>
-</header>
-
-<!-- Content Section (with margin-top to prevent content from being hidden behind the navbar) -->
-<div style="margin-top: 200px;">
-    <!-- Your content goes here -->
-</div>
-<div class="container">
-    <h4>Hasil Pencarian untuk: "{{ $keyword }}"</h4>
-    <div class="row">
-        @forelse ($postingan as $item)
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <img src="{{ asset('images/' . $item->image) }}" class="card-img-top" alt="{{ $item->name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $item->name }}</h5>
-                        <p class="card-text">{{ Str::limit($item->description, 100) }}</p>
-                        <p><strong>Rp {{ number_format($item->price, 0, ',', '.') }}</strong></p>
-                        <a href="" class="btn btn-primary">Detail</a>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <p class="text-center">Produk tidak ditemukan.</p>
-        @endforelse
-    </div>
-</div>
-
-
-
-<footer style="background-color: #f5f1f1; color: #000; padding: 30px 0; font-family: Arial, sans-serif;">
-    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-      <!-- Logo dan Alamat -->
-      <div>
-        <img src="{{ asset('images/bjbo.png') }}" alt="Logo" height="80" width="80">
-        <p><strong>Alamat:</strong></p>
-        <p>
-          Jl. AL Muslihun,<br>
-          Desa. Wonosari Tengah,<br>
-          Kec. Bengkalis,<br>
-          Kab. Bengkalis, Provinsi Riau,<br>
-          Kode Pos: 28711
-        </p>
-        <p><strong>Follow Us:</strong></p>
-        <p>
-          <a href="https://www.instagram.com/bjbo.bengkalis/" style="color: #000; text-decoration: none; margin-right: 10px;">Instagram</a> |
-          <a href="#" style="color: #000; text-decoration: none; margin-right: 10px;">Facebook</a> |
-          <a href="#" style="color: #000; text-decoration: none;">LinkedIn</a>
-        </p>
-      </div>
-      <!-- Kolom bjbo -->
-      <div>
-        <p><strong>BJBO</strong></p>
-        <ul style="list-style: none; padding: 0;">
-          <li><a href="{{ route('about') }}" style="color: #000; text-decoration: none;">About BJBO</li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Member Success Story</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Contact Us</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Community</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Pricing Plan</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">FAQ</a></li>
-        </ul>
-      </div>
-    
-     
-      <!-- Kolom Program -->
-      <div>
-        <p><strong>Program</strong></p>
-        <ul style="list-style: none; padding: 0;">
-          <li><a href="#" style="color: #000; text-decoration: none;">Jual Barang Bekas</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Beli Barang Bekas</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Pasang Iklan Gratis</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Promo Barang Baru</a></li>
-          <li><a href="#" style="color: #000; text-decoration: none;">Kategori Populer</a></li>
-        </ul>
-      </div>
+        <a href="{{ Auth::check() ? route('user.dashboard') : route('layout') }}" class="bjbo-btn-outline text-xs">
+            <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+        </a>
     </div>
 
-    <div style="text-align: center; margin-top: 20px;">
-      <p>Owned by <strong>PT Subaru Technologi Bangsa</strong></p>
-    </div>
-  </footer>
-  
-<!-- Bootstrap JS -->
+    <!-- Grid Hasil Pencarian (Loop 1) -->
+    @if($postingan->count() > 0)
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-4">
+            @foreach ($postingan as $item)
+                @include('components.product-card', ['item' => $item, 'isAuth' => Auth::check()])
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-12 bg-white rounded-xl border border-bjbo-border max-w-lg mx-auto p-4 sm:p-6">
+            <i class="bi bi-search text-4xl text-gray-400 mb-3 block"></i>
+            <h5 class="font-bold text-gray-800 text-base">Tidak ditemukan barang dengan kata kunci "{{ $keyword }}"</h5>
+            <p class="text-gray-500 text-xs mt-1 mb-4">Coba gunakan kata kunci yang lebih umum atau periksa penulisan kata.</p>
+            <a href="{{ Auth::check() ? route('user.dashboard') : route('layout') }}" class="bjbo-btn-primary text-xs py-2 px-4">
+                Kembali ke Beranda
+            </a>
+        </div>
+    @endif
+</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Komponen Mobile Bottom Nav (Khusus Handphone & Tablet Kecil) -->
+@include('components.mobile-bottom-nav')
 
-<script>
-
-    const searchInput = document.getElementById('search');
-    const categories = ['Elektronik', 'Olahraga', 'Otomotif', 'Perabot', 'Semua Kategori'];
-    let typingInterval; // Untuk menyimpan interval typing
-    let currentCategoryIndex = 0; // Indeks kategori saat ini
-    let isTypingByUser = false; // Menyimpan status apakah pengguna sedang mengetik
-
-    function typeEffect(text, callback) {
-        let index = 0;
-        const type = () => {
-            if (isTypingByUser) return; // Jika pengguna sedang mengetik, hentikan animasi
-            if (index < text.length) {
-                searchInput.value = text.slice(0, index + 1); // Ketik huruf per huruf
-                index++;
-                typingInterval = setTimeout(type, 150); // Delay untuk setiap huruf
-            } else {
-                setTimeout(() => eraseEffect(callback), 1000); // Setelah selesai mengetik, mulai proses penghapusan
-            }
-        };
-        type();
-    }
-
-    function eraseEffect(callback) {
-        let index = searchInput.value.length;
-        const erase = () => {
-            if (isTypingByUser) return; // Hentikan jika pengguna mulai mengetik
-            if (index > 0) {
-                searchInput.value = searchInput.value.slice(0, index - 1); // Hapus huruf satu per satu
-                index--;
-                typingInterval = setTimeout(erase, 100); // Delay untuk penghapusan huruf
-            } else {
-                callback(); // Panggil callback untuk mengetik kategori berikutnya
-            }
-        };
-        erase();
-    }
-
-    function startTyping() {
-        const typeNext = () => {
-            typeEffect(categories[currentCategoryIndex], () => {
-                currentCategoryIndex = (currentCategoryIndex + 1) % categories.length; // Pindah ke kategori berikutnya
-                typeNext(); // Ketik kategori berikutnya
-            });
-        };
-        typeNext();
-    }
-
-    // Fungsi untuk menghentikan animasi saat pengguna mulai mengetik
-    function stopTypingByUser() {
-        clearTimeout(typingInterval); // Hentikan animasi
-        isTypingByUser = true; // Tandai bahwa pengguna sedang mengetik
-    }
-
-    // Mulai animasi ketika pengguna tidak mengetik
-    function resumeTyping() {
-        if (!isTypingByUser) {
-            searchInput.value = ''; // Mulai dari input kosong
-            isTypingByUser = false;
-            startTyping(); // Mulai ulang animasi
-        }
-    }
-
-    // Event listener untuk mendeteksi input dari pengguna
-    searchInput.addEventListener('input', stopTypingByUser);
-
-    // Event listener untuk mulai ulang animasi saat pengguna mengosongkan input atau menaruh kursor
-    searchInput.addEventListener('focus', () => {
-        isTypingByUser = false;
-        searchInput.value = ''; // Kosongkan input saat fokus
-        clearTimeout(typingInterval); // Hentikan interval sebelumnya
-        startTyping(); // Mulai ulang animasi
-    });
-
-    // Mulai efek pengetikan saat halaman dimuat
-    window.onload = startTyping;
-
-    
-</script>
+@include('components.footer')
 
 </body>
-
 </html>

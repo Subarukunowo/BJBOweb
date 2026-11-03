@@ -1,0 +1,9 @@
+@layer components {
+  .bjbo-modal-backdrop {
+    @apply fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 transition-opacity duration-200;
+  }
+
+  .bjbo-modal-box {
+    @apply bg-white rounded-2xl shadow-2xl border border-bjbo-border max-w-md w-full overflow-hidden;
+  }
+}

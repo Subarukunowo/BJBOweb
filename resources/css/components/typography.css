@@ -1,0 +1,6 @@
+@layer components {
+  .bjbo-price {
+    @apply font-mono font-bold text-bjbo-accent tracking-tight;
+    font-variant-numeric: tabular-nums;
+  }
+}

@@ -1,0 +1,13 @@
+@layer components {
+  .bjbo-order-card {
+    @apply bg-white border border-bjbo-border rounded-2xl p-5 shadow-sm hover:shadow transition;
+  }
+
+  .bjbo-status-paid {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200;
+  }
+
+  .bjbo-status-pending {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200;
+  }
+}

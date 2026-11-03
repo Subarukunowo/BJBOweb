@@ -1,0 +1,13 @@
+@layer components {
+  .bjbo-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 font-semibold text-sm rounded-lg bg-bjbo-primary text-white border border-bjbo-primary hover:bg-bjbo-primary-hover transition duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bjbo-primary;
+  }
+
+  .bjbo-btn-accent {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 font-bold text-sm rounded-lg bg-bjbo-accent text-white border border-bjbo-accent hover:bg-bjbo-accent-hover transition duration-150 active:scale-95 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bjbo-accent;
+  }
+
+  .bjbo-btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 font-semibold text-sm rounded-lg bg-transparent text-gray-800 border border-bjbo-border-strong hover:bg-bjbo-surface-subtle transition duration-150;
+  }
+}

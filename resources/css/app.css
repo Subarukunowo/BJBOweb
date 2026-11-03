@@ -1,24 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-.card-img-top {
-    height: 200px; /* Tinggi tetap */
-    width: 100%;   /* Lebar penuh */
-    object-fit: cover; /* Menjaga proporsi gambar */
-    border-radius: 8px; /* Opsional: Memberikan sudut bulat */
-}
-
-.html {
-    scroll-behavior: smooth;
-}
-
-.sidebar-menu li.active a {
-    background-color: #007bff; /* Ganti dengan warna pilihan Anda */
-    color: white; /* Ubah warna teks */
-}
-
-.sidebar-menu li.active a i {
-    color: white; /* Ubah warna ikon jika diperlukan */
-}
+@import './base.css';
+@import './components/buttons.css';
+@import './components/typography.css';
+@import './components/cards.css';
+@import './components/badges.css';
+@import './components/navbar.css';
+@import './components/auth.css';
+@import './components/modals.css';
+@import './components/orders.css';
+@import './components/category-bar.css';

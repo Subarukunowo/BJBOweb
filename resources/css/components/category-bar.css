@@ -1,0 +1,13 @@
+@layer components {
+  .bjbo-chip {
+    @apply flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition duration-150;
+  }
+
+  .bjbo-chip-active {
+    @apply bg-bjbo-primary text-white border-bjbo-primary shadow-xs;
+  }
+
+  .bjbo-chip-inactive {
+    @apply bg-white text-gray-700 border-bjbo-border hover:bg-bjbo-primary-light hover:text-bjbo-primary;
+  }
+}

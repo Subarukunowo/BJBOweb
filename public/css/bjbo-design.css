@@ -1,0 +1,457 @@
+/* ==========================================================================
+   BJBO Design System - Anti-AI-Slop CSS Tokens & Components
+   Aplikasi: Belanjo & Jual Barang Online (Sedagho)
+   Prinsip: Utilitarian, Taktil, Jujur, Responsif, Bebas AI Tropes
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Netral & Permukaan */
+  --bjbo-bg: #F8F9FA;
+  --bjbo-surface: #FFFFFF;
+  --bjbo-surface-subtle: #F1F3F5;
+  --bjbo-border: #E2E6EA;
+  --bjbo-border-strong: #CED4DA;
+
+  /* Tipografi */
+  --bjbo-text-primary: #1A1D20;
+  --bjbo-text-secondary: #495057;
+  --bjbo-text-muted: #6C757D;
+
+  /* Warna Brand & Aksen */
+  --bjbo-primary: #1E3A8A;
+  --bjbo-primary-hover: #172554;
+  --bjbo-primary-light: #EFF6FF;
+
+  --bjbo-accent: #C2410C;
+  --bjbo-accent-hover: #9A3412;
+  --bjbo-accent-light: #FFF7ED;
+
+  /* Status Semantik */
+  --bjbo-success: #15803D;
+  --bjbo-success-bg: #F0FDF4;
+  --bjbo-warning: #B45309;
+  --bjbo-warning-bg: #FFFBEB;
+  --bjbo-danger: #B91C1C;
+  --bjbo-danger-bg: #FEF2F2;
+
+  /* Tipografi */
+  --bjbo-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bjbo-font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Radius */
+  --bjbo-radius-sm: 6px;
+  --bjbo-radius-md: 10px;
+  --bjbo-radius-lg: 14px;
+  --bjbo-radius-full: 9999px;
+
+  /* Elevasi */
+  --bjbo-shadow-card: 0 2px 8px -2px rgba(0, 0, 0, 0.06), 0 1px 3px -1px rgba(0, 0, 0, 0.04);
+  --bjbo-shadow-hover: 0 8px 18px -3px rgba(0, 0, 0, 0.09), 0 3px 6px -2px rgba(0, 0, 0, 0.04);
+  --bjbo-shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+
+  /* Transisi */
+  --bjbo-transition: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ================= Global Reset & Safety ================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bjbo-bg);
+  color: var(--bjbo-text-primary);
+  font-family: var(--bjbo-font-sans);
+  overflow-x: clip;
+  min-width: 320px;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ================= Tipografi ================= */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--bjbo-text-primary);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -0.02em;
+}
+
+.bjbo-price {
+  font-family: var(--bjbo-font-mono);
+  font-weight: 700;
+  color: var(--bjbo-accent);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ================= Header & Navigasi ================= */
+.bjbo-header {
+  background-color: var(--bjbo-surface);
+  border-bottom: 1px solid var(--bjbo-border);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: 0.75rem 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.bjbo-brand-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
+.bjbo-search-form {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+}
+
+.bjbo-search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0.5rem 1rem 0.5rem 2.6rem;
+  font-size: 0.925rem;
+  border: 1px solid var(--bjbo-border-strong);
+  border-radius: var(--bjbo-radius-full);
+  background-color: var(--bjbo-surface-subtle);
+  color: var(--bjbo-text-primary);
+  transition: border-color var(--bjbo-transition), background-color var(--bjbo-transition), box-shadow var(--bjbo-transition);
+}
+
+.bjbo-search-input:focus {
+  background-color: var(--bjbo-surface);
+  border-color: var(--bjbo-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+.bjbo-search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bjbo-text-muted);
+  pointer-events: none;
+}
+
+/* ================= Tombol & Aksi (8-State Checklist) ================= */
+.bjbo-btn-primary {
+  background-color: var(--bjbo-primary);
+  color: #FFFFFF;
+  border: 1px solid var(--bjbo-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--bjbo-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  transition: all var(--bjbo-transition);
+}
+
+.bjbo-btn-primary:hover {
+  background-color: var(--bjbo-primary-hover);
+  border-color: var(--bjbo-primary-hover);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.bjbo-btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bjbo-btn-primary:focus-visible {
+  outline: 2px solid var(--bjbo-primary);
+  outline-offset: 2px;
+}
+
+.bjbo-btn-accent {
+  background-color: var(--bjbo-accent);
+  color: #FFFFFF;
+  border: 1px solid var(--bjbo-accent);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--bjbo-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  transition: all var(--bjbo-transition);
+}
+
+.bjbo-btn-accent:hover {
+  background-color: var(--bjbo-accent-hover);
+  border-color: var(--bjbo-accent-hover);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(194, 65, 12, 0.25);
+}
+
+.bjbo-btn-accent:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bjbo-btn-accent:focus-visible {
+  outline: 2px solid var(--bjbo-accent);
+  outline-offset: 2px;
+}
+
+.bjbo-btn-outline {
+  background-color: transparent;
+  color: var(--bjbo-text-primary);
+  border: 1px solid var(--bjbo-border-strong);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--bjbo-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  transition: all var(--bjbo-transition);
+}
+
+.bjbo-btn-outline:hover {
+  background-color: var(--bjbo-surface-subtle);
+  border-color: var(--bjbo-text-muted);
+  color: var(--bjbo-text-primary);
+}
+
+/* ================= Kategori & Filter Chips ================= */
+.bjbo-cat-bar {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding: 0.75rem 0.25rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bjbo-cat-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  background-color: var(--bjbo-surface);
+  border: 1px solid var(--bjbo-border);
+  border-radius: var(--bjbo-radius-full);
+  color: var(--bjbo-text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--bjbo-transition);
+}
+
+.bjbo-cat-chip:hover {
+  background-color: var(--bjbo-primary-light);
+  border-color: var(--bjbo-primary);
+  color: var(--bjbo-primary);
+  transform: translateY(-1px);
+}
+
+.bjbo-cat-chip.active {
+  background-color: var(--bjbo-primary);
+  border-color: var(--bjbo-primary);
+  color: #FFFFFF;
+}
+
+/* ================= Banner & Hero Komunitas ================= */
+.bjbo-hero-box {
+  background: linear-gradient(135deg, #1E3A8A 0%, #172554 100%);
+  color: #FFFFFF;
+  border-radius: var(--bjbo-radius-lg);
+  padding: 2.25rem 2rem;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.bjbo-hero-title {
+  color: #FFFFFF;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 0.65rem;
+}
+
+.bjbo-hero-subtitle {
+  color: #E2E8F0;
+  font-size: 1rem;
+  max-width: 600px;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+/* ================= Kartu Produk (Product Card) ================= */
+.bjbo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+}
+
+.bjbo-card {
+  background-color: var(--bjbo-surface);
+  border: 1px solid var(--bjbo-border);
+  border-radius: var(--bjbo-radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--bjbo-transition), box-shadow var(--bjbo-transition), border-color var(--bjbo-transition);
+  box-shadow: var(--bjbo-shadow-card);
+}
+
+.bjbo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--bjbo-shadow-hover);
+  border-color: var(--bjbo-border-strong);
+}
+
+.bjbo-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: var(--bjbo-surface-subtle);
+  overflow: hidden;
+}
+
+.bjbo-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.bjbo-card:hover .bjbo-card-img {
+  transform: scale(1.03);
+}
+
+.bjbo-card-badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--bjbo-radius-sm);
+  background-color: rgba(26, 29, 32, 0.75);
+  color: #FFFFFF;
+  backdrop-filter: blur(4px);
+}
+
+.bjbo-card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.bjbo-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+  color: var(--bjbo-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bjbo-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--bjbo-text-muted);
+  margin-bottom: 0.65rem;
+}
+
+.bjbo-card-footer {
+  margin-top: auto;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--bjbo-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ================= Badges ================= */
+.bjbo-badge-success {
+  background-color: var(--bjbo-success-bg);
+  color: var(--bjbo-success);
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--bjbo-radius-sm);
+}
+
+.bjbo-badge-warning {
+  background-color: var(--bjbo-warning-bg);
+  color: var(--bjbo-warning);
+  border: 1px solid rgba(180, 83, 9, 0.2);
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--bjbo-radius-sm);
+}
+
+/* ================= Footer Komunitas ================= */
+.bjbo-footer {
+  background-color: #1A1D20;
+  color: #ADB5BD;
+  padding: 3rem 0 1.5rem 0;
+  margin-top: 4rem;
+  font-size: 0.875rem;
+}
+
+.bjbo-footer h5 {
+  color: #FFFFFF;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bjbo-footer a {
+  color: #ADB5BD;
+  text-decoration: none;
+  transition: color var(--bjbo-transition);
+}
+
+.bjbo-footer a:hover {
+  color: #FFFFFF;
+}
+
+.bjbo-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.25rem;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* ================= Responsif ================= */
+@media (max-width: 576px) {
+  .bjbo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .bjbo-card-body {
+    padding: 0.75rem;
+  }
+  .bjbo-card-title {
+    font-size: 0.875rem;
+  }
+  .bjbo-price {
+    font-size: 0.95rem;
+  }
+}

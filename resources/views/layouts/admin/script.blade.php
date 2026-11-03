@@ -1,18 +1,18 @@
-<!-- General JS Scripts -->
-<script src="{{ asset('assets/templates/admin/modules/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/templates/admin/modules/popper.js') }}"></script>
-<script src="{{ asset('assets/templates/admin/modules/tooltip.js') }}"></script>
-<script src="{{ asset('assets/templates/admin/modules/bootstrap/js/bootstrap.min.js')
-}}"></script>
-<script src="{{ asset('assets/templates/admin/modules/nicescroll/jquery.nicescroll.min.js')
-}}"></script>
-<script src="{{ asset('assets/templates/admin/modules/moment.min.js') }}"></script>
-<script src="{{ asset('assets/templates/admin/js/stisla.js') }}"></script>
-<!-- JS Libraies -->
-
-<!-- Page Specific JS File -->
- 
-<!-- Template JS File -->
-<script src="{{ asset('assets/templates/admin/js/scripts.js') }}"></script>
-<script src="{{ asset('assets/templates/admin/js/custom.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Admin Script Helper -->
+<script>
+    function toggleAdminSidebar() {
+        const sidebar = document.getElementById('admin-sidebar');
+        const backdrop = document.getElementById('admin-sidebar-backdrop');
+        
+        if (sidebar && backdrop) {
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+    }
+</script>

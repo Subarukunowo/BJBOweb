@@ -1,0 +1,13 @@
+@layer components {
+  .bjbo-header {
+    @apply bg-white border-b border-bjbo-border sticky top-0 z-50 shadow-sm py-3;
+  }
+
+  .bjbo-brand-img {
+    @apply h-10 w-auto object-contain;
+  }
+
+  .bjbo-search-input {
+    @apply w-full h-10 pl-11 pr-4 text-sm bg-bjbo-surface-subtle border border-bjbo-border-strong rounded-full focus:bg-white focus:border-bjbo-primary focus:ring-2 focus:ring-bjbo-primary/20 focus:outline-none transition;
+  }
+}

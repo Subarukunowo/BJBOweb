@@ -1,44 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Admin Dashboard - BJBO Sedagho')</title>
     
-    <!-- General CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/templates/admin/modules/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/templates/admin/modules/fontawesome/css/all.min.css') }}">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- CSS Libraries -->
-    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/templates/admin/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/templates/admin/css/components.css') }}">
-    
-    <!-- Start GA -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-94034622-3');
-    </script>
-
-    <title>@yield('title')</title>
+    <!-- 100% Tailwind CSS & Modular Assets -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="bg-bjbo-bg text-gray-900 font-sans antialiased min-h-screen flex">
     @include('sweetalert::alert')
 
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-            @include('layouts.admin.navbar')
-            @include('layouts.admin.sidebar')
+    <!-- Admin Sidebar (Desktop & Mobile Drawer) -->
+    @include('layouts.admin.sidebar')
 
+    <!-- Main Wrapper Area -->
+    <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+        <!-- Top Navbar -->
+        @include('layouts.admin.navbar')
+
+        <!-- Page Content -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
             @yield('content')
+        </main>
 
-            @include('layouts.admin.footer')
-        </div>
+        <!-- Footer -->
+        @include('layouts.admin.footer')
     </div>
 
     @include('layouts.admin.script')

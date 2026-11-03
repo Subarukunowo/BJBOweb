@@ -1,0 +1,13 @@
+@layer components {
+  .bjbo-card-badge {
+    @apply absolute top-2 left-2 z-10 bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded;
+  }
+
+  .bjbo-badge-success {
+    @apply inline-flex items-center gap-1 text-[11px] font-bold text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded;
+  }
+
+  .bjbo-badge-warning {
+    @apply inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded;
+  }
+}

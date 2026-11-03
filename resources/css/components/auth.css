@@ -1,0 +1,9 @@
+@layer components {
+  .bjbo-auth-card {
+    @apply w-full max-w-md mx-auto bg-white border border-bjbo-border rounded-2xl p-6 sm:p-8 shadow-sm;
+  }
+
+  .bjbo-social-btn {
+    @apply inline-flex items-center justify-center gap-1.5 py-2 px-2 border border-bjbo-border-strong rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 transition active:scale-95;
+  }
+}
