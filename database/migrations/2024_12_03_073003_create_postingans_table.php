@@ -19,13 +19,10 @@ return new class extends Migration
             $table->text('description');
             $table->string('image');
             $table->text('lokasi');
-            $table->unsignedBigInteger('user_id'); // Kolom user_id
-            $table->string('username');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('username')->nullable();
             $table->enum('status', ['disetujui', 'belum disetujui'])->default('belum disetujui');
             $table->timestamps();
-
-            // Menambahkan foreign key untuk user_id
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
