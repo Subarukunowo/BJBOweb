@@ -172,7 +172,7 @@ class DatabaseSeeder extends Seeder
 
             $sampleOrders->each(function ($item, $idx) use ($posts, $buyer) {
                 $post = $posts->firstWhere('category', $item['cat']) ?: $posts->first();
-                $orderNum = 'BJBO-TEST-' . str_pad((string) ($idx + 1), 4, '0', STR_PAD_LEFT);
+                $orderNum = 'BJBO-TEST-'.str_pad((string) ($idx + 1), 4, '0', STR_PAD_LEFT);
 
                 \App\Models\Pesanan::updateOrCreate(
                     ['order_number' => $orderNum],
