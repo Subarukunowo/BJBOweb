@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Pesanan;
 use App\Models\Postingan;
+use App\Models\User;
 use App\Repositories\PesananRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -22,16 +23,28 @@ class PesananService
 
     /**
      * Create a new order for a posting and obtain a snap token.
-     * Supports optional promo voucher discount.
+     * Supports optional promo voucher discount, COD, and BJPay wallet payments.
      */
-    public function createOrder(int $buyerId, int $postinganId, ?string $catatan = null, ?string $promoCode = null): Pesanan
-    {
+    public function createOrder(
+        int $buyerId,
+        int $postinganId,
+        ?string $catatan = null,
+        ?string $promoCode = null,
+        string $metodePembayaran = 'transfer'
+    ): Pesanan {
         $postingan = Postingan::findOrFail($postinganId);
         $orderNumber = 'BJBO-'.date('Ymd').'-'.strtoupper(Str::random(6));
 
         $totalPrice = $postingan->price;
+        $ongkir = 10000;
+        $diskonOngkir = 0;
         $discountAmount = 0;
         $promoId = null;
+
+        // Potongan ongkir khusus pembayaran menggunakan BJPay
+        if ($metodePembayaran === 'bjpay') {
+            $diskonOngkir = 5000;
+        }
 
         if ($promoCode) {
             $promoRes = app(PromoService::class)->validateAndCalculateDiscount($promoCode, $totalPrice);
@@ -41,7 +54,26 @@ class PesananService
             }
         }
 
-        $finalPrice = max(0, $totalPrice - $discountAmount);
+        $finalPrice = max(0, $totalPrice + $ongkir - $discountAmount - $diskonOngkir);
+
+        $status = 'pending';
+        $paymentType = 'qris';
+        $buyer = User::findOrFail($buyerId);
+
+        if ($metodePembayaran === 'bjpay') {
+            $currentSaldo = $buyer->saldo_bjpay ?? 0;
+            if ($currentSaldo < $finalPrice) {
+                throw new \InvalidArgumentException('Saldo BJPay Anda tidak mencukupi (Tersedia: Rp '.number_format($currentSaldo, 0, ',', '.').', Dibutuhkan: Rp '.number_format($finalPrice, 0, ',', '.').'). Silakan top up saldo BJPay terlebih dahulu.');
+            }
+
+            // Potong saldo BJPay pembeli secara atomik
+            $buyer->decrement('saldo_bjpay', $finalPrice);
+            $status = 'paid';
+            $paymentType = 'bjpay';
+        } elseif ($metodePembayaran === 'cod') {
+            $status = 'pending';
+            $paymentType = 'cod';
+        }
 
         $pesanan = $this->pesananRepository->create([
             'order_number' => $orderNumber,
@@ -49,17 +81,37 @@ class PesananService
             'postingan_id' => $postingan->id,
             'penjual_id' => $postingan->user_id,
             'total_price' => $totalPrice,
+            'ongkir' => $ongkir,
+            'diskon_ongkir' => $diskonOngkir,
             'promo_id' => $promoId,
             'discount_amount' => $discountAmount,
             'final_price' => $finalPrice,
+            'metode_pembayaran' => $metodePembayaran,
             'catatan' => $catatan,
-            'status' => 'pending',
+            'status' => $status,
             'shipping_status' => 'menunggu_konfirmasi',
-            'payment_type' => 'qris',
+            'payment_type' => $paymentType,
+            'settlement_time' => $status === 'paid' ? now() : null,
         ]);
 
-        $snapToken = $this->midtransService->getSnapToken($pesanan);
-        $pesanan->update(['snap_token' => $snapToken]);
+        // Buat struk digital & invoice resmi secara otomatis
+        app(InvoiceService::class)->generateInvoice($pesanan);
+
+        if ($metodePembayaran === 'transfer') {
+            $snapToken = $this->midtransService->getSnapToken($pesanan);
+            $pesanan->update(['snap_token' => $snapToken]);
+        } elseif ($metodePembayaran === 'bjpay') {
+            try {
+                app(NotificationService::class)->notifyPaymentReceived(
+                    $pesanan->penjual_id,
+                    $pesanan->order_number,
+                    $finalPrice,
+                    $buyer->name
+                );
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Failed sending payment notification to seller: '.$e->getMessage());
+            }
+        }
 
         return $pesanan;
     }
@@ -92,6 +144,7 @@ class PesananService
             try {
                 $pesanan = $this->pesananRepository->findById($orderId);
                 if ($pesanan) {
+                    app(InvoiceService::class)->generateInvoice($pesanan);
                     $buyerName = $pesanan->pembeli ? $pesanan->pembeli->name : 'Pembeli';
                     app(NotificationService::class)->notifyPaymentReceived(
                         $pesanan->penjual_id,

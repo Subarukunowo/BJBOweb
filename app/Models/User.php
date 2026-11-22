@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $phone
+ * @property string|null $avatar
+ * @property int $saldo_rekber
+ * @property int $saldo_bjpay
+ * @property bool $is_blocked
+ * @property-read string $profile_picture_url
+ * @property-read \App\Models\Store|null $store
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -27,6 +39,7 @@ class User extends Authenticatable
         'profile_picture',
         'is_blocked',
         'saldo_rekber',
+        'saldo_bjpay',
     ];
 
     /**
@@ -51,6 +64,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_blocked' => 'boolean',
             'saldo_rekber' => 'integer',
+            'saldo_bjpay' => 'integer',
         ];
     }
 
@@ -89,6 +103,16 @@ class User extends Authenticatable
         return $this->hasOne(Store::class);
     }
 
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class, 'user_id');
+    }
+
+    public function getFormattedSaldoBjpayAttribute(): string
+    {
+        return 'Rp '.number_format($this->saldo_bjpay ?? 0, 0, ',', '.');
+    }
+
     public function hasActiveStore(): bool
     {
         return $this->store !== null && $this->store->status === 'aktif';
@@ -97,6 +121,11 @@ class User extends Authenticatable
     public function hasStore(): bool
     {
         return $this->store !== null;
+    }
+
+    public function carts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Cart::class);
     }
 
     public function wishlists(): \Illuminate\Database\Eloquent\Relations\HasMany

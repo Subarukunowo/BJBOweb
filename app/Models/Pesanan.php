@@ -37,11 +37,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $promo_id
  * @property int|null $discount_amount
  * @property int|null $final_price
+ * @property int|null $ongkir
+ * @property int|null $diskon_ongkir
+ * @property string|null $metode_pembayaran
  * @property bool $is_funds_released
  * @property-read \App\Models\User|null $pembeli
  * @property-read \App\Models\User|null $user
  * @property-read \App\Models\User|null $penjual
  * @property-read \App\Models\Postingan|null $postingan
+ * @property-read \App\Models\Invoice|null $invoice
  */
 class Pesanan extends Model
 {
@@ -79,6 +83,9 @@ class Pesanan extends Model
         'promo_id',
         'discount_amount',
         'final_price',
+        'ongkir',
+        'diskon_ongkir',
+        'metode_pembayaran',
         'delivered_at',
         'is_funds_released',
     ];
@@ -89,6 +96,8 @@ class Pesanan extends Model
             'total_price' => 'integer',
             'discount_amount' => 'integer',
             'final_price' => 'integer',
+            'ongkir' => 'integer',
+            'diskon_ongkir' => 'integer',
             'settlement_time' => 'datetime',
             'penjual_confirmation_at' => 'datetime',
             'delivered_at' => 'datetime',
@@ -125,6 +134,11 @@ class Pesanan extends Model
     public function promo(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Promo::class);
+    }
+
+    public function invoice(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Invoice::class, 'pesanan_id');
     }
 
     public function getEffectivePrice(): int

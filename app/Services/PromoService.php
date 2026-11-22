@@ -6,6 +6,7 @@ use App\Models\Promo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PromoService
@@ -37,45 +38,55 @@ class PromoService
     }
 
     /**
-     * Get active advertisement banners for public carousel display.
+     * Get active advertisement banners for public carousel display with caching.
      */
     public function getActiveBanners(): Collection
     {
-        return Promo::query()
-            ->select(['id', 'title', 'slug', 'type', 'banner_image', 'description'])
-            ->where('is_active', true)
-            ->whereIn('type', ['banner_iklan', 'flash_sale'])
-            ->where(function ($q) {
-                $now = now();
-                $q->whereNull('start_date')->orWhere('start_date', '<=', $now);
-            })
-            ->where(function ($q) {
-                $now = now();
-                $q->whereNull('end_date')->orWhere('end_date', '>=', $now);
-            })
-            ->latest('id')
-            ->take(5)
-            ->get();
+        return Cache::remember('bjbo_active_banners', 1800, function () {
+            return Promo::query()
+                ->select(['id', 'title', 'slug', 'type', 'banner_image', 'description'])
+                ->where('is_active', true)
+                ->whereIn('type', ['banner_iklan', 'flash_sale'])
+                ->where(function ($q) {
+                    $now = now();
+                    $q->whereNull('start_date')->orWhere('start_date', '<=', $now);
+                })
+                ->where(function ($q) {
+                    $now = now();
+                    $q->whereNull('end_date')->orWhere('end_date', '>=', $now);
+                })
+                ->latest('id')
+                ->take(5)
+                ->get();
+        });
     }
 
     /**
-     * Get active vouchers and discount codes available for buyers.
+     * Get active vouchers and discount codes available for buyers with caching.
      */
     public function getActiveVouchers(): Collection
     {
-        return Promo::query()
-            ->select(['id', 'title', 'code', 'type', 'discount_percentage', 'discount_amount', 'min_purchase', 'description', 'end_date'])
-            ->where('is_active', true)
-            ->whereNotNull('code')
-            ->where(function ($q) {
-                $now = now();
-                $q->whereNull('start_date')->orWhere('start_date', '<=', $now);
-            })
-            ->where(function ($q) {
-                $now = now();
-                $q->whereNull('end_date')->orWhere('end_date', '>=', $now);
-            })
-            ->get();
+        return Cache::remember('bjbo_active_vouchers', 1800, function () {
+            return Promo::query()
+                ->select(['id', 'title', 'code', 'type', 'discount_percentage', 'discount_amount', 'min_purchase', 'description', 'end_date'])
+                ->where('is_active', true)
+                ->whereNotNull('code')
+                ->where(function ($q) {
+                    $now = now();
+                    $q->whereNull('start_date')->orWhere('start_date', '<=', $now);
+                })
+                ->where(function ($q) {
+                    $now = now();
+                    $q->whereNull('end_date')->orWhere('end_date', '>=', $now);
+                })
+                ->get();
+        });
+    }
+
+    public function clearPromoCache(): void
+    {
+        Cache::forget('bjbo_active_banners');
+        Cache::forget('bjbo_active_vouchers');
     }
 
     /**
@@ -136,6 +147,8 @@ class PromoService
 
         $slug = Str::slug($data['title']).'-'.Str::lower(Str::random(5));
 
+        $this->clearPromoCache();
+
         return Promo::create([
             'title' => $data['title'],
             'slug' => $slug,
@@ -175,6 +188,7 @@ class PromoService
         }
 
         $promo->update($payload);
+        $this->clearPromoCache();
 
         return $promo;
     }
@@ -184,6 +198,8 @@ class PromoService
      */
     public function deletePromo(Promo $promo): bool
     {
+        $this->clearPromoCache();
+
         return (bool) $promo->delete();
     }
 
@@ -193,6 +209,7 @@ class PromoService
     public function togglePromoStatus(Promo $promo): Promo
     {
         $promo->update(['is_active' => ! $promo->is_active]);
+        $this->clearPromoCache();
 
         return $promo;
     }

@@ -100,6 +100,7 @@ class MidtransService
             return \Midtrans\Snap::getSnapToken($params);
         } catch (Exception $e) {
             Log::warning('Midtrans Snap error for order '.$pesanan->order_number.': '.$e->getMessage());
+
             // Fallback ke token simulasi jika kredensial belum aktif / akun sedang aktivasi
             return 'SIMULASI-QRIS-'.$pesanan->order_number;
         }

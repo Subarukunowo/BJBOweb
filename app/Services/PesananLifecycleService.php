@@ -141,6 +141,7 @@ class PesananLifecycleService
 
         DB::transaction(function () use ($pesanan) {
             $pesanan->update([
+                'status' => 'paid',
                 'shipping_status' => 'sampai_tujuan',
                 'delivered_at' => now(),
                 'last_checkpoint' => 'Pesanan telah diterima oleh pembeli. Transaksi selesai.',
@@ -148,6 +149,9 @@ class PesananLifecycleService
 
             // Release escrow funds to seller's Rekber wallet
             app(RekberService::class)->releaseEscrowToSeller($pesanan);
+
+            // Perbarui invoice / struk digital menjadi lunas
+            app(InvoiceService::class)->generateInvoice($pesanan);
 
             app(NotificationService::class)->sendNotification(
                 $pesanan->user_id,

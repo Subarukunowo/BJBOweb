@@ -14,7 +14,9 @@ class ChatMessageSent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Message $message;
+
     public string $decryptedMessage;
+
     public bool $wasCensored;
 
     public function __construct(Message $message, string $decryptedMessage, bool $wasCensored = false)
@@ -61,4 +63,3 @@ class ChatMessageSent implements ShouldBroadcastNow
         ];
     }
 }
-

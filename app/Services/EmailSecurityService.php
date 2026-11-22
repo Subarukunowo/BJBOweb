@@ -47,7 +47,12 @@ class EmailSecurityService
             return true;
         }
 
-        // 3. Validasi DNS MX record jika koneksi internet tersedia
+        // 3. Jangan jalankan checkdnsrr pada testing environment atau provider umum
+        if (app()->environment('testing') || in_array($domain, ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'], true)) {
+            return false;
+        }
+
+        // 4. Validasi DNS MX record jika koneksi internet tersedia
         if (function_exists('checkdnsrr') && ! in_array($domain, ['localhost', '127.0.0.1'], true)) {
             $hasMx = @checkdnsrr($domain, 'MX');
             $hasA = @checkdnsrr($domain, 'A');

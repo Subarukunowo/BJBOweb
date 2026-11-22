@@ -31,7 +31,7 @@ class PesananRepository
                 'origin_lat', 'origin_lng', 'origin_address',
                 'destination_lat', 'destination_lng', 'destination_address',
                 'current_lat', 'current_lng', 'last_checkpoint',
-                'promo_id', 'discount_amount', 'final_price', 'delivered_at',
+                'promo_id', 'discount_amount', 'final_price', 'ongkir', 'diskon_ongkir', 'metode_pembayaran', 'delivered_at',
                 'is_funds_released', 'snap_token', 'payment_type', 'transaction_id',
                 'settlement_time', 'created_at',
             ])
@@ -40,6 +40,7 @@ class PesananRepository
                 'penjual:id,name,email,profile_picture',
                 'postingan:id,name,price,category,image,lokasi,user_id',
                 'promo:id,title,code,type,discount_amount,discount_percentage',
+                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
             ])
             ->find($id);
     }
@@ -54,7 +55,7 @@ class PesananRepository
                 'id', 'order_number', 'user_id', 'postingan_id', 'penjual_id',
                 'total_price', 'catatan', 'status', 'shipping_status', 'kurir_name',
                 'nomor_resi', 'penjual_confirmation_at', 'alasan_penolakan',
-                'promo_id', 'discount_amount', 'final_price', 'delivered_at',
+                'promo_id', 'discount_amount', 'final_price', 'ongkir', 'diskon_ongkir', 'metode_pembayaran', 'delivered_at',
                 'is_funds_released', 'snap_token', 'payment_type', 'transaction_id',
                 'settlement_time', 'created_at',
             ])
@@ -62,6 +63,7 @@ class PesananRepository
                 'pembeli:id,name,email,profile_picture',
                 'penjual:id,name,email,profile_picture',
                 'postingan:id,name,price,category,image,lokasi,user_id',
+                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
             ])
             ->where('order_number', $orderNumber)
             ->first();
@@ -76,13 +78,14 @@ class PesananRepository
             ->select([
                 'id', 'order_number', 'user_id', 'postingan_id', 'penjual_id',
                 'total_price', 'catatan', 'status', 'shipping_status', 'kurir_name',
-                'nomor_resi', 'promo_id', 'discount_amount', 'final_price',
+                'nomor_resi', 'promo_id', 'discount_amount', 'final_price', 'ongkir', 'diskon_ongkir', 'metode_pembayaran',
                 'delivered_at', 'is_funds_released', 'payment_type', 'created_at',
             ])
             ->with([
                 'postingan:id,name,price,category,image,lokasi',
                 'penjual:id,name',
                 'pembeli:id,name',
+                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
             ])
             ->where(function ($q) use ($userId) {
                 $q->where('user_id', $userId)->orWhere('penjual_id', $userId);

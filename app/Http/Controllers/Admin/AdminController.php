@@ -9,10 +9,13 @@ use App\Models\Pesanan;
 use App\Models\Postingan;
 use App\Models\Ulasan;
 use App\Models\User;
+use App\Services\CategoryAnalyticsService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(CategoryAnalyticsService $categoryAnalyticsService)
     {
         $users = User::count();
         $postings = Postingan::count();
@@ -26,6 +29,8 @@ class AdminController extends Controller
         $recentPostings = Postingan::with('user')->latest()->take(6)->get();
         $recentLaporans = Laporan::with(['user', 'postingan'])->latest()->take(5)->get();
 
+        $categoryAnalyticsData = $categoryAnalyticsService->getAllPeriodsData();
+
         return view('pages.admin.index', compact(
             'users',
             'postings',
@@ -36,7 +41,16 @@ class AdminController extends Controller
             'activePostings',
             'transactions',
             'recentPostings',
-            'recentLaporans'
+            'recentLaporans',
+            'categoryAnalyticsData'
         ));
+    }
+
+    public function categoryAnalytics(Request $request, CategoryAnalyticsService $categoryAnalyticsService): JsonResponse
+    {
+        $period = (string) $request->get('period', 'all_time');
+        $data = $categoryAnalyticsService->getCategorySalesData($period);
+
+        return response()->json($data);
     }
 }

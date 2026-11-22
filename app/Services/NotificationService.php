@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Events\NewNotificationEvent;
 use App\Models\AppNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class NotificationService
@@ -28,6 +29,8 @@ class NotificationService
             'data' => $data,
             'is_read' => false,
         ]);
+
+        Cache::forget("user_unread_notif_count_{$userId}");
 
         try {
             broadcast(new NewNotificationEvent($notification))->toOthers();
@@ -93,14 +96,16 @@ class NotificationService
     }
 
     /**
-     * Count unread notifications.
+     * Count unread notifications with 60-second caching.
      */
     public function getUnreadCount(int $userId): int
     {
-        return AppNotification::query()
-            ->where('user_id', $userId)
-            ->where('is_read', false)
-            ->count();
+        return Cache::remember("user_unread_notif_count_{$userId}", 60, function () use ($userId) {
+            return AppNotification::query()
+                ->where('user_id', $userId)
+                ->where('is_read', false)
+                ->count();
+        });
     }
 
     /**
@@ -108,6 +113,8 @@ class NotificationService
      */
     public function markAsRead(int $notificationId, int $userId): bool
     {
+        Cache::forget("user_unread_notif_count_{$userId}");
+
         return (bool) AppNotification::query()
             ->where('id', $notificationId)
             ->where('user_id', $userId)
@@ -119,6 +126,8 @@ class NotificationService
      */
     public function markAllAsRead(int $userId): bool
     {
+        Cache::forget("user_unread_notif_count_{$userId}");
+
         return (bool) AppNotification::query()
             ->where('user_id', $userId)
             ->where('is_read', false)

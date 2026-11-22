@@ -6,6 +6,7 @@ use App\Models\Postingan;
 use App\Repositories\PostinganRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class PostinganService
@@ -24,7 +25,9 @@ class PostinganService
 
     public function getApprovedPostings(): Collection
     {
-        return $this->postinganRepository->getApproved();
+        return Cache::remember('bjbo_approved_postings_all', 300, function () {
+            return $this->postinganRepository->getApproved();
+        });
     }
 
     public function getUserPostings(int $userId): Collection
@@ -52,7 +55,16 @@ class PostinganService
 
     public function getPostingsByCategory(string $category): Collection
     {
-        return $this->postinganRepository->getByCategory($category);
+        $cacheKey = 'bjbo_category_'.md5($category);
+
+        return Cache::remember($cacheKey, 300, function () use ($category) {
+            return $this->postinganRepository->getByCategory($category);
+        });
+    }
+
+    public function clearPostinganCache(): void
+    {
+        Cache::forget('bjbo_approved_postings_all');
     }
 
     public function getSellerMetrics(int $userId): array
@@ -84,6 +96,7 @@ class PostinganService
         }
 
         $newStatus = ! $postingan->is_sold;
+        $this->clearPostinganCache();
 
         return $this->postinganRepository->update($id, ['is_sold' => $newStatus]);
     }
@@ -109,6 +122,8 @@ class PostinganService
         $isAutoBlocked = $moderation['is_blocked'];
         $blockReason = $moderation['reason'];
         $status = $isAutoBlocked ? 'belum disetujui' : 'disetujui';
+
+        $this->clearPostinganCache();
 
         return $this->postinganRepository->create([
             'name' => $data['name'],
@@ -174,6 +189,8 @@ class PostinganService
             $payload['is_sold'] = (bool) $data['is_sold'];
         }
 
+        $this->clearPostinganCache();
+
         return $this->postinganRepository->update($id, $payload);
     }
 
@@ -184,6 +201,8 @@ class PostinganService
         if ($postingan->image && Storage::disk('public')->exists($postingan->image)) {
             Storage::disk('public')->delete($postingan->image);
         }
+
+        $this->clearPostinganCache();
 
         return $this->postinganRepository->delete($id);
     }
