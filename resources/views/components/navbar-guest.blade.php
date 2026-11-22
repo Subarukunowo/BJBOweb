@@ -2,9 +2,9 @@
 <header class="bg-white border-b border-bjbo-border sticky top-0 z-50 shadow-xs py-2.5 sm:py-3">
     <div class="container mx-auto px-3 sm:px-4">
         <div class="flex items-center justify-between gap-2 sm:gap-4">
-            <!-- Logo Brand -->
+            <!-- Logo Brand (Diperbesar 80-85% dari navbar) -->
             <a href="{{ route('layout') }}" class="flex items-center text-decoration-none flex-shrink-0">
-                <img src="{{ asset('images/logo.png') }}" alt="BJBO Logo" class="h-8 sm:h-10 w-auto object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="BJBO Logo" class="h-11 sm:h-12 md:h-14 w-auto object-contain">
             </a>
 
             <!-- Form Pencarian Publik (Tablet & Laptop / Desktop: md:flex) -->

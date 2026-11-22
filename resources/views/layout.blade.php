@@ -16,31 +16,39 @@
 @include('components.navbar-guest')
 
 <!-- Konten Utama -->
-<main class="container mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0">
+<main class="max-w-7xl mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0 w-full">
     <!-- Komponen Hero Banner -->
     @include('components.hero-banner')
 
-    <!-- Kategori Bar -->
-    <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-            <h5 class="font-bold text-gray-900 text-sm sm:text-base mb-0">Kategori Pilihan</h5>
-            <span class="text-gray-500 text-[11px] sm:text-xs">Geser kategori untuk memfilter</span>
-        </div>
+    <!-- Kategori Bar Centered (Sesuai Gambar 2) -->
+    <div class="mb-6 flex flex-col items-center justify-center">
         @include('components.category-bar', ['activeCategory' => null, 'baseRoute' => 'layout'])
     </div>
 
-    <!-- Etalase Produk Terverifikasi (Loop 1) -->
-    <div class="mb-8">
+    <!-- Etalase Produk Terverifikasi (6 Kolom Horizontal Centered Sesuai Gambar 2) -->
+    <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
-            <h4 class="font-bold text-gray-900 text-base sm:text-lg mb-0">Produk Terbaru</h4>
-            <span class="text-gray-500 text-[11px] sm:text-xs">Barang terverifikasi kurator</span>
+            <h4 class="font-bold text-zinc-900 text-base sm:text-lg mb-0 flex items-center gap-2">
+                <i class="bi bi-bag-check-fill text-blue-600"></i> Produk Terbaru di Pasar Sedagho
+            </h4>
+            <span class="text-zinc-500 text-xs font-medium">Barang terverifikasi kurator</span>
         </div>
 
         @if(isset($postingans) && $postingans->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5">
                 @foreach ($postingans as $item)
                     @include('components.product-card', ['item' => $item, 'isAuth' => false])
                 @endforeach
+            </div>
+
+            <!-- Tombol Muat Lebih Banyak (Redirect ke Semua Barang) -->
+            <div class="mt-8 mb-4 flex justify-center items-center">
+                <a href="{{ route('layout') }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 shadow-xs hover:border-zinc-300 transition duration-150 anim-press group" title="Lihat semua barang di BJBO">
+                    <span>Muat Lebih Banyak</span>
+                    <svg class="w-4 h-4 text-zinc-500 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
             </div>
         @else
             <div class="text-center py-12 bg-white rounded-xl border border-bjbo-border">
