@@ -48,4 +48,43 @@ class AdminFeatureTest extends TestCase
         $response->assertRedirect();
         $this->assertEquals('disetujui', $postingan->fresh()->status);
     }
+
+    public function test_admin_dashboard_renders_category_analytics_chart(): void
+    {
+        $admin = Admin::factory()->create();
+
+        $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('categoryAnalyticsData');
+        $response->assertSee('Analisis Kategori Barang Terlaris');
+        $response->assertSee('Batang');
+        $response->assertSee('Lingkaran');
+        $response->assertSee('1 Minggu');
+        $response->assertSee('1 Bulan');
+        $response->assertSee('1 Tahun');
+        $response->assertSee('All Time');
+    }
+
+    public function test_admin_can_fetch_category_analytics_json_api(): void
+    {
+        $admin = Admin::factory()->create();
+
+        $response = $this->actingAs($admin, 'admin')->getJson(route('admin.analytics.categories', ['period' => '1_minggu']));
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'period',
+            'period_label',
+            'total_sold',
+            'total_revenue',
+            'formatted_revenue',
+            'top_category',
+            'categories',
+            'counts',
+            'revenues',
+            'percentages',
+            'items',
+        ]);
+    }
 }
