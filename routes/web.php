@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\UlasanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\User\BjPayController;
+use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\FavoritController;
 use App\Http\Controllers\User\NotificationController;
@@ -42,6 +44,9 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->middleware('throttle:5,1')->name('otp.resend');
 });
 
+// Tampilan Struk Digital Publik (Verifikasi Token Terbuka)
+Route::get('/invoice/lihat/{token}', [PesananController::class, 'invoiceByToken'])->name('invoice.view');
+
 // Autentikasi Sosial (Google, Facebook, Instagram)
 Route::prefix('auth')->group(function () {
     Route::get('/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.redirect');
@@ -57,6 +62,7 @@ Route::prefix('auth')->group(function () {
 // Admin Route (100% Tailwind CSS)
 Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/analytics/categories', [AdminController::class, 'categoryAnalytics'])->name('admin.analytics.categories');
     Route::get('/admin-logout', [AuthController::class, 'admin_logout'])->name('admin.logout');
     Route::get('/admin/pengguna', [PenggunaController::class, 'index'])->name('admin.users');
     Route::get('/admin/posting', [PostingController::class, 'index'])->name('admin.postings');
@@ -127,6 +133,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/wishlist/toggle/{id}', [WishlistController::class, 'toggle'])->name('user.wishlist.toggle');
         Route::post('/api/promo/check', [WishlistController::class, 'checkPromo'])->name('user.promo.check');
 
+        // Keranjang Belanja (Cart)
+        Route::get('/cart', [CartController::class, 'index'])->name('user.cart.index');
+        Route::post('/cart/add/{postinganId}', [CartController::class, 'add'])->name('user.cart.add');
+        Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('user.cart.update');
+        Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('user.cart.remove');
+        Route::get('/api/cart/count', [CartController::class, 'count'])->name('user.cart.count');
+
         // Buka Toko (Toko Perorangan vs Official Store)
         Route::get('/buka-toko', [StoreRegistrationController::class, 'show'])->name('user.toko.daftar');
         Route::post('/buka-toko/perorangan', [StoreRegistrationController::class, 'storePerorangan'])->name('user.toko.storePerorangan');
@@ -137,11 +150,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/rekber/rekening', [RekberController::class, 'addBank'])->name('user.rekber.addBank');
         Route::post('/rekber/tarik-dana', [RekberController::class, 'requestWithdrawal'])->name('user.rekber.tarikDana');
 
-        // Pesanan & Pembayaran Midtrans Snap (Tanpa Redirect) / QRIS Gratis
+        // Dompet Digital BJPay (Diskon Ongkir Khusus & Saldo)
+        Route::get('/bjpay', [BjPayController::class, 'index'])->name('user.bjpay.index');
+        Route::post('/bjpay/topup', [BjPayController::class, 'topup'])->name('user.bjpay.topup');
+
+        // Pesanan & Pembayaran Midtrans Snap (Tanpa Redirect) / QRIS Gratis / COD / BJPay
         Route::get('/pesanan', [PesananController::class, 'index'])->name('user.pesanan.index');
         Route::get('/pesanan/checkout/{postingan_id}', [PesananController::class, 'checkout'])->name('user.pesanan.checkout');
         Route::post('/pesanan/store/{postingan_id}', [PesananController::class, 'store'])->name('user.pesanan.store');
         Route::get('/pesanan/detail/{id}', [PesananController::class, 'detail'])->name('user.pesanan.detail');
+        Route::get('/pesanan/{id}/invoice', [PesananController::class, 'invoice'])->name('user.pesanan.invoice');
         Route::post('/pesanan/finish/{id}', [PesananController::class, 'finish'])->name('user.pesanan.finish');
         Route::post('/pesanan/simulate-qris/{id}', [PesananController::class, 'simulateQris'])->name('user.pesanan.simulate-qris');
 
