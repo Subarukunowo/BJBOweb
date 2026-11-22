@@ -14,22 +14,22 @@
 <!-- Header Navigasi -->
 @include('components.navbar-user')
 
-<main class="container mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0">
+<main class="max-w-7xl mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0 w-full">
     <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="text-lg sm:text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
+            <h1 class="text-lg sm:text-2xl font-extrabold text-zinc-900 mb-1 flex items-center gap-2">
                 <i class="bi bi-heart-fill text-red-500"></i> Barang Favorit Saya
             </h1>
-            <span class="text-gray-500 text-xs">Daftar barang yang Anda tandai untuk dipantau (Total: {{ $favorits->count() }})</span>
+            <span class="text-zinc-500 text-xs font-medium">Daftar barang yang Anda tandai untuk dipantau (Total: {{ $favorits->count() }})</span>
         </div>
         <a href="{{ route('user.dashboard') }}" class="bjbo-btn-outline text-xs">
             <i class="bi bi-arrow-left"></i> Kembali ke Beranda
         </a>
     </div>
 
-    <!-- Grid Barang Favorit (Loop 1) -->
+    <!-- Grid Barang Favorit (6 Kolom Horizontal Centered Sesuai Gambar 2) -->
     @if($favorits->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5 mb-10">
             @foreach ($favorits as $item)
                 @include('components.product-card', ['item' => $item, 'isAuth' => true])
             @endforeach

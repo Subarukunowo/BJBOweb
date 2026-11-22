@@ -27,7 +27,10 @@
             </h1>
         </div>
 
-        <div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('user.pesanan.invoice', $pesanan->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-700 shadow-xs transition" title="Buka Struk Digital & Invoice Resmi">
+                <i class="bi bi-receipt"></i> Struk Digital
+            </a>
             @if($pesanan->status === 'paid')
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
                     <i class="bi bi-check-circle-fill text-green-600"></i> LUNAS TERBAYAR

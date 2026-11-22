@@ -39,14 +39,6 @@
                     <p class="text-[11px] text-gray-400 font-mono">Sedagho Chat</p>
                 </div>
             </div>
-
-            <!-- E2E Security Badge -->
-            <div class="flex items-center gap-2 shrink-0">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs" title="Semua pesan dienkripsi dengan protokol End-to-End (E2E)">
-                    <i class="bi bi-lock-fill text-xs"></i>
-                    <span class="hidden md:inline">E2E Encrypted</span>
-                </span>
-            </div>
         </div>
 
         <!-- Product Preview Header (jika obrolan terkait produk tertentu) -->

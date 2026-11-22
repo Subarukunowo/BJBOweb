@@ -289,11 +289,20 @@
                             <i class="bi bi-pencil"></i> Ubah Rincian Produk Anda
                         </a>
                     @else
-                        <a href="{{ Auth::check() ? route('user.pesanan.checkout', $postingan->id) : route('login') }}" class="bjbo-btn-accent w-full py-2.5 text-xs font-bold text-center block shadow-md">
-                            <i class="bi bi-qr-code"></i> Beli Sekarang (QRIS / Midtrans)
-                        </a>
+                        <div class="grid grid-cols-2 gap-2">
+                            <form action="{{ Auth::check() ? route('user.cart.add', $postingan->id) : route('login') }}" method="{{ Auth::check() ? 'POST' : 'GET' }}" class="w-full">
+                                @csrf
+                                <button type="submit" class="w-full py-2.5 text-xs font-bold rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 transition text-center flex items-center justify-center gap-1.5 shadow-xs anim-press">
+                                    <i class="bi bi-cart-plus text-sm text-bjbo-primary"></i> + Keranjang
+                                </button>
+                            </form>
 
-                        <a href="{{ Auth::check() ? route('user.chat.start', $postingan->id) : route('login') }}" class="w-full py-2.5 text-xs font-bold rounded-xl bg-bjbo-primary text-white hover:bg-bjbo-primary-hover transition text-center block shadow-sm flex items-center justify-center gap-1.5">
+                            <a href="{{ Auth::check() ? route('user.pesanan.checkout', $postingan->id) : route('login') }}" class="bjbo-btn-accent w-full py-2.5 text-xs font-bold text-center block shadow-md anim-press">
+                                <i class="bi bi-qr-code"></i> Beli Sekarang
+                            </a>
+                        </div>
+
+                        <a href="{{ Auth::check() ? route('user.chat.start', $postingan->id) : route('login') }}" class="w-full py-2.5 text-xs font-bold rounded-xl bg-bjbo-primary text-white hover:bg-bjbo-primary-hover transition text-center block shadow-sm flex items-center justify-center gap-1.5 anim-press">
                             <i class="bi bi-chat-dots-fill"></i> Tanya Stok / Chat Penjual
                         </a>
 
@@ -391,11 +400,18 @@
                     <i class="bi bi-pencil"></i> Ubah
                 </a>
             @else
-                <a href="{{ Auth::check() ? route('user.chat.start', $postingan->id) : route('login') }}" class="bjbo-btn-primary py-2 px-2.5 sm:px-3 text-xs font-semibold flex items-center gap-1">
+                <form action="{{ Auth::check() ? route('user.cart.add', $postingan->id) : route('login') }}" method="{{ Auth::check() ? 'POST' : 'GET' }}" class="inline m-0">
+                    @csrf
+                    <button type="submit" class="p-2 text-zinc-700 bg-zinc-100 hover:bg-zinc-200 rounded-xl transition anim-press flex items-center justify-center" title="Tambah ke Keranjang">
+                        <i class="bi bi-cart-plus text-base"></i>
+                    </button>
+                </form>
+
+                <a href="{{ Auth::check() ? route('user.chat.start', $postingan->id) : route('login') }}" class="bjbo-btn-primary py-2 px-2.5 sm:px-3 text-xs font-semibold flex items-center gap-1 anim-press">
                     <i class="bi bi-chat-dots-fill"></i> <span class="hidden xs:inline">Tanya Stok</span>
                 </a>
 
-                <a href="{{ Auth::check() ? route('user.pesanan.checkout', $postingan->id) : route('login') }}" class="bjbo-btn-accent py-2 px-3 sm:px-4 text-xs font-bold flex items-center gap-1 shadow-md">
+                <a href="{{ Auth::check() ? route('user.pesanan.checkout', $postingan->id) : route('login') }}" class="bjbo-btn-accent py-2 px-3 sm:px-4 text-xs font-bold flex items-center gap-1 shadow-md anim-press">
                     <i class="bi bi-bag-check-fill"></i> Beli Sekarang
                 </a>
             @endif

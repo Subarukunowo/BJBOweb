@@ -18,21 +18,23 @@
     @include('components.navbar-guest')
 @endif
 
-<main class="container mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0">
-    <!-- Filter Kategori Navigasi Cepat -->
+<main class="max-w-7xl mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0 w-full">
+    <!-- Filter Kategori Navigasi Cepat Centered -->
     <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-            <h1 class="text-lg sm:text-2xl font-extrabold text-gray-900 mb-0">
-                Kategori: <span class="text-bjbo-primary">{{ $category }}</span>
+        <div class="flex items-center justify-between mb-3">
+            <h1 class="text-lg sm:text-2xl font-extrabold text-zinc-900 mb-0">
+                Kategori: <span class="text-blue-700">{{ $category }}</span>
             </h1>
-            <span class="text-gray-500 text-xs">Ditemukan {{ $postingan->count() }} barang</span>
+            <span class="text-zinc-500 text-xs font-medium">Ditemukan {{ $postingan->count() }} barang</span>
         </div>
-        @include('components.category-bar', ['activeCategory' => $category, 'baseRoute' => Auth::check() ? 'user.dashboard' : 'layout'])
+        <div class="flex flex-col items-center justify-center">
+            @include('components.category-bar', ['activeCategory' => $category, 'baseRoute' => Auth::check() ? 'user.dashboard' : 'layout'])
+        </div>
     </div>
 
-    <!-- Grid Produk (Loop 1) -->
+    <!-- Grid Produk (6 Kolom Horizontal Centered Sesuai Gambar 2) -->
     @if($postingan->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5 mb-10">
             @foreach ($postingan as $item)
                 @include('components.product-card', ['item' => $item, 'isAuth' => Auth::check()])
             @endforeach

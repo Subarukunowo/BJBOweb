@@ -16,14 +16,9 @@
 @include('components.navbar-user')
 
 <main class="container mx-auto px-3 sm:px-6 py-6 sm:py-8 flex-grow pb-24 lg:pb-12 max-w-5xl">
-    <div class="flex items-center justify-between mb-6 pb-4 border-b border-bjbo-border">
-        <div>
-            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Kotak Masuk Chat</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Komunikasi tawar-menawar dan tanya ketersediaan stok barang antar-warga Sedagho.</p>
-        </div>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <i class="bi bi-shield-lock-fill"></i> E2E Encrypted
-        </span>
+    <div class="mb-6 pb-4 border-b border-bjbo-border">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Kotak Masuk Chat</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">Komunikasi tawar-menawar dan tanya ketersediaan stok barang antar-warga Sedagho.</p>
     </div>
 
     @if($conversations->isEmpty())

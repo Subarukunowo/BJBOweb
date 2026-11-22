@@ -66,8 +66,8 @@
             </div>
         </div>
 
-        <!-- Section Status Toko & Dompet Rekber (Standar Modern E-Commerce) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-bjbo-border">
+        <!-- Section Status Toko & Dompet Rekber & Saldo BJPay (Standar Modern E-Commerce) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 mt-6 pt-6 border-t border-bjbo-border">
             <!-- Kartu Status Toko -->
             <div class="p-4 rounded-xl border {{ $store ? 'bg-purple-50/50 border-purple-200' : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200' }} flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -85,13 +85,13 @@
                             <span class="text-[11px] text-gray-500 block">Status: <strong class="capitalize text-gray-800">{{ str_replace('_', ' ', $store->status) }}</strong></span>
                         @else
                             <span class="text-xs font-bold text-gray-900 block">Buka Toko di BJBO</span>
-                            <span class="text-[11px] text-gray-500">Pilihan: Toko Perorangan (KTP) / Official Store (NIB, NPWP & HAKI)</span>
+                            <span class="text-[11px] text-gray-500">Toko Perorangan / Official Store</span>
                         @endif
                     </div>
                 </div>
 
-                <a href="{{ route('user.toko.daftar') }}" class="text-xs font-bold py-1.5 px-3 rounded-lg shadow-xs transition {{ $store ? 'bg-white border border-purple-200 text-purple-700 hover:bg-purple-50' : 'bg-amber-600 hover:bg-amber-700 text-white' }} flex-shrink-0">
-                    {{ $store ? 'Kelola Toko' : 'Buka Toko Sekarang' }} &rsaquo;
+                <a href="{{ route('user.toko.daftar') }}" class="text-xs font-bold py-1.5 px-3 rounded-lg shadow-xs transition {{ $store ? 'bg-white border border-purple-200 text-purple-700 hover:bg-purple-50' : 'bg-amber-600 hover:bg-amber-700 text-white' }} flex-shrink-0 anim-press">
+                    {{ $store ? 'Kelola' : 'Buka Toko' }} &rsaquo;
                 </a>
             </div>
 
@@ -104,12 +104,30 @@
                     <div>
                         <span class="text-[11px] text-gray-500 block">Saldo Escrow Rekber</span>
                         <div class="text-base font-extrabold text-emerald-800">Rp{{ number_format($saldoRekber, 0, ',', '.') }}</div>
-                        <span class="text-[10px] text-gray-500">Pencairan: 2x24 jam kerja &bull; {{ $bankAccounts->count() }} Bank Terdaftar</span>
+                        <span class="text-[10px] text-gray-500">Pencairan: 2x24 jam kerja</span>
                     </div>
                 </div>
 
-                <a href="{{ route('user.rekber.index') }}" class="text-xs font-bold py-1.5 px-3 rounded-lg shadow-xs transition bg-emerald-700 hover:bg-emerald-800 text-white flex-shrink-0">
-                    Tarik Dana &rsaquo;
+                <a href="{{ route('user.rekber.index') }}" class="text-xs font-bold py-1.5 px-3 rounded-lg shadow-xs transition bg-emerald-700 hover:bg-emerald-800 text-white flex-shrink-0 anim-press">
+                    Tarik &rsaquo;
+                </a>
+            </div>
+
+            <!-- Kartu Dompet Digital BJPay (Informasi Saldo Eksklusif Profil) -->
+            <div class="p-4 rounded-xl border bg-blue-50/60 border-blue-200 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="bi bi-wallet-fill"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-zinc-500 block">Saldo Dompet BJPay</span>
+                        <div class="text-base font-extrabold text-blue-900 font-mono">{{ Auth::user()->formatted_saldo_bjpay ?? 'Rp0' }}</div>
+                        <span class="text-[10px] text-zinc-500">Diskon ongkir Rp 5.000 per transaksi</span>
+                    </div>
+                </div>
+
+                <a href="{{ route('user.bjpay.index') }}" class="text-xs font-bold py-1.5 px-3 rounded-lg shadow-xs transition bg-blue-700 hover:bg-blue-800 text-white flex-shrink-0 anim-press">
+                    Top Up &rsaquo;
                 </a>
             </div>
         </div>

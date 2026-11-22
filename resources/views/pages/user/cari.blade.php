@@ -18,22 +18,22 @@
     @include('components.navbar-guest')
 @endif
 
-<main class="container mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0">
+<main class="max-w-7xl mx-auto px-3 sm:px-4 my-4 sm:my-6 flex-grow pb-20 lg:pb-0 w-full">
     <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="text-lg sm:text-2xl font-extrabold text-gray-900 mb-1">
-                Hasil Pencarian: <span class="text-bjbo-primary">"{{ $keyword }}"</span>
+            <h1 class="text-lg sm:text-2xl font-extrabold text-zinc-900 mb-1">
+                Hasil Pencarian: <span class="text-blue-700">"{{ $keyword }}"</span>
             </h1>
-            <span class="text-gray-500 text-xs">Ditemukan {{ $postingan->count() }} barang</span>
+            <span class="text-zinc-500 text-xs font-medium">Ditemukan {{ $postingan->count() }} barang</span>
         </div>
         <a href="{{ Auth::check() ? route('user.dashboard') : route('layout') }}" class="bjbo-btn-outline text-xs">
             <i class="bi bi-arrow-left"></i> Kembali ke Beranda
         </a>
     </div>
 
-    <!-- Grid Hasil Pencarian (Loop 1) -->
+    <!-- Grid Hasil Pencarian (6 Kolom Horizontal Centered Sesuai Gambar 2) -->
     @if($postingan->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5 mb-10">
             @foreach ($postingan as $item)
                 @include('components.product-card', ['item' => $item, 'isAuth' => Auth::check()])
             @endforeach

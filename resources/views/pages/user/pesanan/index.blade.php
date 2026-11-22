@@ -64,6 +64,9 @@
                             Rp{{ number_format($pesanan->getEffectivePrice(), 0, ',', '.') }}
                         </div>
                         <div class="flex items-center gap-1.5">
+                            <a href="{{ route('user.pesanan.invoice', $pesanan->id) }}" class="inline-flex items-center gap-1 text-xs py-1.5 px-2.5 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-700 transition shadow-xs" title="Lihat Struk Digital & Invoice">
+                                <i class="bi bi-receipt"></i> Struk
+                            </a>
                             @if($pesanan->status === 'paid')
                                 <a href="{{ route('user.pesanan.track', $pesanan->id) }}" class="bjbo-btn-outline text-xs py-1.5 px-2.5 text-bjbo-primary flex items-center gap-1" title="Lacak Pengiriman di Peta">
                                     <i class="bi bi-geo-alt"></i> Lacak

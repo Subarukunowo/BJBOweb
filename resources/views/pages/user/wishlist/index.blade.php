@@ -12,7 +12,7 @@
 @include('sweetalert::alert')
 @include('components.navbar-user')
 
-<main class="container mx-auto px-3 sm:px-4 my-6 flex-grow max-w-6xl">
+<main class="max-w-7xl mx-auto px-3 sm:px-4 my-6 flex-grow w-full">
     <!-- Header Wishlist -->
     <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-bjbo-border">
         <div class="flex items-center gap-3">
@@ -30,7 +30,7 @@
         </a>
     </div>
 
-    <!-- Section 1: Produk Wishlist -->
+    <!-- Section 1: Produk Wishlist (6 Kolom Horizontal Centered Sesuai Gambar 2) -->
     <div class="mb-12">
         @if($wishlists->isEmpty())
             <div class="bg-white border border-bjbo-border rounded-2xl p-10 text-center shadow-sm">
@@ -44,7 +44,7 @@
                 </a>
             </div>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5">
                 @foreach($wishlists as $item)
                     <div class="bg-white border border-bjbo-border rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between group">
                         <div class="relative">
@@ -100,7 +100,7 @@
         @if($recommendations->isEmpty())
             <p class="text-xs text-blue-200">Belum ada rekomendasi yang cukup. Jelajahi produk lain untuk mendapatkan rekomendasi terbaik.</p>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-4.5">
                 @foreach($recommendations as $rec)
                     <div class="bg-white rounded-xl overflow-hidden shadow text-gray-900 flex flex-col justify-between group hover:shadow-lg transition">
                         <div class="relative">
