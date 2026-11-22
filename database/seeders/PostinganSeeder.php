@@ -32,13 +32,13 @@ class PostinganSeeder extends Seeder
             'iklan8.jpg' => 'iklan8.jpg',
         ];
 
-        foreach ($imageMappings as $src => $dest) {
+        collect($imageMappings)->each(function ($dest, $src) use ($storagePostinganDir) {
             $srcPath = public_path('images/'.$src);
             $destPath = $storagePostinganDir.'/'.$dest;
             if (File::exists($srcPath) && ! File::exists($destPath)) {
                 File::copy($srcPath, $destPath);
             }
-        }
+        });
 
         $user1 = User::firstOrCreate(
             ['email' => 'risethunder7@gmail.com'],
@@ -240,11 +240,11 @@ class PostinganSeeder extends Seeder
             ],
         ];
 
-        foreach ($postingsData as $post) {
+        collect($postingsData)->each(function ($post) {
             Postingan::firstOrCreate(
                 ['name' => $post['name']],
                 $post
             );
-        }
+        });
     }
 }
