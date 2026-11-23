@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <strong>Platform E-Commerce & Marketplace Komunitas Terpercaya untuk Kabupaten Bengkalis</strong><br>
-  Ditenagai oleh Laravel 11, Tailwind CSS, Laravel Reverb (Real-time WebSockets), Shadcn UI Chart, dan Midtrans Payment Gateway.
+  <strong>Aplikasi Jual Beli Komunitas Kabupaten Bengkalis</strong><br>
+  Dibangun menggunakan Laravel 11, Tailwind CSS, Laravel Reverb, Shadcn UI Chart, dan Midtrans Payment Gateway.
 </p>
 
 <p align="center">
@@ -15,107 +15,107 @@
   <img src="https://img.shields.io/badge/Shadcn_UI-Charts-09090b?style=for-the-badge" alt="Shadcn UI">
   <img src="https://img.shields.io/badge/Laravel_Reverb-Real--time-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel Reverb">
   <img src="https://img.shields.io/badge/Midtrans-Snap_%26_QRIS-002855?style=for-the-badge" alt="Midtrans">
-  <img src="https://img.shields.io/badge/PHPUnit-102_Passed-brightgreen?style=for-the-badge" alt="Tests">
-  <img src="https://img.shields.io/badge/PHPStan-Level_5_Clean-blue?style=for-the-badge" alt="PHPStan">
-  <img src="https://img.shields.io/badge/Pint-PSR--12_Clean-green?style=for-the-badge" alt="Pint">
+  <img src="https://img.shields.io/badge/PHPUnit-Tests-brightgreen?style=for-the-badge" alt="PHPUnit">
+  <img src="https://img.shields.io/badge/PHPStan-Level_5-blue?style=for-the-badge" alt="PHPStan">
+  <img src="https://img.shields.io/badge/Pint-PSR--12-green?style=for-the-badge" alt="Pint">
 </p>
 
 ---
 
 ## 📌 Tentang Proyek
 
-**BJBO Sedagho** (Barang Jual Beli Online Sedagho) adalah platform *marketplace peer-to-peer* dan *official store* modern yang menghubungkan penjual lokal dan pembeli di seluruh wilayah Kabupaten Bengkalis (Bengkalis Kota, Mandau, Duri, Pinggir, Bukit Batu, Siak Kecil, Bandar Laksamana, Rupat, Rupat Utara, Bathin Solapan, Talang Muandau, dan Bantan). 
+**BJBO Sedagho** (Barang Jual Beli Online Sedagho) adalah aplikasi jual beli berbasis web untuk masyarakat di wilayah Kabupaten Bengkalis (Bengkalis Kota, Mandau, Duri, Pinggir, Bukit Batu, Siak Kecil, Bandar Laksamana, Rupat, Rupat Utara, Bathin Solapan, Talang Muandau, dan Bantan).
 
-Dibangun dengan arsitektur modern berstandar enterprise, sistem ini memadukan kemudahan transaksi belanja, transparansi rekber (escrow), dompet digital lokal **BJPay**, struk invoice otomatis, serta dasbor analitik administrator berbasis **Shadcn UI**.
+Aplikasi ini memfasilitasi transaksi jual beli lokal dengan menyediakan fitur etalase produk, keranjang belanja, obrolan langsung antara penjual dan pembeli, sistem rekening bersama (rekber), struk invoice digital, saldo BJPay, serta dasbor analitik admin.
 
 ---
 
-## ✨ Fitur Unggulan Sistem
+## ✨ Fitur Aplikasi
 
-### 🛒 1. Pengalaman Belanja & Antarmuka Modern (Tokopedia Style)
-* **Navbar Terpadu & Berkelompok:** Navigasi pengguna bergaya Tokopedia yang rapi dengan pengelompokan ikon aksi ke dalam popover interaktif:
-  * **Keranjang Belanja (*Cart*):** Akses cepat dengan lencana counter live real-time.
-  * **Notifikasi Popover:** Tab Transaksi (ringkasan 4 status tahapan pesanan) dan Tab Update riwayat notifikasi sistem.
-  * **Kotak Masuk Popover:** Penyatuan modul pesan obrolan tanya stok dan ulasan penilaian produk etalase.
-  * **Menu Profil Rata Kanan:** Akses akun pengguna, ringkasan saldo BJPay, manajemen Rekber, Wishlist, dan Favorit.
-* **Proporsi Logo Optimal:** Logo brand BJBO proporsional (80-85% tinggi navbar) yang dominan dan tajam.
-* **Tata Letak Etalase Centered:** Grid produk berjarak lega dan terpusat di tengah layar (*centered layout*), bar filter kategori terpusat, serta tombol *"Muat Lebih Banyak"* yang mengarahkan ke katalog lengkap saat produk mencapai batas grid.
-* **10 Niche Animation Hacks:** Mikro animasi berbasis CSS GPU-accelerated:
-  1. *Scale from 0.97* pada modal dan dialog popover.
-  2. *Press feedback* taktil seketika pada tombol aksi beli dan navigasi.
-  3. *Shake on error* saat validasi form atau saldo kurang.
-  4. *Directional slides* untuk notifikasi dan drawer.
-  5. *Smooth height auto* pada akordeon dan rincian belanja.
-  6. *GPU-accelerated transforms* untuk performa rendering 60/120 FPS.
-  7. *Instant theme switch* tanpa kedipan warna transisi.
-  8. *Tooltip skip delay* untuk kenyamanan navigasi deretan ikon.
-  9. *Velocity springs* elastis pada hover kartu produk.
-  10. *Elastic rubber banding* pada batas scroll etalase.
+### 🛒 1. Antarmuka dan Katalog Produk
+* **Navigasi Terpadu:** Pengelompokan menu navigasi menggunakan popover interaktif:
+  * **Keranjang Belanja (*Cart*):** Akses cepat dengan indikator jumlah barang di keranjang.
+  * **Notifikasi Popover:** Tab Transaksi (tahapan pesanan) dan Tab Update riwayat notifikasi.
+  * **Kotak Masuk Popover:** Tab pesan chat dan tab ulasan produk.
+  * **Menu Profil Rata Kanan:** Akses informasi akun, saldo BJPay, Rekber, Wishlist, dan Favorit.
+* **Proporsi Logo Optimal:** Logo brand BJBO proporsional (80-85% tinggi navbar) agar terlihat jelas dan rapi.
+* **Tata Letak Etalase Centered:** Grid produk terpusat (*centered layout*), bar filter kategori terpusat, serta tombol *"Muat Lebih Banyak"* yang mengarahkan ke katalog saat produk mencapai batas tampilan.
+* **Interaksi & Animasi UI:** Mikro animasi berbasis CSS untuk interaksi yang responsif:
+  1. *Scale from 0.97* pada modal dan popover.
+  2. *Press feedback* saat tombol ditekan.
+  3. *Shake on error* saat input form tidak sesuai.
+  4. *Directional slides* pada notifikasi.
+  5. *Smooth height auto* pada rincian belanja.
+  6. *GPU-accelerated transforms* untuk kelancaran rendering.
+  7. *Instant theme switch* pada mode tampilan.
+  8. *Tooltip skip delay* pada deretan ikon navigasi.
+  9. *Velocity springs* pada hover kartu produk.
+  10. *Elastic rubber banding* pada scroll etalase.
 
 ### 🛍️ 2. Keranjang Belanja (*Shopping Cart*)
-* Menambahkan produk ke keranjang langsung dari kartu etalase maupun halaman detail produk.
-* Pengaturan kuantitas barang, validasi ketersediaan stok, dan penghitungan subtotal otomatis.
-* Alur checkout terpadu langsung dari daftar belanja keranjang.
+* Menambahkan produk ke keranjang dari kartu etalase maupun halaman rincian produk.
+* Pengaturan kuantitas barang, validasi stok, dan kalkulasi subtotal belanja.
+* Alur checkout pesanan dari daftar keranjang.
 
-### 🧾 3. Struk Digital & Invoice Resmi Otomatis
-* Generator nomor seri invoice unik (`INV-YYYYMMDD-XXXXXX`) yang diterbitkan otomatis saat transaksi dibuat.
-* Rincian lengkap harga barang, ongkos kirim, diskon promo/voucher, dan potongan khusus metode pembayaran.
-* Tampilan struk digital siap cetak (*print-friendly receipt*) dengan stempel status pembayaran (*Lunas/Menunggu Pembayaran*).
+### 🧾 3. Struk Digital & Invoice Otomatis
+* Pembuatan nomor invoice otomatis (`INV-YYYYMMDD-XXXXXX`) saat transaksi dibuat.
+* Rincian harga barang, ongkos kirim, diskon promo, dan potongan biaya pengiriman.
+* Tampilan struk digital siap cetak (*print-friendly*) dengan status pembayaran (*Lunas/Menunggu Pembayaran*).
 
-### 💳 4. Metode Pembayaran Fleksibel (Midtrans, COD, & BJPay)
-* **Gerbang Pembayaran Midtrans & QRIS:** Integrasi Midtrans Snap in-page dengan QRIS standar nasional dan Virtual Account bank.
-* **COD (*Cash on Delivery*):** Opsi bayar tunai di tempat saat kurir menyerahkan barang kepada pembeli.
-* **BJPay (Dompet Saldo Internal BJBO):**
-  * Saldo digital terintegrasi untuk transaksi instan tanpa biaya admin pihak ketiga.
-  * Potongan/diskon biaya pengiriman eksklusif sebesar Rp 5.000 untuk setiap pesanan yang menggunakan metode pembayaran BJPay.
-  * Pengurangan saldo atomik dengan validasi kecukupan dana yang aman.
+### 💳 4. Metode Pembayaran (Midtrans, COD, & BJPay)
+* **Gerbang Pembayaran Midtrans & QRIS:** Pembayaran via Midtrans Snap, QRIS, dan Virtual Account bank.
+* **COD (*Cash on Delivery*):** Pilihan pembayaran tunai saat barang diterima dari kurir.
+* **BJPay (Saldo Internal BJBO):**
+  * Saldo internal pengguna untuk transaksi langsung.
+  * Potongan ongkos kirim sebesar Rp 5.000 untuk transaksi yang menggunakan saldo BJPay.
+  * Pemotongan saldo otomatis dengan pengecekan kecukupan saldo.
 
 ### 📊 5. Dasbor Analitik Kategori Terlaris Admin (Shadcn UI)
-* **Dua Tipe Diagram Interaktif:** Toggle instan antara **Diagram Batang (*Bar Chart*)** dan **Diagram Lingkaran (*Donut Chart*)** berbasis SVG responsif tanpa reload halaman.
-* **4 Filter Rentang Waktu Dinamis:**
-  * **1 Minggu Terakhir (`1_minggu`)**: Tren pergerakan transaksi 7 hari terakhir.
-  * **1 Bulan Terakhir (`1_bulan`)**: Penjualan bulanan 30 hari terakhir.
-  * **1 Tahun Terakhir (`1_tahun`)**: Rekapitulasi tahunan 365 hari terakhir.
+* **Dua Tipe Diagram Interaktif:** Pilihan tampilan **Diagram Batang (*Bar Chart*)** dan **Diagram Lingkaran (*Donut Chart*)** berbasis SVG tanpa reload halaman.
+* **4 Filter Rentang Waktu:**
+  * **1 Minggu Terakhir (`1_minggu`)**: Data penjualan 7 hari terakhir.
+  * **1 Bulan Terakhir (`1_bulan`)**: Data penjualan 30 hari terakhir.
+  * **1 Tahun Terakhir (`1_tahun`)**: Data penjualan 365 hari terakhir.
   * **Semua Waktu (`all_time`)**: Seluruh riwayat penjualan barang laku.
-* **3 Kartu Ringkasan KPI:** Total Barang Laku, Total Omzet Transaksi (angka monospaced), dan Kategori Terlaris.
-* **Tabel Rincian Kategori:** Indikator titik warna, jumlah unit terjual, bilah kemajuan (*progress bar*) kontribusi pasar, nominal omzet Rupiah, serta *floating tooltip* saat hover.
-* **Kueri Teroptimasi & Caching:** Didukung service `CategoryAnalyticsService` dengan caching `Cache::remember` selama 60 detik.
+* **3 Kartu Ringkasan:** Total Barang Laku, Total Omzet, dan Kategori Terlaris.
+* **Rincian Kategori:** Titik warna kategori, jumlah unit terjual, bilah kemajuan persentase (*progress bar*), total omzet Rupiah, serta *tooltip* saat kursor diarahkan ke grafik.
+* **Caching Data:** Didukung service `CategoryAnalyticsService` dengan caching selama 60 detik.
 
-### 🏪 6. Sistem Multi-Tier Toko & Verifikasi Penjual
-* **Toko Perorangan (UMKM & Penjual Mandiri):** Pendaftaran dengan validasi Nomor Induk Kependudukan (NIK 16 digit) dan foto KTP.
-* **Official Store (Brand Resmi & Korporasi):** Skema kurasi premium dengan verifikasi legalitas NIB, NPWP Perusahaan, serta Sertifikat HAKI resmi.
-* **Proteksi Seller:** Mencegah penjualan tanpa toko aktif dan mengarahkan pengguna melengkapi data toko terlebih dahulu.
-* **Dashboard Seller Center (`/user/profil`):** Statistik toko, pengelolaan etalase, dan penanda status barang terjual (*sold out*).
+### 🏪 6. Pendaftaran Toko & Verifikasi Penjual
+* **Toko Perorangan:** Pendaftaran toko dengan verifikasi NIK dan foto KTP.
+* **Official Store:** Pendaftaran toko dengan verifikasi dokumen legalitas (NIB, NPWP, atau HAKI).
+* **Proteksi Seller:** Pengguna wajib memiliki toko yang disetujui untuk dapat mengunggah barang jualan.
+* **Dashboard Seller Center (`/user/profil`):** Statistik produk, pengelolaan etalase, dan penanda status barang terjual (*sold out*).
 
 ### 💬 7. Chat Real-time & Sensor Keamanan (Laravel Reverb)
-* **Real-time Messaging:** Pertukaran pesan obrolan instan pembeli-penjual melalui WebSocket privat Reverb.
-* **Sensor Privasi:** Sensor otomatis nomor telepon/WhatsApp pada obrolan untuk mencegah transaksi di luar platform yang rawan penipuan.
-* **Pelaporan Otomatis:** Deteksi barang terlarang dan aduan komunitas yang langsung diteruskan ke dasbor admin.
+* **Pesan Real-time:** Pertukaran pesan langsung antara penjual dan pembeli menggunakan WebSocket Laravel Reverb.
+* **Sensor Nomor Kontak:** Sensor otomatis terhadap nomor telepon/kontak luar pada pesan obrolan.
+* **Laporan Pelanggaran:** Fitur pelaporan barang atau pesan yang dapat ditinjau oleh administrator.
 
-### 🛡️ 8. Rekening Bersama (Rekber / Escrow) & Tarik Dana
-* **Perlindungan Pembeli:** Dana transaksi ditahan aman dalam sistem escrow hingga pesanan diterima dengan baik oleh pembeli.
-* **Pencairan Dana (Withdrawal):** Penjual dapat mendaftarkan nomor rekening bank dan mengajukan penarikan saldo dalam estimasi 2x24 jam kerja.
+### 🛡️ 8. Rekening Bersama (Rekber) & Penarikan Dana
+* **Perlindungan Pembeli:** Dana transaksi ditahan sementara di sistem rekber hingga barang diterima pembeli.
+* **Pencairan Dana:** Penjual dapat mendaftarkan nomor rekening bank untuk penarikan saldo penjualan.
 
-### 🤖 9. Mesin Rekomendasi Pintar (Recommendation Engine)
-* Formula afinitas personal berbasis bobot wishlist ($W=5$), pencarian ($W=3$), dan riwayat tampilan ($W=2$).
-* Filter kepemilikan otomatis agar barang milik penjual tidak muncul di feed belanjanya sendiri.
-* Diimplementasikan 100% bebas perulangan prosedural menggunakan pipeline koleksi Laravel.
+### 🤖 9. Rekomendasi Produk
+* Rekomendasi produk berdasarkan kata kunci pencarian dan interaksi produk.
+* Filter otomatis agar barang milik penjual tidak muncul pada daftar rekomendasi miliknya sendiri.
+* Pengolahan data fungsional menggunakan collection Laravel.
 
 ---
 
 ## 🛠️ Arsitektur & Teknologi
 
-| Lapisan | Komponen | Versi / Teknologi |
-| :--- | :--- | :--- |
-| **Backend Framework** | Laravel Framework | 11.x (PHP 8.2+) |
-| **Frontend Styling** | Tailwind CSS & Shadcn UI Tokens | Tailwind 3.4 & Vanilla JS Modern |
-| **Asset Bundler** | Vite | 5.x |
-| **WebSockets** | Laravel Reverb & Laravel Echo | Real-time Private Channels |
-| **Payment Gateway** | Midtrans | Snap In-Page & QRIS Integration |
-| **Database** | PostgreSQL / MySQL / SQLite | PostgreSQL (Production/Dev), SQLite (Testing) |
-| **Testing Suite** | PHPUnit | 11.x (102 tests, 444 assertions, 100% Pass) |
-| **Static Analysis** | Larastan / PHPStan | Level 5 (88 files, 0 errors) |
-| **Code Formatter** | Laravel Pint | PSR-12 Standard Clean |
+| Komponen | Versi / Teknologi |
+| :--- | :--- |
+| **Backend Framework** | Laravel 11.x (PHP 8.2+) |
+| **Frontend Styling** | Tailwind CSS 3.4 & Shadcn UI Tokens |
+| **Asset Bundler** | Vite 5.x |
+| **WebSockets** | Laravel Reverb & Echo |
+| **Payment Gateway** | Midtrans (Snap & QRIS) |
+| **Database** | PostgreSQL / MySQL / SQLite |
+| **Testing Suite** | PHPUnit 11.x (Unit & Feature Tests) |
+| **Static Analysis** | Larastan / PHPStan (Level 5) |
+| **Code Formatter** | Laravel Pint (PSR-12) |
 
 ---
 
@@ -193,37 +193,30 @@ Akses aplikasi di peramban Anda melalui URL: `http://127.0.0.1:8000`.
 
 ---
 
-## 🧪 Kualitas Kode & Pengujian Otomatis
-
-Proyek BJBO Sedagho menerapkan standar rekayasa perangkat lunak ketat:
+## 🧪 Pengujian Otomatis & Kualitas Kode
 
 ### 1. Eksekusi Test Suite (PHPUnit)
 ```bash
 php vendor/phpunit/phpunit/phpunit
 ```
-Hasil pengujian: **102 tests, 444 assertions, 100% lulus**:
-- `AuthFeatureTest`: Autentikasi, registrasi, remember me, dan verifikasi OTP.
-- `UserEcommerceFeatureTest`: Alur transaksi, wishlist, proteksi toko, dan toggle barang laku.
-- `CartFeatureTest`: Penambahan barang ke keranjang, pembaruan kuantitas, subtotal, dan pembersihan keranjang.
-- `InvoiceAndPaymentFeatureTest`: Generator struk invoice, diskon promo, pemotongan ongkir BJPay, dan COD.
-- `SecurityAndChatFeatureTest`: Sensor nomor telepon, enkripsi obrolan, dan pelaporan barang terlarang.
-- `AdminFeatureTest`: Dasbor analitik diagram Shadcn UI, moderasi toko, dan persetujuan pencairan rekber.
-- `CategoryAnalyticsServiceTest`: Verifikasi agregasi penjualan per kategori untuk 4 rentang waktu dan caching.
+Pengujian mencakup unit test dan feature test untuk alur fitur utama:
+- `AuthFeatureTest`: Autentikasi akun, login, dan OTP.
+- `UserEcommerceFeatureTest`: Alur transaksi, wishlist, dan penanda barang laku.
+- `CartFeatureTest`: Keranjang belanja, perubahan kuantitas, dan subtotal.
+- `InvoiceAndPaymentFeatureTest`: Struk invoice, diskon ongkir BJPay, dan COD.
+- `SecurityAndChatFeatureTest`: Sensor kontak chat dan pelaporan barang.
+- `AdminFeatureTest`: Analitik admin, verifikasi toko, dan pencairan dana rekber.
+- `CategoryAnalyticsServiceTest`: Agregasi penjualan kategori produk dan caching.
 
 ### 2. Analisis Statis (PHPStan Level 5)
 ```bash
 .\vendor\bin\phpstan analyse --memory-limit=1G
 ```
-Hasil: **88/88 files analysed, 0 errors**.
 
 ### 3. Pengecekan Standar Gaya Kode (Laravel Pint)
 ```bash
 .\vendor\bin\pint --test
 ```
-Hasil: **166 files checked, 100% PSR-12 compliant**.
-
-### 4. Standar Bebas Loop Konvensional (Zero-Loop Architecture)
-Seluruh fungsi bisnis dan layanan (services) ditulis murni tanpa struktur perulangan `for`, `foreach`, `while`, dan `do-while`. Manipulasi data memanfaatkan method collection Laravel yang ekspresif, aman, dan modular.
 
 ---
 
@@ -245,9 +238,9 @@ BJBOweb/
 │   │   ├── app.css           # Konfigurasi Tailwind CSS
 │   │   └── components/       # Modul animasi mikro (animations.css)
 │   └── views/
-│       ├── components/       # Komponen navbar Tokopedia-style, kartu produk, dll.
+│       ├── components/       # Komponen navbar terpadu, kartu produk, dll.
 │       ├── layouts/          # Template tata letak admin dan publik
-│       └── pages/            # Halaman admin (analitik Shadcn UI) & pengguna (cart, bjpay, invoice)
+│       └── pages/            # Halaman admin (analitik) & pengguna (cart, bjpay, invoice)
 ├── routes/
 │   └── web.php               # Pendaftaran rute web aplikasi
 └── tests/
@@ -257,7 +250,7 @@ BJBOweb/
 
 ---
 
-## 📄 Lisensi & Hak Cipta
+## 📄 Hak Cipta
 
-Hak cipta &copy; 2024-2026 **BJBO Sedagho**. Dikelola oleh **PT Subaru Technologi Bangsa**.<br>
+&copy; **BJBO Sedagho**. Dikelola oleh **PT Subaru Technologi Bangsa**.<br>
 Seluruh hak cipta dilindungi undang-undang.
