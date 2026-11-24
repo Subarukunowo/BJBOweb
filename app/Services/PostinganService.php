@@ -147,25 +147,40 @@ class PostinganService
     public function updatePostingan(int $id, array $data, ?UploadedFile $newImage): bool
     {
         $postingan = $this->postinganRepository->findById($id);
-        $imagePath = $postingan->image;
+        $imagePath = $this->replacePostinganImage($newImage, $postingan->image);
+        $payload = $this->buildUpdatePayload($postingan, $data, $imagePath);
 
-        if ($newImage) {
-            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
-            }
-            $imagePath = $newImage->store('postingan', 'public');
+        $this->clearPostinganCache();
+
+        return $this->postinganRepository->update($id, $payload);
+    }
+
+    /**
+     * Ganti file gambar produk jika ada gambar baru yang diunggah.
+     */
+    protected function replacePostinganImage(?UploadedFile $newImage, ?string $currentPath): ?string
+    {
+        if (! $newImage) {
+            return $currentPath;
         }
 
-        // Inspeksi ulang konten saat diedit
+        if ($currentPath && Storage::disk('public')->exists($currentPath)) {
+            Storage::disk('public')->delete($currentPath);
+        }
+
+        return $newImage->store('postingan', 'public');
+    }
+
+    /**
+     * Bangun data payload pembaruan postingan dan periksa moderasi konten.
+     */
+    protected function buildUpdatePayload(Postingan $postingan, array $data, ?string $imagePath): array
+    {
         $moderation = $this->moderationService->inspect(
             $data['name'],
             $data['category'] ?? $postingan->category,
             $data['description']
         );
-
-        $isAutoBlocked = $moderation['is_blocked'];
-        $blockReason = $moderation['reason'];
-        $status = $isAutoBlocked ? 'belum disetujui' : ($postingan->status === 'disetujui' ? 'disetujui' : 'disetujui');
 
         $payload = [
             'name' => $data['name'],
@@ -174,24 +189,18 @@ class PostinganService
             'description' => $data['description'],
             'image' => $imagePath,
             'lokasi' => $data['lokasi'],
-            'is_auto_blocked' => $isAutoBlocked,
-            'block_reason' => $blockReason,
-            'status' => $status,
+            'is_auto_blocked' => $moderation['is_blocked'],
+            'block_reason' => $moderation['reason'],
+            'status' => $moderation['is_blocked'] ? 'belum disetujui' : 'disetujui',
         ];
 
-        if (isset($data['kondisi'])) {
-            $payload['kondisi'] = $data['kondisi'];
-        }
-        if (isset($data['tipe_penawaran'])) {
-            $payload['tipe_penawaran'] = $data['tipe_penawaran'];
-        }
-        if (isset($data['is_sold'])) {
-            $payload['is_sold'] = (bool) $data['is_sold'];
-        }
+        $extra = array_filter([
+            'kondisi' => $data['kondisi'] ?? null,
+            'tipe_penawaran' => $data['tipe_penawaran'] ?? null,
+            'is_sold' => isset($data['is_sold']) ? (bool) $data['is_sold'] : null,
+        ], fn ($val) => $val !== null);
 
-        $this->clearPostinganCache();
-
-        return $this->postinganRepository->update($id, $payload);
+        return array_merge($payload, $extra);
     }
 
     public function deletePostingan(int $id): bool

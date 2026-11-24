@@ -55,11 +55,7 @@ class StoreService
             throw new InvalidArgumentException('Anda sudah memiliki pendaftaran toko.');
         }
 
-        $ktpPath = null;
-        if ($ktpFile && $ktpFile->isValid()) {
-            $ktpPath = $ktpFile->store('stores/ktp', 'public');
-        }
-
+        $ktpPath = $this->storeUploadedFile($ktpFile, 'stores/ktp');
         $slug = Str::slug($data['store_name']).'-'.Str::lower(Str::random(4));
 
         $store = Store::create([
@@ -102,16 +98,8 @@ class StoreService
             throw new InvalidArgumentException('Anda sudah memiliki pendaftaran toko.');
         }
 
-        $npwpPath = null;
-        if ($npwpFile && $npwpFile->isValid()) {
-            $npwpPath = $npwpFile->store('stores/npwp', 'public');
-        }
-
-        $hakiPath = null;
-        if ($hakiFile && $hakiFile->isValid()) {
-            $hakiPath = $hakiFile->store('stores/haki', 'public');
-        }
-
+        $npwpPath = $this->storeUploadedFile($npwpFile, 'stores/npwp');
+        $hakiPath = $this->storeUploadedFile($hakiFile, 'stores/haki');
         $slug = Str::slug($data['store_name']).'-official-'.Str::lower(Str::random(4));
 
         $store = Store::create([
@@ -140,6 +128,14 @@ class StoreService
         );
 
         return $store;
+    }
+
+    /**
+     * Simpan file upload ke direktori storage publik jika valid.
+     */
+    protected function storeUploadedFile(?UploadedFile $file, string $path): ?string
+    {
+        return ($file && $file->isValid()) ? $file->store($path, 'public') : null;
     }
 
     /**

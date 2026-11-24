@@ -27,10 +27,24 @@ class AuthService
 
     public function attemptLogin(array $credentials, bool $remember = true): array
     {
-        $identifier = $credentials['email'] ?? '';
-        $password = $credentials['password'] ?? '';
+        $identifier = (string) ($credentials['email'] ?? '');
+        $password = (string) ($credentials['password'] ?? '');
         $isEmail = (bool) filter_var($identifier, FILTER_VALIDATE_EMAIL);
 
+        if ($adminResult = $this->attemptAdminLogin($identifier, $password, $isEmail, $remember)) {
+            return $adminResult;
+        }
+
+        return $this->attemptUserLogin($identifier, $password, $isEmail, $remember);
+    }
+
+    /**
+     * Attempt login as admin.
+     *
+     * @return array{success: bool, role: string, message: string}|null
+     */
+    protected function attemptAdminLogin(string $identifier, string $password, bool $isEmail, bool $remember): ?array
+    {
         $adminCreds = $isEmail
             ? ['email' => $identifier, 'password' => $password]
             : ['username' => $identifier, 'password' => $password];
@@ -43,6 +57,16 @@ class AuthService
             ];
         }
 
+        return null;
+    }
+
+    /**
+     * Attempt login as standard user.
+     *
+     * @return array{success: bool, role: string|null, message: string}
+     */
+    protected function attemptUserLogin(string $identifier, string $password, bool $isEmail, bool $remember): array
+    {
         $userCreds = ['password' => $password];
         if ($isEmail) {
             $userCreds['email'] = $identifier;
@@ -55,7 +79,7 @@ class AuthService
         if (Auth::attempt($userCreds, $remember)) {
             $user = Auth::user();
 
-            if ($user->is_blocked) {
+            if ($user && $user->is_blocked) {
                 Auth::logout();
 
                 return [

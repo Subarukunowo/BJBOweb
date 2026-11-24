@@ -33,50 +33,18 @@ class PesananService
         string $metodePembayaran = 'transfer'
     ): Pesanan {
         $postingan = Postingan::findOrFail($postinganId);
-        $orderNumber = 'BJBO-'.date('Ymd').'-'.strtoupper(Str::random(6));
+        $buyer = User::findOrFail($buyerId);
 
         $totalPrice = $postingan->price;
         $ongkir = 10000;
-        $diskonOngkir = 0;
-        $discountAmount = 0;
-        $promoId = null;
-
-        // Potongan ongkir khusus pembayaran menggunakan BJPay
-        if ($metodePembayaran === 'bjpay') {
-            $diskonOngkir = 5000;
-        }
-
-        if ($promoCode) {
-            $promoRes = app(PromoService::class)->validateAndCalculateDiscount($promoCode, $totalPrice);
-            if ($promoRes['is_valid'] && $promoRes['promo']) {
-                $promoId = $promoRes['promo']->id;
-                $discountAmount = $promoRes['discount'];
-            }
-        }
-
+        $diskonOngkir = $metodePembayaran === 'bjpay' ? 5000 : 0;
+        [$promoId, $discountAmount] = $this->resolvePromoDiscount($promoCode, $totalPrice);
         $finalPrice = max(0, $totalPrice + $ongkir - $discountAmount - $diskonOngkir);
 
-        $status = 'pending';
-        $paymentType = 'qris';
-        $buyer = User::findOrFail($buyerId);
-
-        if ($metodePembayaran === 'bjpay') {
-            $currentSaldo = $buyer->saldo_bjpay ?? 0;
-            if ($currentSaldo < $finalPrice) {
-                throw new \InvalidArgumentException('Saldo BJPay Anda tidak mencukupi (Tersedia: Rp '.number_format($currentSaldo, 0, ',', '.').', Dibutuhkan: Rp '.number_format($finalPrice, 0, ',', '.').'). Silakan top up saldo BJPay terlebih dahulu.');
-            }
-
-            // Potong saldo BJPay pembeli secara atomik
-            $buyer->decrement('saldo_bjpay', $finalPrice);
-            $status = 'paid';
-            $paymentType = 'bjpay';
-        } elseif ($metodePembayaran === 'cod') {
-            $status = 'pending';
-            $paymentType = 'cod';
-        }
+        [$status, $paymentType] = $this->resolvePayment($buyer, $metodePembayaran, $finalPrice);
 
         $pesanan = $this->pesananRepository->create([
-            'order_number' => $orderNumber,
+            'order_number' => 'BJBO-'.date('Ymd').'-'.strtoupper(Str::random(6)),
             'user_id' => $buyerId,
             'postingan_id' => $postingan->id,
             'penjual_id' => $postingan->user_id,
@@ -94,7 +62,60 @@ class PesananService
             'settlement_time' => $status === 'paid' ? now() : null,
         ]);
 
-        // Buat struk digital & invoice resmi secara otomatis
+        $this->handlePostOrder($pesanan, $buyer, $metodePembayaran, $finalPrice);
+
+        return $pesanan;
+    }
+
+    /**
+     * Resolve promo voucher and discount amount.
+     *
+     * @return array{0: int|null, 1: int}
+     */
+    protected function resolvePromoDiscount(?string $promoCode, int $totalPrice): array
+    {
+        if (! $promoCode) {
+            return [null, 0];
+        }
+
+        $promoRes = app(PromoService::class)->validateAndCalculateDiscount($promoCode, $totalPrice);
+        if ($promoRes['is_valid'] && $promoRes['promo']) {
+            return [(int) $promoRes['promo']->id, (int) $promoRes['discount']];
+        }
+
+        return [null, 0];
+    }
+
+    /**
+     * Process payment rules for BJPay, COD, or transfer.
+     *
+     * @return array{0: string, 1: string}
+     */
+    protected function resolvePayment(User $buyer, string $metodePembayaran, int $finalPrice): array
+    {
+        if ($metodePembayaran === 'bjpay') {
+            $currentSaldo = (int) ($buyer->saldo_bjpay ?? 0);
+            if ($currentSaldo < $finalPrice) {
+                throw new \InvalidArgumentException('Saldo BJPay Anda tidak mencukupi (Tersedia: Rp '.number_format($currentSaldo, 0, ',', '.').', Dibutuhkan: Rp '.number_format($finalPrice, 0, ',', '.').'). Silakan top up saldo BJPay terlebih dahulu.');
+            }
+
+            $buyer->decrement('saldo_bjpay', $finalPrice);
+
+            return ['paid', 'bjpay'];
+        }
+
+        if ($metodePembayaran === 'cod') {
+            return ['pending', 'cod'];
+        }
+
+        return ['pending', 'qris'];
+    }
+
+    /**
+     * Handle invoice creation, snap token generation, and payment notifications.
+     */
+    protected function handlePostOrder(Pesanan $pesanan, User $buyer, string $metodePembayaran, int $finalPrice): void
+    {
         app(InvoiceService::class)->generateInvoice($pesanan);
 
         if ($metodePembayaran === 'transfer') {
@@ -112,8 +133,6 @@ class PesananService
                 \Illuminate\Support\Facades\Log::warning('Failed sending payment notification to seller: '.$e->getMessage());
             }
         }
-
-        return $pesanan;
     }
 
     /**

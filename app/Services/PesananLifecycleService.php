@@ -73,32 +73,14 @@ class PesananLifecycleService
             throw new InvalidArgumentException('Anda tidak berhak mengirimkan pesanan ini.');
         }
 
-        // Default koordinat Bengkalis untuk tracking jika tidak disediakan
-        $originLat = $coords['origin_lat'] ?? 1.4877;
-        $originLng = $coords['origin_lng'] ?? 102.1334;
-        $originAddress = $coords['origin_address'] ?? 'Hub Penjual Bengkalis Kota';
+        $trackingData = $this->resolveTrackingCoordinates($coords, $pesanan->catatan);
 
-        $destinationLat = $coords['destination_lat'] ?? 1.4725;
-        $destinationLng = $coords['destination_lng'] ?? 102.1520;
-        $destinationAddress = $coords['destination_address'] ?? ($pesanan->catatan ?? 'Alamat Pembeli');
-
-        $currentLat = $coords['current_lat'] ?? 1.4820;
-        $currentLng = $coords['current_lng'] ?? 102.1410;
-
-        $pesanan->update([
+        $pesanan->update(array_merge($trackingData, [
             'shipping_status' => 'dikirim',
             'kurir_name' => $kurirName,
             'nomor_resi' => $nomorResi,
-            'origin_lat' => $originLat,
-            'origin_lng' => $originLng,
-            'origin_address' => $originAddress,
-            'destination_lat' => $destinationLat,
-            'destination_lng' => $destinationLng,
-            'destination_address' => $destinationAddress,
-            'current_lat' => $currentLat,
-            'current_lng' => $currentLng,
             'last_checkpoint' => 'Paket telah diserahkan ke '.$kurirName.' dan sedang menuju kota tujuan.',
-        ]);
+        ]));
 
         app(NotificationService::class)->sendNotification(
             $pesanan->user_id,
@@ -113,6 +95,23 @@ class PesananLifecycleService
         );
 
         return $pesanan;
+    }
+
+    /**
+     * Resolve default Bengkalis coordinates for tracking if not fully provided.
+     */
+    protected function resolveTrackingCoordinates(array $coords, ?string $fallbackAddress): array
+    {
+        return [
+            'origin_lat' => $coords['origin_lat'] ?? 1.4877,
+            'origin_lng' => $coords['origin_lng'] ?? 102.1334,
+            'origin_address' => $coords['origin_address'] ?? 'Hub Penjual Bengkalis Kota',
+            'destination_lat' => $coords['destination_lat'] ?? 1.4725,
+            'destination_lng' => $coords['destination_lng'] ?? 102.1520,
+            'destination_address' => $coords['destination_address'] ?? ($fallbackAddress ?? 'Alamat Pembeli'),
+            'current_lat' => $coords['current_lat'] ?? 1.4820,
+            'current_lng' => $coords['current_lng'] ?? 102.1410,
+        ];
     }
 
     /**
