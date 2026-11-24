@@ -62,25 +62,11 @@ class CartController extends Controller
             ->first();
 
         if (! $postingan || $postingan->status !== 'disetujui' || $postingan->is_sold) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Barang tidak tersedia atau sudah terjual.',
-                ], 422);
-            }
-
-            return back()->with('error', 'Barang tidak tersedia atau sudah terjual.');
+            return $this->cartResponse($request, false, 'Barang tidak tersedia atau sudah terjual.', 422);
         }
 
         if ($postingan->user_id === $userId) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Anda tidak dapat menambahkan barang milik sendiri ke keranjang.',
-                ], 422);
-            }
-
-            return back()->with('error', 'Anda tidak dapat menambahkan barang milik sendiri ke keranjang.');
+            return $this->cartResponse($request, false, 'Anda tidak dapat menambahkan barang milik sendiri ke keranjang.', 422);
         }
 
         $cart = Cart::firstOrNew([
@@ -93,15 +79,7 @@ class CartController extends Controller
 
         $totalCount = (int) Cart::where('user_id', $userId)->sum('quantity');
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Barang berhasil ditambahkan ke keranjang!',
-                'cart_count' => $totalCount,
-            ]);
-        }
-
-        return back()->with('success', 'Barang berhasil ditambahkan ke keranjang!');
+        return $this->cartResponse($request, true, 'Barang berhasil ditambahkan ke keranjang!', 200, ['cart_count' => $totalCount]);
     }
 
     /**
@@ -122,17 +100,12 @@ class CartController extends Controller
             'quantity' => (int) $validated['quantity'],
         ]);
 
-        if ($request->expectsJson()) {
-            $totalCount = (int) Cart::where('user_id', $userId)->sum('quantity');
+        $totalCount = (int) Cart::where('user_id', $userId)->sum('quantity');
 
-            return response()->json([
-                'success' => true,
-                'subtotal' => $cart->formatted_subtotal,
-                'cart_count' => $totalCount,
-            ]);
-        }
-
-        return back()->with('success', 'Jumlah barang berhasil diperbarui.');
+        return $this->cartResponse($request, true, 'Jumlah barang berhasil diperbarui.', 200, [
+            'subtotal' => $cart->formatted_subtotal,
+            'cart_count' => $totalCount,
+        ]);
     }
 
     /**
@@ -149,15 +122,24 @@ class CartController extends Controller
 
         $totalCount = (int) Cart::where('user_id', $userId)->sum('quantity');
 
+        return $this->cartResponse($request, true, 'Barang dihapus dari keranjang.', 200, ['cart_count' => $totalCount]);
+    }
+
+    /**
+     * Helper to return standard JSON or Redirect response.
+     */
+    private function cartResponse(Request $request, bool $success, ?string $message = null, int $status = 200, array $extra = []): JsonResponse|RedirectResponse
+    {
         if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Barang dihapus dari keranjang.',
-                'cart_count' => $totalCount,
-            ]);
+            $data = ['success' => $success];
+            if ($message !== null) {
+                $data['message'] = $message;
+            }
+
+            return response()->json(array_merge($data, $extra), $status);
         }
 
-        return back()->with('success', 'Barang dihapus dari keranjang.');
+        return back()->with($success ? 'success' : 'error', $message ?? '');
     }
 
     /**

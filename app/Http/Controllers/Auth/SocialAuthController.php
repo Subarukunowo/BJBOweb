@@ -145,43 +145,24 @@ class SocialAuthController extends Controller
             return redirect()->route('login')->with('error', 'Autentikasi Instagram dibatalkan atau kode otorisasi tidak ditemukan.');
         }
 
-        $clientId = config('services.instagram.client_id');
-        $clientSecret = config('services.instagram.client_secret');
-        $redirectUri = config('services.instagram.redirect') ?: url('/auth/instagram/callback');
-
         try {
-            $response = Http::asForm()->post('https://api.instagram.com/oauth/access_token', [
-                'client_id' => $clientId,
-                'client_secret' => $clientSecret,
-                'grant_type' => 'authorization_code',
-                'redirect_uri' => $redirectUri,
-                'code' => $code,
-            ]);
-
-            if ($response->failed()) {
+            $data = $this->exchangeInstagramToken((string) $code);
+            if (! $data || empty($data['user_id']) || empty($data['access_token'])) {
                 return redirect()->route('login')->with('error', 'Gagal menukarkan token autentikasi Instagram.');
             }
 
-            $data = $response->json();
-            $instagramId = $data['user_id'] ?? null;
-            $accessToken = $data['access_token'] ?? null;
-
-            if (! $instagramId) {
-                return redirect()->route('login')->with('error', 'ID pengguna Instagram tidak ditemukan.');
-            }
-
-            $profileResponse = Http::get("https://graph.instagram.com/me?fields=id,username&access_token={$accessToken}");
+            $instagramId = $data['user_id'];
+            $profileResponse = Http::get("https://graph.instagram.com/me?fields=id,username&access_token={$data['access_token']}");
             $username = $profileResponse->json()['username'] ?? 'ig_user_'.$instagramId;
 
-            $user = User::where('instagram_id', $instagramId)->first();
-            if (! $user) {
-                $user = User::create([
+            $user = User::firstOrCreate(
+                ['instagram_id' => $instagramId],
+                [
                     'name' => $username,
                     'email' => $username.'@instagram.local',
-                    'instagram_id' => $instagramId,
                     'password' => bcrypt(Str::random(24)),
-                ]);
-            }
+                ]
+            );
 
             if ($user->is_blocked) {
                 return redirect()->route('login')->with('error', 'Akun Anda sedang diblokir oleh admin.');
@@ -193,6 +174,22 @@ class SocialAuthController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('login')->with('error', 'Terjadi kesalahan sistem Instagram: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Tukarkan authorization code dengan access token Instagram.
+     */
+    protected function exchangeInstagramToken(string $code): ?array
+    {
+        $response = Http::asForm()->post('https://api.instagram.com/oauth/access_token', [
+            'client_id' => config('services.instagram.client_id'),
+            'client_secret' => config('services.instagram.client_secret'),
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => config('services.instagram.redirect') ?: url('/auth/instagram/callback'),
+            'code' => $code,
+        ]);
+
+        return $response->successful() ? $response->json() : null;
     }
 
     /**

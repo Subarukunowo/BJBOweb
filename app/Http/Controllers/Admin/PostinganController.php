@@ -59,22 +59,7 @@ class PostinganController extends Controller
         );
 
         if ($moderation['is_blocked']) {
-            // Catat otomatis ke Laporan Admin sebagai notifikasi pelanggaran hukum
-            \App\Models\Laporan::create([
-                'jenis_laporan' => 'Percobaan Penjualan Barang Terlarang (Otomatis Sistem)',
-                'teks_laporan' => 'Pengguna "'.$user->name.'" (ID: #'.$user->id.', Email: '.$user->email.') terdeteksi mencoba mengunggah barang terlarang: '.$moderation['reason'].' dengan judul produk: "'.$request->input('name').'".',
-                'user_id' => $user->id,
-                'status' => 'Pending',
-                'postingan_id' => null,
-            ]);
-
-            // Tampilkan peringatan yang sopan tanpa kata-kata eksplisit di profil
-            Alert::error(
-                'Unggahan Ditolak!',
-                'Produk tidak dapat diunggah karena memuat indikasi barang atau istilah yang dilarang oleh hukum dan kebijakan komunitas BJBO Sedagho.'
-            );
-
-            return redirect()->back()->withInput()->with('error', 'Produk tidak dapat diunggah karena terindikasi melanggar ketentuan hukum barang terlarang dan telah dilaporkan ke Admin.');
+            return $this->handleBlockedContent($user, (string) $request->input('name', ''), $moderation['reason']);
         }
 
         try {
@@ -96,6 +81,27 @@ class PostinganController extends Controller
 
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Catat laporan otomatis dan beri peringatan jika konten terindikasi barang terlarang.
+     */
+    private function handleBlockedContent($user, string $name, string $reason)
+    {
+        \App\Models\Laporan::create([
+            'jenis_laporan' => 'Percobaan Penjualan Barang Terlarang (Otomatis Sistem)',
+            'teks_laporan' => 'Pengguna "'.$user->name.'" (ID: #'.$user->id.', Email: '.$user->email.') terdeteksi mencoba mengunggah barang terlarang: '.$reason.' dengan judul produk: "'.$name.'".',
+            'user_id' => $user->id,
+            'status' => 'Pending',
+            'postingan_id' => null,
+        ]);
+
+        Alert::error(
+            'Unggahan Ditolak!',
+            'Produk tidak dapat diunggah karena memuat indikasi barang atau istilah yang dilarang oleh hukum dan kebijakan komunitas BJBO Sedagho.'
+        );
+
+        return redirect()->back()->withInput()->with('error', 'Produk tidak dapat diunggah karena terindikasi melanggar ketentuan hukum barang terlarang dan telah dilaporkan ke Admin.');
     }
 
     public function cari(Request $request)

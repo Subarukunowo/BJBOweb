@@ -140,22 +140,7 @@ class ProfilController extends Controller
         );
 
         if ($moderation['is_blocked']) {
-            // Catat otomatis ke Laporan Admin sebagai notifikasi pelanggaran hukum
-            \App\Models\Laporan::create([
-                'jenis_laporan' => 'Percobaan Perubahan Produk Menjadi Barang Terlarang (Otomatis Sistem)',
-                'teks_laporan' => 'Pengguna "'.$user->name.'" (ID: #'.$user->id.', Email: '.$user->email.') terdeteksi mencoba mengubah produk (ID: #'.$id.') menjadi barang terlarang: '.$moderation['reason'].' dengan judul produk: "'.$request->input('name').'".',
-                'user_id' => $user->id,
-                'status' => 'Pending',
-                'postingan_id' => $id,
-            ]);
-
-            // Tampilkan peringatan yang sopan tanpa kata-kata eksplisit di profil
-            Alert::error(
-                'Perubahan Ditolak!',
-                'Perubahan produk tidak dapat disimpan karena memuat indikasi barang atau istilah yang dilarang oleh hukum dan kebijakan komunitas BJBO Sedagho.'
-            );
-
-            return redirect()->back()->withInput()->with('error', 'Perubahan produk tidak dapat disimpan karena terindikasi melanggar ketentuan hukum barang terlarang dan telah dilaporkan ke Admin.');
+            return $this->handleBlockedUpdate($user, $id, (string) $request->input('name', ''), $moderation['reason']);
         }
 
         try {
@@ -173,6 +158,27 @@ class ProfilController extends Controller
 
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Catat laporan otomatis dan beri peringatan jika perubahan produk memuat konten terlarang.
+     */
+    private function handleBlockedUpdate($user, int $id, string $name, string $reason)
+    {
+        \App\Models\Laporan::create([
+            'jenis_laporan' => 'Percobaan Perubahan Produk Menjadi Barang Terlarang (Otomatis Sistem)',
+            'teks_laporan' => 'Pengguna "'.$user->name.'" (ID: #'.$user->id.', Email: '.$user->email.') terdeteksi mencoba mengubah produk (ID: #'.$id.') menjadi barang terlarang: '.$reason.' dengan judul produk: "'.$name.'".',
+            'user_id' => $user->id,
+            'status' => 'Pending',
+            'postingan_id' => $id,
+        ]);
+
+        Alert::error(
+            'Perubahan Ditolak!',
+            'Perubahan produk tidak dapat disimpan karena memuat indikasi barang atau istilah yang dilarang oleh hukum dan kebijakan komunitas BJBO Sedagho.'
+        );
+
+        return redirect()->back()->withInput()->with('error', 'Perubahan produk tidak dapat disimpan karena terindikasi melanggar ketentuan hukum barang terlarang dan telah dilaporkan ke Admin.');
     }
 
     public function delete(int $id)
