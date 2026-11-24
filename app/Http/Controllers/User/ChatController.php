@@ -110,6 +110,8 @@ class ChatController extends Controller
 
     /**
      * Melaporkan pesan yang tidak pantas (pelecehan, spam, konten terlarang, dsb).
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function report(Request $request, int $messageId)
     {
@@ -126,23 +128,17 @@ class ChatController extends Controller
                 (string) $request->input('keterangan')
             );
 
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Laporan berhasil dikirim ke administrator BJBO untuk ditindaklanjuti.',
-                ]);
-            }
-
             Alert::success('Laporan Terkirim!', 'Pesan telah dilaporkan ke administrator untuk peninjauan.');
 
-            return redirect()->back();
+            return ($request->ajax() || $request->wantsJson())
+                ? response()->json(['success' => true, 'message' => 'Laporan berhasil dikirim ke administrator BJBO untuk ditindaklanjuti.'])
+                : redirect()->back();
         } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-            }
             Alert::error('Gagal!', 'Terjadi kesalahan saat melaporkan pesan.');
 
-            return redirect()->back();
+            return ($request->ajax() || $request->wantsJson())
+                ? response()->json(['success' => false, 'message' => $e->getMessage()], 500)
+                : redirect()->back();
         }
     }
 }

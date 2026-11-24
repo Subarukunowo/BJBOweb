@@ -38,32 +38,19 @@ class PostinganController extends Controller
         return view('pages.user.postingan.create');
     }
 
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function store(StorePostinganRequest $request)
     {
         $user = Auth::user();
 
-        if (! $user || ! $user->hasActiveStore()) {
-            Alert::error(
-                'Akses Ditolak',
-                'Anda harus mendaftarkan dan memiliki toko aktif sebelum dapat mengunggah produk ke etalase.'
-            );
-
-            return redirect()->route('user.toko.daftar');
-        }
-
-        // 1. Periksa moderasi konten barang terlarang sebelum menyimpan ke etalase
-        $moderation = app(\App\Services\ContentModerationService::class)->inspect(
-            $request->input('name', ''),
-            $request->input('category', ''),
-            $request->input('description', '')
-        );
-
-        if ($moderation['is_blocked']) {
-            return $this->handleBlockedContent($user, (string) $request->input('name', ''), $moderation['reason']);
+        if ($redirect = $this->guardStoreAndModeration($user, $request)) {
+            return $redirect;
         }
 
         try {
-            $postingan = $this->postinganService->createPostingan(
+            $this->postinganService->createPostingan(
                 $request->validated(),
                 $request->file('image'),
                 $user->id,
@@ -81,6 +68,31 @@ class PostinganController extends Controller
 
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Validasi status toko aktif dan moderasi konten barang terlarang.
+     */
+    protected function guardStoreAndModeration($user, Request $request)
+    {
+        if (! $user || ! $user->hasActiveStore()) {
+            Alert::error(
+                'Akses Ditolak',
+                'Anda harus mendaftarkan dan memiliki toko aktif sebelum dapat mengunggah produk ke etalase.'
+            );
+
+            return redirect()->route('user.toko.daftar');
+        }
+
+        $moderation = app(\App\Services\ContentModerationService::class)->inspect(
+            (string) $request->input('name', ''),
+            (string) $request->input('category', ''),
+            (string) $request->input('description', '')
+        );
+
+        return $moderation['is_blocked']
+            ? $this->handleBlockedContent($user, (string) $request->input('name', ''), $moderation['reason'])
+            : null;
     }
 
     /**

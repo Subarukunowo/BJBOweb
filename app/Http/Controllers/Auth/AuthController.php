@@ -193,15 +193,16 @@ class AuthController extends Controller
         return redirect()->route('user.dashboard');
     }
 
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function resendOtp(Request $request)
     {
         $email = (string) session('pending_otp_email', '');
         if (! $email) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => 'Sesi tidak ditemukan.'], 400);
-            }
-
-            return redirect()->route('register');
+            return ($request->ajax() || $request->wantsJson())
+                ? response()->json(['success' => false, 'message' => 'Sesi tidak ditemukan.'], 400)
+                : redirect()->route('register');
         }
 
         $result = $this->otpService->resendOtp($email);
@@ -210,11 +211,9 @@ class AuthController extends Controller
             return response()->json($result);
         }
 
-        if (! $result['success']) {
-            Alert::warning('Tunggu Sebentar!', $result['message']);
-        } else {
-            Alert::success('Kode Terkirim!', $result['message']);
-        }
+        $result['success']
+            ? Alert::success('Kode Terkirim!', $result['message'])
+            : Alert::warning('Tunggu Sebentar!', $result['message']);
 
         return redirect()->route('otp.verify.show');
     }

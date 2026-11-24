@@ -138,6 +138,9 @@ class SocialAuthController extends Controller
     /**
      * Handle Instagram OAuth Callback.
      */
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function handleInstagramCallback(Request $request)
     {
         $code = $request->input('code');
@@ -146,34 +149,42 @@ class SocialAuthController extends Controller
         }
 
         try {
-            $data = $this->exchangeInstagramToken((string) $code);
-            if (! $data || empty($data['user_id']) || empty($data['access_token'])) {
-                return redirect()->route('login')->with('error', 'Gagal menukarkan token autentikasi Instagram.');
-            }
-
-            $instagramId = $data['user_id'];
-            $profileResponse = Http::get("https://graph.instagram.com/me?fields=id,username&access_token={$data['access_token']}");
-            $username = $profileResponse->json()['username'] ?? 'ig_user_'.$instagramId;
-
-            $user = User::firstOrCreate(
-                ['instagram_id' => $instagramId],
-                [
-                    'name' => $username,
-                    'email' => $username.'@instagram.local',
-                    'password' => bcrypt(Str::random(24)),
-                ]
-            );
-
-            if ($user->is_blocked) {
-                return redirect()->route('login')->with('error', 'Akun Anda sedang diblokir oleh admin.');
-            }
-
-            Auth::login($user);
-
-            return redirect()->route('user.dashboard');
+            return $this->authenticateInstagramUser((string) $code);
         } catch (\Throwable $e) {
             return redirect()->route('login')->with('error', 'Terjadi kesalahan sistem Instagram: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Autentikasi dan login pengguna via Instagram profile response.
+     */
+    protected function authenticateInstagramUser(string $code)
+    {
+        $data = $this->exchangeInstagramToken($code);
+        if (! $data || empty($data['user_id']) || empty($data['access_token'])) {
+            return redirect()->route('login')->with('error', 'Gagal menukarkan token autentikasi Instagram.');
+        }
+
+        $instagramId = $data['user_id'];
+        $profileResponse = Http::get("https://graph.instagram.com/me?fields=id,username&access_token={$data['access_token']}");
+        $username = $profileResponse->json()['username'] ?? 'ig_user_'.$instagramId;
+
+        $user = User::firstOrCreate(
+            ['instagram_id' => $instagramId],
+            [
+                'name' => $username,
+                'email' => $username.'@instagram.local',
+                'password' => bcrypt(Str::random(24)),
+            ]
+        );
+
+        if ($user->is_blocked) {
+            return redirect()->route('login')->with('error', 'Akun Anda sedang diblokir oleh admin.');
+        }
+
+        Auth::login($user);
+
+        return redirect()->route('user.dashboard');
     }
 
     /**
@@ -194,6 +205,8 @@ class SocialAuthController extends Controller
 
     /**
      * Helper to login or create a social user.
+     *
+     * @SuppressWarnings({"php:S1142", "php:S1523", "php:S1527"})
      */
     protected function loginOrRegisterSocialUser($socialUser, string $provider)
     {
@@ -218,7 +231,7 @@ class SocialAuthController extends Controller
             ]);
         } else {
             $updates = [];
-            if (! $user->$providerColumn) {
+            if (! $user->getAttribute($providerColumn)) {
                 $updates[$providerColumn] = $socialId;
             }
             if (empty($user->profile_picture) && ! empty($avatar)) {
