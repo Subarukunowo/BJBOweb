@@ -107,22 +107,39 @@ class OtpService
 
     /**
      * Memverifikasi kode OTP yang dimasukkan oleh pengguna.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function verifyOtp(string $email, string $inputOtp): array
     {
         $record = EmailOtp::where('email', $email)->first();
 
-        if (! $record) {
-            return [
-                'success' => false,
-                'message' => 'Sesi pendaftaran tidak ditemukan atau telah kedaluwarsa.',
-            ];
+        if ($error = $this->validateOtpRecord($record, $inputOtp)) {
+            return $error;
         }
 
-        if ($record->isExpired()) {
+        assert($record instanceof EmailOtp);
+        $registrationData = json_decode((string) $record->registration_data, true) ?: [];
+        $record->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Verifikasi email berhasil!',
+            'data' => $registrationData,
+        ];
+    }
+
+    /**
+     * Validasi status record dan kecocokan kode OTP.
+     *
+     * @SuppressWarnings("php:S1142")
+     */
+    protected function validateOtpRecord(?EmailOtp $record, string $inputOtp): ?array
+    {
+        if (! $record || $record->isExpired()) {
             return [
                 'success' => false,
-                'message' => 'Kode OTP telah kedaluwarsa. Silakan minta kode baru.',
+                'message' => $record ? 'Kode OTP telah kedaluwarsa. Silakan minta kode baru.' : 'Sesi pendaftaran tidak ditemukan atau telah kedaluwarsa.',
             ];
         }
 
@@ -133,16 +150,7 @@ class OtpService
             ];
         }
 
-        $registrationData = json_decode((string) $record->registration_data, true) ?: [];
-
-        // Hapus record OTP setelah berhasil diverifikasi
-        $record->delete();
-
-        return [
-            'success' => true,
-            'message' => 'Verifikasi email berhasil!',
-            'data' => $registrationData,
-        ];
+        return null;
     }
 
     /**

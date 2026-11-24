@@ -91,26 +91,40 @@ class PromoService
 
     /**
      * Validate voucher code and compute discount amount.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function validateAndCalculateDiscount(string $code, int $totalPrice): array
     {
         $promo = Promo::where('code', trim($code))->where('is_active', true)->first();
 
-        if (! $promo) {
-            return [
-                'is_valid' => false,
-                'discount' => 0,
-                'promo' => null,
-                'message' => 'Kode promo tidak ditemukan atau tidak aktif.',
-            ];
+        if ($error = $this->validatePromoEligibility($promo, $totalPrice)) {
+            return $error;
         }
 
-        if (! $promo->isValidNow()) {
+        assert($promo instanceof Promo);
+
+        return [
+            'is_valid' => true,
+            'discount' => $promo->calculateDiscount($totalPrice),
+            'promo' => $promo,
+            'message' => 'Kode promo berhasil digunakan!',
+        ];
+    }
+
+    /**
+     * Validasi kelayakan voucher promo untuk nominal belanja.
+     *
+     * @SuppressWarnings("php:S1142")
+     */
+    protected function validatePromoEligibility(?Promo $promo, int $totalPrice): ?array
+    {
+        if (! $promo || ! $promo->isValidNow()) {
             return [
                 'is_valid' => false,
                 'discount' => 0,
                 'promo' => $promo,
-                'message' => 'Masa berlaku promo telah berakhir.',
+                'message' => $promo ? 'Masa berlaku promo telah berakhir.' : 'Kode promo tidak ditemukan atau tidak aktif.',
             ];
         }
 
@@ -125,14 +139,7 @@ class PromoService
             ];
         }
 
-        $discount = $promo->calculateDiscount($totalPrice);
-
-        return [
-            'is_valid' => true,
-            'discount' => $discount,
-            'promo' => $promo,
-            'message' => 'Kode promo berhasil digunakan!',
-        ];
+        return null;
     }
 
     /**

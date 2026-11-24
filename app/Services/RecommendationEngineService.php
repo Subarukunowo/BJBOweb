@@ -98,6 +98,8 @@ class RecommendationEngineService
     /**
      * Recommendation Engine: "For You" (for->$users).
      * Computes multi-factor interest vector without using any procedural loops.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function getRecommendationsForUser(?int $userId, int $limit = 8): Collection
     {

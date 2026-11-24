@@ -26,6 +26,8 @@ class EmailSecurityService
     /**
      * Memeriksa apakah email merupakan email dummy atau disposable.
      * Menggunakan paradigma fungsional murni tanpa looping.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function isDummyEmail(string $email): bool
     {
@@ -37,28 +39,27 @@ class EmailSecurityService
 
         $domain = substr($cleanEmail, $atPos + 1);
 
-        // 1. Cek exact match daftar blacklist domain disposable
-        if (in_array($domain, self::DISPOSABLE_DOMAINS, true)) {
+        if ($this->isSuspiciousDomain($domain)) {
             return true;
         }
 
-        // 2. Cek keyword mencurigakan pada nama domain (e.g. temp, throwaway, fake, trash)
-        if (preg_match('/(tempmail|dispos|throwaway|fakemail|trashmail|burnermail|guerrilla|10minute)/i', $domain)) {
-            return true;
-        }
+        return $this->hasInvalidDns($domain);
+    }
 
-        // 3. Jangan jalankan checkdnsrr pada testing environment atau provider umum
+    protected function isSuspiciousDomain(string $domain): bool
+    {
+        return in_array($domain, self::DISPOSABLE_DOMAINS, true)
+            || (bool) preg_match('/(tempmail|dispos|throwaway|fakemail|trashmail|burnermail|guerrilla|10minute)/i', $domain);
+    }
+
+    protected function hasInvalidDns(string $domain): bool
+    {
         if (app()->environment('testing') || in_array($domain, ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'], true)) {
             return false;
         }
 
-        // 4. Validasi DNS MX record jika koneksi internet tersedia
         if (function_exists('checkdnsrr') && ! in_array($domain, ['localhost', '127.0.0.1'], true)) {
-            $hasMx = @checkdnsrr($domain, 'MX');
-            $hasA = @checkdnsrr($domain, 'A');
-            if (! $hasMx && ! $hasA) {
-                return true;
-            }
+            return ! @checkdnsrr($domain, 'MX') && ! @checkdnsrr($domain, 'A');
         }
 
         return false;

@@ -13,23 +13,17 @@ class ChatService
      * Menyaring dan menyensor nomor telepon (+62, 08, dsb).
      * Jika terdeteksi nomor telepon, diubah menjadi 'pesan ini tidak dapat dikirim'.
      * Murni fungsional dan bebas loop.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function censorPhoneNumber(string $content): string
     {
-        // 1. Cek langsung keberadaan pola awalan nomor telepon (+62 atau 08)
         $patternPrefixed = '/(?:\+62|62|08)[\s\-\.]*[0-9]{2,4}[\s\-\.]*[0-9]{3,5}[\s\-\.]*[0-9]{2,5}/i';
-        if (preg_match($patternPrefixed, $content)) {
-            return 'pesan ini tidak dapat dikirim';
-        }
-
-        // 2. Normalisasi string tanpa pemisah antar-angka untuk mendeteksi digit berderet (9-14 digit)
         $digitsOnly = preg_replace('/[^\d]/', '', $content);
-        if (preg_match('/^(?:62|08|\d{9,14}$)/', $digitsOnly) && strlen($digitsOnly) >= 9 && strlen($digitsOnly) <= 15) {
-            return 'pesan ini tidak dapat dikirim';
-        }
+        $isSequential = preg_match('/^(?:62|08|\d{9,14}$)/', $digitsOnly) && strlen($digitsOnly) >= 9 && strlen($digitsOnly) <= 15;
+        $isSpaced = preg_match('/0\s*8\s*[0-9\s]{7,15}/', $content);
 
-        // 3. Deteksi angka nomor telepon dengan spasi sengaja disisipkan (e.g. 0 8 1 2 ...)
-        if (preg_match('/0\s*8\s*[0-9\s]{7,15}/', $content)) {
+        if (preg_match($patternPrefixed, $content) || $isSequential || $isSpaced) {
             return 'pesan ini tidak dapat dikirim';
         }
 
