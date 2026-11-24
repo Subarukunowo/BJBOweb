@@ -175,15 +175,14 @@ class User extends Authenticatable
 
     /**
      * Get dynamic avatar URL from storage, OAuth, or avatar generator.
+     *
+     * @SuppressWarnings("php:S1142")
      */
     public function getProfilePictureUrlAttribute(): string
     {
         if (! empty($this->profile_picture)) {
             if (str_starts_with($this->profile_picture, 'http://') || str_starts_with($this->profile_picture, 'https://')) {
                 return $this->profile_picture;
-            }
-            if (file_exists(public_path('storage/'.$this->profile_picture))) {
-                return asset('storage/'.$this->profile_picture);
             }
 
             return asset('storage/'.$this->profile_picture);

@@ -92,6 +92,9 @@ class Postingan extends Model
         return $this->wishlists()->where('user_id', $user->id)->exists();
     }
 
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function getImageUrlAttribute(): string
     {
         if (! $this->image) {
@@ -100,14 +103,10 @@ class Postingan extends Model
         if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
             return $this->image;
         }
-        if (file_exists(public_path('storage/'.$this->image))) {
-            return asset('storage/'.$this->image);
-        }
-        if (file_exists(public_path('images/'.$this->image))) {
-            return asset('images/'.$this->image);
-        }
 
-        return asset('storage/'.$this->image);
+        $folder = file_exists(public_path('images/'.$this->image)) ? 'images/' : 'storage/';
+
+        return asset($folder.$this->image);
     }
 
     public function getRatingScoreAttribute(): ?float

@@ -48,20 +48,19 @@ class Promo extends Model
             && ($this->end_date === null || now()->lte($this->end_date));
     }
 
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function calculateDiscount(int $totalAmount): int
     {
         if ($totalAmount < $this->min_purchase) {
             return 0;
         }
 
-        if ($this->type === 'diskon_persen' && $this->discount_percentage > 0) {
-            return (int) round(($totalAmount * $this->discount_percentage) / 100);
-        }
-
-        if ($this->type === 'diskon_nominal' && $this->discount_amount > 0) {
-            return (int) min($totalAmount, $this->discount_amount);
-        }
-
-        return 0;
+        return match ($this->type) {
+            'diskon_persen' => (int) round(($totalAmount * max(0, (float) $this->discount_percentage)) / 100),
+            'diskon_nominal' => (int) min($totalAmount, max(0, (int) $this->discount_amount)),
+            default => 0,
+        };
     }
 }
