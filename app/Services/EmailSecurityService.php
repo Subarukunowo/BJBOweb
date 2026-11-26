@@ -59,7 +59,7 @@ class EmailSecurityService
         }
 
         if (function_exists('checkdnsrr') && ! in_array($domain, ['localhost', '127.0.0.1'], true)) {
-            return ! @checkdnsrr($domain, 'MX') && ! @checkdnsrr($domain, 'A');
+            return ! checkdnsrr($domain, 'MX') && ! checkdnsrr($domain, 'A');
         }
 
         return false;

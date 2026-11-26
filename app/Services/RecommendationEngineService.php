@@ -21,6 +21,10 @@ class RecommendationEngineService
 
     private const WEIGHT_VIEW = 2;
 
+    private const RELATION_POSTINGAN_CATEGORY = 'postingan:id,category';
+
+    private const PLUCK_POSTINGAN_CATEGORY = 'postingan.category';
+
     /**
      * Record a user search query.
      */
@@ -133,30 +137,30 @@ class RecommendationEngineService
             ->unique();
 
         // 2. Ambil kategori dari produk yang sering dilihat (Views)
-        $viewedCategories = UserProductView::with(['postingan:id,category'])
+        $viewedCategories = UserProductView::with([self::RELATION_POSTINGAN_CATEGORY])
             ->where('user_id', $userId)
             ->latest('last_viewed_at')
             ->take(15)
             ->get()
-            ->pluck('postingan.category')
+            ->pluck(self::PLUCK_POSTINGAN_CATEGORY)
             ->filter()
             ->unique();
 
         // 3. Ambil kategori dari wishlist & favorit pengguna
-        $wishlistCategories = Wishlist::with(['postingan:id,category'])
+        $wishlistCategories = Wishlist::with([self::RELATION_POSTINGAN_CATEGORY])
             ->where('user_id', $userId)
             ->latest('id')
             ->take(20)
             ->get()
-            ->pluck('postingan.category')
+            ->pluck(self::PLUCK_POSTINGAN_CATEGORY)
             ->filter();
 
-        $favoritCategories = Favorit::with(['postingan:id,category'])
+        $favoritCategories = Favorit::with([self::RELATION_POSTINGAN_CATEGORY])
             ->where('user_id', $userId)
             ->latest('id')
             ->take(20)
             ->get()
-            ->pluck('postingan.category')
+            ->pluck(self::PLUCK_POSTINGAN_CATEGORY)
             ->filter();
 
         $highIntentCategories = $wishlistCategories->merge($favoritCategories)->unique();
@@ -169,6 +173,11 @@ class RecommendationEngineService
         // Skor kandidat postingan secara fungsional (bebas loop)
         $candidates = $baseCandidates->latest('id')->take(60)->get();
 
+        return $this->rankCandidates($candidates, $searchTerms, $searchCategories, $viewedCategories, $highIntentCategories, $limit);
+    }
+
+    private function rankCandidates(Collection $candidates, Collection $searchTerms, Collection $searchCategories, Collection $viewedCategories, Collection $highIntentCategories, int $limit): Collection
+    {
         return $candidates->map(function ($product) use ($searchTerms, $searchCategories, $viewedCategories, $highIntentCategories) {
             $score = 0;
             $productCategory = $product->category;

@@ -173,7 +173,7 @@ class PesananLifecycleService
             'order_number' => $pesanan->order_number,
             'shipping_status' => $pesanan->shipping_status,
             'kurir_name' => $pesanan->kurir_name ?? 'Kurir Lokal Bengkalis',
-            'nomor_resi' => $pesanan->nomor_resi ?? 'RES-'.strtoupper(substr(md5((string) $pesanan->id), 0, 10)),
+            'nomor_resi' => $pesanan->nomor_resi ?? 'RES-'.strtoupper(substr(hash('sha256', (string) $pesanan->id), 0, 10)),
             'last_checkpoint' => $pesanan->last_checkpoint ?? 'Menunggu penjemputan paket.',
             'origin' => [
                 'lat' => $pesanan->origin_lat ?? 1.4877,

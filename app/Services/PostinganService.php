@@ -55,7 +55,7 @@ class PostinganService
 
     public function getPostingsByCategory(string $category): Collection
     {
-        $cacheKey = 'bjbo_category_'.md5($category);
+        $cacheKey = 'bjbo_category_'.hash('sha256', $category);
 
         return Cache::remember($cacheKey, 300, function () use ($category) {
             return $this->postinganRepository->getByCategory($category);

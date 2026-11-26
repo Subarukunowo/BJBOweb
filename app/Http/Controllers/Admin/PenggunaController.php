@@ -7,6 +7,8 @@ use App\Models\User;
 
 class PenggunaController extends Controller
 {
+    private const ROUTE_ADMIN_USERS = 'admin.users';
+
     public function index()
     {
         $users = User::all();
@@ -20,7 +22,7 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus');
+        return redirect()->route(self::ROUTE_ADMIN_USERS)->with('success', 'Pengguna berhasil dihapus');
     }
 
     public function blockUser($id)
@@ -29,7 +31,7 @@ class PenggunaController extends Controller
         $user->is_blocked = true;
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'Pengguna telah diblokir!');
+        return redirect()->route(self::ROUTE_ADMIN_USERS)->with('success', 'Pengguna telah diblokir!');
     }
 
     public function unblockUser($id)
@@ -38,6 +40,6 @@ class PenggunaController extends Controller
         $user->is_blocked = false;
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'Blokir pengguna berhasil dibatalkan!');
+        return redirect()->route(self::ROUTE_ADMIN_USERS)->with('success', 'Blokir pengguna berhasil dibatalkan!');
     }
 }

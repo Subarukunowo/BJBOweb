@@ -24,6 +24,10 @@ class Message extends Model
         'is_read' => 'boolean',
     ];
 
+    protected $appends = [
+        'decrypted_message',
+    ];
+
     public function sender(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id');

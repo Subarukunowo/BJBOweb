@@ -16,6 +16,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
 {
+    private const ROUTE_OTP_VERIFY_SHOW = 'otp.verify.show';
+
     protected AuthService $authService;
 
     protected PostinganService $postinganService;
@@ -42,6 +44,9 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    /**
+     * @SuppressWarnings("php:S1142")
+     */
     public function login(LoginRequest $request)
     {
         $throttleKey = Str::lower($request->input('email')).'|'.$request->ip();
@@ -66,16 +71,11 @@ class AuthController extends Controller
 
         RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
-
-        if ($result['role'] === 'admin') {
-            toast($result['message'], 'success');
-
-            return redirect()->route('admin.dashboard');
-        }
-
         toast($result['message'], 'success');
 
-        return redirect()->route('user.dashboard');
+        $targetRoute = $result['role'] === 'admin' ? 'admin.dashboard' : 'user.dashboard';
+
+        return redirect()->route($targetRoute);
     }
 
     public function admin_logout()
@@ -117,7 +117,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => $otpResult['message'],
-            'redirect' => route('otp.verify.show'),
+            'redirect' => route(self::ROUTE_OTP_VERIFY_SHOW),
         ]);
     }
 
@@ -143,7 +143,7 @@ class AuthController extends Controller
         session(['pending_otp_email' => $request->input('email')]);
         Alert::info('Kode OTP Terkirim!', 'Kami telah mengirimkan 6 digit kode OTP verifikasi ke email '.$request->input('email').'. Silakan verifikasi untuk mengaktifkan akun.');
 
-        return redirect()->route('otp.verify.show');
+        return redirect()->route(self::ROUTE_OTP_VERIFY_SHOW);
     }
 
     public function showVerifyOtp()
@@ -215,7 +215,7 @@ class AuthController extends Controller
             ? Alert::success('Kode Terkirim!', $result['message'])
             : Alert::warning('Tunggu Sebentar!', $result['message']);
 
-        return redirect()->route('otp.verify.show');
+        return redirect()->route(self::ROUTE_OTP_VERIFY_SHOW);
     }
 
     public function splash()

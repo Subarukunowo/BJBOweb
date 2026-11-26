@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Traits\HasApiTokens;
+use App\Models\Traits\UserRelations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,11 +19,15 @@ use Illuminate\Notifications\Notifiable;
  * @property bool $is_blocked
  * @property-read string $profile_picture_url
  * @property-read \App\Models\Store|null $store
+ *
+ * @SuppressWarnings("php:S1448")
  */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, UserRelations {
+        UserRelations::notifications insteadof Notifiable;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -68,46 +73,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function postingan(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Postingan::class);
-    }
-
-    public function sentMessages(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
-    public function receivedMessages(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Message::class, 'receiver_id');
-    }
-
-    public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(AppNotification::class);
-    }
-
-    public function bankAccounts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(BankAccount::class);
-    }
-
-    public function pencairanDanas(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(PencairanDana::class);
-    }
-
-    public function store(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(Store::class);
-    }
-
-    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Invoice::class, 'user_id');
-    }
-
     public function getFormattedSaldoBjpayAttribute(): string
     {
         return 'Rp '.number_format($this->saldo_bjpay ?? 0, 0, ',', '.');
@@ -121,56 +86,6 @@ class User extends Authenticatable
     public function hasStore(): bool
     {
         return $this->store !== null;
-    }
-
-    public function carts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Cart::class);
-    }
-
-    public function wishlists(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Wishlist::class);
-    }
-
-    public function searchLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(UserSearchLog::class);
-    }
-
-    public function productViews(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(UserProductView::class);
-    }
-
-    public function laporan(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Laporan::class);
-    }
-
-    public function ulasan(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Ulasan::class);
-    }
-
-    public function favorits(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Favorit::class);
-    }
-
-    public function favoritePostings(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Postingan::class, 'favorits');
-    }
-
-    public function pesanans(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Pesanan::class, 'user_id');
-    }
-
-    public function penjualPesanans(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Pesanan::class, 'penjual_id');
     }
 
     /**

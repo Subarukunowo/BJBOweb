@@ -11,36 +11,27 @@ use InvalidArgumentException;
 
 class StoreService
 {
+    private const STATUS_AKTIF = 'aktif';
+
+    private const NOTIF_TYPE_TOKO = 'toko';
+
+    private const NOTIF_KEY_STORE_ID = 'store_id';
+
+    protected array $defaultColumns = [
+        'id', 'user_id', 'store_name', 'store_slug', 'store_type',
+        'phone_number', 'email', 'ktp_number', 'ktp_image', 'nib_number',
+        'npwp_company', 'npwp_image', 'haki_certificate_number', 'haki_certificate_file',
+        'description', 'address', 'logo', 'banner', 'status',
+        'rejected_reason', 'verified_at', 'created_at',
+    ];
+
     /**
      * Get existing store for a user.
      */
     public function getUserStore(int $userId): ?Store
     {
         return Store::query()
-            ->select([
-                'id',
-                'user_id',
-                'store_name',
-                'store_slug',
-                'store_type',
-                'phone_number',
-                'email',
-                'ktp_number',
-                'ktp_image',
-                'nib_number',
-                'npwp_company',
-                'npwp_image',
-                'haki_certificate_number',
-                'haki_certificate_file',
-                'description',
-                'address',
-                'logo',
-                'banner',
-                'status',
-                'rejected_reason',
-                'verified_at',
-                'created_at',
-            ])
+            ->select($this->defaultColumns)
             ->where('user_id', $userId)
             ->first();
     }
@@ -69,7 +60,7 @@ class StoreService
             'ktp_image' => $ktpPath,
             'description' => $data['description'] ?? null,
             'address' => $data['address'] ?? null,
-            'status' => 'aktif',
+            'status' => self::STATUS_AKTIF,
             'verified_at' => now(),
         ]);
 
@@ -77,8 +68,8 @@ class StoreService
             $user->id,
             'Toko Berhasil Dibuka!',
             'Selamat! Toko "'.$store->store_name.'" berhasil dibuka dengan verifikasi KTP. Anda sekarang dapat mulai mengunggah dan menjual produk di BJBO Sedagho.',
-            'toko',
-            ['store_id' => $store->id]
+            self::NOTIF_TYPE_TOKO,
+            [self::NOTIF_KEY_STORE_ID => $store->id]
         );
 
         return $store;
@@ -123,8 +114,8 @@ class StoreService
             $user->id,
             'Pendaftaran Official Store Berhasil Diajukan',
             'Pendaftaran Official Store "'.$store->store_name.'" dengan berkas NIB, NPWP & HAKI telah diterima dan masuk antrean verifikasi kurator.',
-            'toko',
-            ['store_id' => $store->id]
+            self::NOTIF_TYPE_TOKO,
+            [self::NOTIF_KEY_STORE_ID => $store->id]
         );
 
         return $store;
@@ -148,10 +139,10 @@ class StoreService
         $store->update([
             'status' => $status,
             'rejected_reason' => $reason,
-            'verified_at' => $status === 'aktif' ? now() : null,
+            'verified_at' => $status === self::STATUS_AKTIF ? now() : null,
         ]);
 
-        $statusMsg = $status === 'aktif'
+        $statusMsg = $status === self::STATUS_AKTIF
             ? 'Selamat! Toko "'.$store->store_name.'" telah disetujui dan kini berstatus aktif.'
             : 'Pendaftaran toko "'.$store->store_name.'" ditolak. Alasan: '.($reason ?? 'Dokumen tidak memenuhi syarat.');
 
@@ -159,8 +150,8 @@ class StoreService
             $store->user_id,
             'Status Pendaftaran Toko: '.Str::headline($status),
             $statusMsg,
-            'toko',
-            ['store_id' => $store->id, 'status' => $status]
+            self::NOTIF_TYPE_TOKO,
+            [self::NOTIF_KEY_STORE_ID => $store->id, 'status' => $status]
         );
 
         return $store;

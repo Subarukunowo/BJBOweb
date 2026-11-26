@@ -15,6 +15,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfilController extends Controller
 {
+    private const ALERT_SUCCESS = 'Berhasil!';
+
+    private const ALERT_ERROR = 'Gagal!';
+
+    private const ROUTE_USER_PROFIL = 'user.profil';
+
     protected PostinganService $postinganService;
 
     protected UserService $userService;
@@ -70,7 +76,7 @@ class ProfilController extends Controller
                 ]);
             }
 
-            Alert::success('Berhasil!', $message);
+            Alert::success(self::ALERT_SUCCESS, $message);
         } else {
             $message = 'Anda tidak memiliki hak akses mengubah produk ini.';
 
@@ -81,7 +87,7 @@ class ProfilController extends Controller
                 ], 403);
             }
 
-            Alert::error('Gagal!', $message);
+            Alert::error(self::ALERT_ERROR, $message);
         }
 
         return redirect()->back();
@@ -96,11 +102,11 @@ class ProfilController extends Controller
                 $request->file('profile_picture')
             );
 
-            Alert::success('Berhasil!', 'Profil dan foto akun berhasil diperbarui!');
+            Alert::success(self::ALERT_SUCCESS, 'Profil dan foto akun berhasil diperbarui!');
 
-            return redirect()->route('user.profil');
+            return redirect()->route(self::ROUTE_USER_PROFIL);
         } catch (\Exception $e) {
-            Alert::error('Gagal!', 'Terjadi kesalahan saat memperbarui profil: '.$e->getMessage());
+            Alert::error(self::ALERT_ERROR, 'Terjadi kesalahan saat memperbarui profil: '.$e->getMessage());
 
             return redirect()->back()->withInput();
         }
@@ -110,11 +116,11 @@ class ProfilController extends Controller
     {
         try {
             $this->userService->removeAvatar(Auth::id());
-            Alert::success('Berhasil!', 'Foto profil berhasil dihapus dan dikembalikan ke avatar default.');
+            Alert::success(self::ALERT_SUCCESS, 'Foto profil berhasil dihapus dan dikembalikan ke avatar default.');
 
-            return redirect()->route('user.profil');
+            return redirect()->route(self::ROUTE_USER_PROFIL);
         } catch (\Exception $e) {
-            Alert::error('Gagal!', 'Gagal menghapus foto profil: '.$e->getMessage());
+            Alert::error(self::ALERT_ERROR, 'Gagal menghapus foto profil: '.$e->getMessage());
 
             return redirect()->back();
         }
@@ -150,11 +156,11 @@ class ProfilController extends Controller
                 $request->file('image')
             );
 
-            Alert::success('Berhasil!', 'Iklan berhasil diperbarui dan aktif di pasar!');
+            Alert::success(self::ALERT_SUCCESS, 'Iklan berhasil diperbarui dan aktif di pasar!');
 
-            return redirect()->route('user.profil');
+            return redirect()->route(self::ROUTE_USER_PROFIL);
         } catch (\Exception $e) {
-            Alert::error('Gagal!', 'Terjadi kesalahan saat memperbarui data!');
+            Alert::error(self::ALERT_ERROR, 'Terjadi kesalahan saat memperbarui data!');
 
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
@@ -184,7 +190,7 @@ class ProfilController extends Controller
     public function delete(int $id)
     {
         $this->postinganService->deletePostingan($id);
-        Alert::success('Berhasil!', 'Iklan berhasil dihapus!');
+        Alert::success(self::ALERT_SUCCESS, 'Iklan berhasil dihapus!');
 
         return redirect()->back();
     }

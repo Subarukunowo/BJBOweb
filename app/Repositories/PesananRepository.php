@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PesananRepository
 {
+    private const RELATION_INVOICE_SELECT = 'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar';
     /**
      * Create a new order.
      */
@@ -40,7 +41,7 @@ class PesananRepository
                 'penjual:id,name,email,profile_picture',
                 'postingan:id,name,price,category,image,lokasi,user_id',
                 'promo:id,title,code,type,discount_amount,discount_percentage',
-                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
+                self::RELATION_INVOICE_SELECT,
             ])
             ->find($id);
     }
@@ -63,7 +64,7 @@ class PesananRepository
                 'pembeli:id,name,email,profile_picture',
                 'penjual:id,name,email,profile_picture',
                 'postingan:id,name,price,category,image,lokasi,user_id',
-                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
+                self::RELATION_INVOICE_SELECT,
             ])
             ->where('order_number', $orderNumber)
             ->first();
@@ -85,7 +86,7 @@ class PesananRepository
                 'postingan:id,name,price,category,image,lokasi',
                 'penjual:id,name',
                 'pembeli:id,name',
-                'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar',
+                self::RELATION_INVOICE_SELECT,
             ])
             ->where(function ($q) use ($userId) {
                 $q->where('user_id', $userId)->orWhere('penjual_id', $userId);

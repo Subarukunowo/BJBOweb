@@ -15,6 +15,7 @@ use InvalidArgumentException;
 
 class RekberService
 {
+    private const PREFIX_PENCAIRAN_MSG = 'Permintaan pencairan dana ';
     /**
      * Get user's current Rekber escrow wallet balance.
      */
@@ -125,7 +126,7 @@ class RekberService
             app(NotificationService::class)->sendNotification(
                 $userId,
                 'Permintaan Pencairan Diajukan',
-                'Permintaan pencairan dana '.$formatted.' (Ref: '.$referenceNumber.') berhasil dibuat. Estimasi selesai dalam 2x24 jam kerja.',
+                self::PREFIX_PENCAIRAN_MSG.$formatted.' (Ref: '.$referenceNumber.') berhasil dibuat. Estimasi selesai dalam 2x24 jam kerja.',
                 'rekber',
                 ['pencairan_id' => $pencairan->id, 'ref' => $referenceNumber]
             );
@@ -160,8 +161,8 @@ class RekberService
             $msg = $status === 'selesai'
                 ? 'Dana sebesar '.$formatted.' telah berhasil ditransfer ke rekening '.$bankName.' ('.$accountNumber.').'
                 : ($status === 'ditolak'
-                    ? 'Permintaan pencairan dana '.$formatted.' ditolak. Alasan: '.($catatan ?? 'Data rekening tidak sesuai').'. Saldo telah dikembalikan.'
-                    : 'Permintaan pencairan dana '.$formatted.' sedang diproses perbankan.');
+                    ? self::PREFIX_PENCAIRAN_MSG.$formatted.' ditolak. Alasan: '.($catatan ?? 'Data rekening tidak sesuai').'. Saldo telah dikembalikan.'
+                    : self::PREFIX_PENCAIRAN_MSG.$formatted.' sedang diproses perbankan.');
 
             app(NotificationService::class)->sendNotification(
                 $pencairan->user_id,

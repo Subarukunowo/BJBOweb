@@ -11,6 +11,10 @@ use Illuminate\View\View;
 
 class PromoAdminController extends Controller
 {
+    private const RULE_NUMERIC_MIN_ZERO = 'nullable|numeric|min:0';
+
+    private const ROUTE_ADMIN_PROMO_INDEX = 'admin.promo.index';
+
     protected PromoService $promoService;
 
     public function __construct(PromoService $promoService)
@@ -37,8 +41,8 @@ class PromoAdminController extends Controller
             'type' => 'required|in:banner_iklan,diskon_persen,diskon_nominal,flash_sale',
             'code' => 'nullable|string|max:50|unique:promos,code',
             'discount_percentage' => 'nullable|numeric|min:1|max:100',
-            'discount_amount' => 'nullable|numeric|min:0',
-            'min_purchase' => 'nullable|numeric|min:0',
+            'discount_amount' => self::RULE_NUMERIC_MIN_ZERO,
+            'min_purchase' => self::RULE_NUMERIC_MIN_ZERO,
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
@@ -48,7 +52,7 @@ class PromoAdminController extends Controller
 
         $this->promoService->createPromo($validated, $request->file('banner_image'));
 
-        return redirect()->route('admin.promo.index')->with('success', 'Promo / Iklan berhasil ditambahkan.');
+        return redirect()->route(self::ROUTE_ADMIN_PROMO_INDEX)->with('success', 'Promo / Iklan berhasil ditambahkan.');
     }
 
     public function edit(int $id): View
@@ -67,8 +71,8 @@ class PromoAdminController extends Controller
             'type' => 'required|in:banner_iklan,diskon_persen,diskon_nominal,flash_sale',
             'code' => 'nullable|string|max:50|unique:promos,code,'.$promo->id,
             'discount_percentage' => 'nullable|numeric|min:1|max:100',
-            'discount_amount' => 'nullable|numeric|min:0',
-            'min_purchase' => 'nullable|numeric|min:0',
+            'discount_amount' => self::RULE_NUMERIC_MIN_ZERO,
+            'min_purchase' => self::RULE_NUMERIC_MIN_ZERO,
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
@@ -78,7 +82,7 @@ class PromoAdminController extends Controller
 
         $this->promoService->updatePromo($promo, $validated, $request->file('banner_image'));
 
-        return redirect()->route('admin.promo.index')->with('success', 'Promo berhasil diperbarui.');
+        return redirect()->route(self::ROUTE_ADMIN_PROMO_INDEX)->with('success', 'Promo berhasil diperbarui.');
     }
 
     public function toggle(int $id): RedirectResponse
@@ -94,6 +98,6 @@ class PromoAdminController extends Controller
         $promo = Promo::findOrFail($id);
         $this->promoService->deletePromo($promo);
 
-        return redirect()->route('admin.promo.index')->with('success', 'Promo berhasil dihapus.');
+        return redirect()->route(self::ROUTE_ADMIN_PROMO_INDEX)->with('success', 'Promo berhasil dihapus.');
     }
 }

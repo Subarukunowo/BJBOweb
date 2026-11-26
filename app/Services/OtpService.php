@@ -29,7 +29,7 @@ class OtpService
         $otp = (string) random_int(100000, 999999);
         $expiresAt = now()->addMinutes(10);
 
-        $record = EmailOtp::updateOrCreate(
+        EmailOtp::updateOrCreate(
             ['email' => $email],
             [
                 'otp' => $otp,

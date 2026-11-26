@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PostinganRepository
 {
+    private const RELATION_USER_SELECT = 'user:id,name,profile_picture';
+
     protected array $defaultColumns = [
         'id', 'name', 'price', 'tipe_penawaran', 'category', 'kondisi',
         'description', 'image', 'lokasi', 'user_id', 'status', 'is_sold',
@@ -18,10 +20,10 @@ class PostinganRepository
         return Postingan::query()
             ->select($this->defaultColumns)
             ->with([
-                'user:id,name,profile_picture',
+                self::RELATION_USER_SELECT,
                 'ulasan' => function ($q) {
                     $q->select(['id', 'postingan_id', 'user_id', 'rating', 'komentar', 'created_at'])
-                        ->with(['user:id,name,profile_picture']);
+                        ->with([self::RELATION_USER_SELECT]);
                 },
             ])
             ->where('status', 'disetujui')
@@ -34,7 +36,7 @@ class PostinganRepository
     {
         return Postingan::query()
             ->select($this->defaultColumns)
-            ->with(['user:id,name,profile_picture'])
+            ->with([self::RELATION_USER_SELECT])
             ->where('user_id', $userId)
             ->where('is_auto_blocked', false)
             ->latest('id')
@@ -46,10 +48,10 @@ class PostinganRepository
         return Postingan::query()
             ->select($this->defaultColumns)
             ->with([
-                'user:id,name,profile_picture',
+                self::RELATION_USER_SELECT,
                 'ulasan' => function ($q) {
                     $q->select(['id', 'postingan_id', 'user_id', 'rating', 'komentar', 'created_at'])
-                        ->with(['user:id,name,profile_picture']);
+                        ->with([self::RELATION_USER_SELECT]);
                 },
             ])
             ->findOrFail($id);
@@ -59,7 +61,7 @@ class PostinganRepository
     {
         return Postingan::query()
             ->select($this->defaultColumns)
-            ->with(['user:id,name,profile_picture'])
+            ->with([self::RELATION_USER_SELECT])
             ->where('status', 'disetujui')
             ->where('is_auto_blocked', false)
             ->where(function ($query) use ($keyword) {
@@ -74,7 +76,7 @@ class PostinganRepository
     {
         return Postingan::query()
             ->select($this->defaultColumns)
-            ->with(['user:id,name,profile_picture'])
+            ->with([self::RELATION_USER_SELECT])
             ->where('category', $category)
             ->where('status', 'disetujui')
             ->where('is_auto_blocked', false)
@@ -86,7 +88,7 @@ class PostinganRepository
     {
         return Postingan::query()
             ->select($this->defaultColumns)
-            ->with(['user:id,name,profile_picture'])
+            ->with([self::RELATION_USER_SELECT])
             ->where('category', $category)
             ->where('id', '!=', $excludeId)
             ->where('status', 'disetujui')

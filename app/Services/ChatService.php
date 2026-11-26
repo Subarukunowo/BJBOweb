@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Crypt;
 
 class ChatService
 {
+    public const CENSORED_MESSAGE = 'pesan ini tidak dapat dikirim';
+
     /**
      * Menyaring dan menyensor nomor telepon (+62, 08, dsb).
      * Jika terdeteksi nomor telepon, diubah menjadi 'pesan ini tidak dapat dikirim'.
@@ -18,13 +20,13 @@ class ChatService
      */
     public function censorPhoneNumber(string $content): string
     {
-        $patternPrefixed = '/(?:\+62|62|08)[\s\-\.]*[0-9]{2,4}[\s\-\.]*[0-9]{3,5}[\s\-\.]*[0-9]{2,5}/i';
+        $patternPrefixed = '/(?:\+62|62|08)[\s\-\.]*\d{2,4}[\s\-\.]*\d{3,5}[\s\-\.]*\d{2,5}/i';
         $digitsOnly = preg_replace('/[^\d]/', '', $content);
-        $isSequential = preg_match('/^(?:62|08|\d{9,14}$)/', $digitsOnly) && strlen($digitsOnly) >= 9 && strlen($digitsOnly) <= 15;
-        $isSpaced = preg_match('/0\s*8\s*[0-9\s]{7,15}/', $content);
+        $isSequential = (bool) preg_match('/^\d{9,15}$/', $digitsOnly);
+        $isSpaced = preg_match('/0\s*8\s*[\d\s]{7,15}/', $content);
 
         if (preg_match($patternPrefixed, $content) || $isSequential || $isSpaced) {
-            return 'pesan ini tidak dapat dikirim';
+            return self::CENSORED_MESSAGE;
         }
 
         return $content;
