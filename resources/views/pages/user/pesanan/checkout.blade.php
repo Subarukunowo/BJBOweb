@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout Pesanan - BJBO Sedagho</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-zinc-50 text-zinc-900 font-sans min-h-screen flex flex-col">
@@ -51,6 +51,29 @@
                 </div>
             </div>
 
+            <!-- Pilihan Kurir & Ongkos Kirim -->
+            <div class="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xs font-bold text-zinc-800 uppercase tracking-wider">Pilih Kurir &amp; Pengiriman</h2>
+                    <span class="text-[11px] text-zinc-400">Hemat ongkir dengan BJPay</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    @foreach($couriers as $idx => $courier)
+                        <label for="kurir_{{ $courier['code'] }}" class="relative flex items-start p-3 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-blue-400 has-[:checked]:border-bjbo-primary has-[:checked]:bg-blue-50/40">
+                            <input id="kurir_{{ $courier['code'] }}" type="radio" name="kurir_code" value="{{ $courier['code'] }}" data-ongkir="{{ $courier['ongkir'] }}" class="mt-0.5 h-4 w-4 text-bjbo-primary focus:ring-blue-500 border-zinc-300" onchange="updateCourier({{ $courier['ongkir'] }}, '{{ $courier['name'] }}')" {{ $idx === 0 ? 'checked' : '' }}>
+                            <div class="ml-2.5 flex-grow text-xs">
+                                <div class="font-bold text-zinc-900">{{ $courier['name'] }}</div>
+                                <div class="text-[11px] text-zinc-500 mt-0.5">{{ $courier['estimasi'] }}</div>
+                                <div class="font-mono font-bold text-bjbo-primary mt-1">
+                                    {{ $courier['ongkir'] > 0 ? 'Rp'.number_format($courier['ongkir'], 0, ',', '.') : 'Gratis (Rp0)' }}
+                                </div>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
             <!-- Pilihan Metode Pembayaran (Shadcn UI Radio Cards) -->
             <div class="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
@@ -60,8 +83,8 @@
 
                 <div class="space-y-3">
                     <!-- Opsi 1: BJPay (Diskon Ongkir) -->
-                    <label class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-blue-400 has-[:checked]:border-blue-700 has-[:checked]:bg-blue-50/40">
-                        <input type="radio" name="metode_pembayaran" value="bjpay" class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-zinc-300" onchange="updatePaymentMethod('bjpay')" checked>
+                    <label for="metode_bjpay" class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-blue-400 has-[:checked]:border-blue-700 has-[:checked]:bg-blue-50/40">
+                        <input id="metode_bjpay" type="radio" name="metode_pembayaran" value="bjpay" class="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-zinc-300" onchange="updatePaymentMethod('bjpay')" checked>
                         <div class="ml-3 flex-grow text-xs">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="font-bold text-zinc-900 flex items-center gap-1.5">
@@ -81,8 +104,8 @@
                     </label>
 
                     <!-- Opsi 2: COD (Cash on Delivery) -->
-                    <label class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-zinc-400 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-50">
-                        <input type="radio" name="metode_pembayaran" value="cod" class="mt-0.5 h-4 w-4 text-zinc-900 focus:ring-zinc-900 border-zinc-300" onchange="updatePaymentMethod('cod')">
+                    <label for="metode_cod" class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-zinc-400 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-50">
+                        <input id="metode_cod" type="radio" name="metode_pembayaran" value="cod" class="mt-0.5 h-4 w-4 text-zinc-900 focus:ring-zinc-900 border-zinc-300" onchange="updatePaymentMethod('cod')">
                         <div class="ml-3 flex-grow text-xs">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="font-bold text-zinc-900 flex items-center gap-1.5">
@@ -97,8 +120,8 @@
                     </label>
 
                     <!-- Opsi 3: Transfer QRIS / Snap -->
-                    <label class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-zinc-400 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-50">
-                        <input type="radio" name="metode_pembayaran" value="transfer" class="mt-0.5 h-4 w-4 text-zinc-900 focus:ring-zinc-900 border-zinc-300" onchange="updatePaymentMethod('transfer')">
+                    <label for="metode_transfer" class="payment-option relative flex items-start p-3.5 border-2 rounded-xl cursor-pointer transition border-zinc-200 hover:border-zinc-400 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-50">
+                        <input id="metode_transfer" type="radio" name="metode_pembayaran" value="transfer" class="mt-0.5 h-4 w-4 text-zinc-900 focus:ring-zinc-900 border-zinc-300" onchange="updatePaymentMethod('transfer')">
                         <div class="ml-3 flex-grow text-xs">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="font-bold text-zinc-900 flex items-center gap-1.5">
@@ -119,12 +142,12 @@
                 <h2 class="text-xs font-bold text-zinc-800 uppercase tracking-wider mb-3">Informasi Pengiriman</h2>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-700 mb-1">Nama Pembeli</label>
-                        <input type="text" class="w-full px-3.5 py-2 text-xs bg-zinc-50 border border-zinc-300 rounded-lg text-zinc-700 focus:outline-none" value="{{ Auth::user()->name }}" readonly>
+                        <label for="buyer_name" class="block text-xs font-semibold text-zinc-700 mb-1">Nama Pembeli</label>
+                        <input id="buyer_name" type="text" class="w-full px-3.5 py-2 text-xs bg-zinc-50 border border-zinc-300 rounded-lg text-zinc-700 focus:outline-none" value="{{ Auth::user()->name }}" readonly>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-700 mb-1">Email Notifikasi & Struk</label>
-                        <input type="email" class="w-full px-3.5 py-2 text-xs bg-zinc-50 border border-zinc-300 rounded-lg text-zinc-700 focus:outline-none" value="{{ Auth::user()->email }}" readonly>
+                        <label for="buyer_email" class="block text-xs font-semibold text-zinc-700 mb-1">Email Notifikasi & Struk</label>
+                        <input id="buyer_email" type="email" class="w-full px-3.5 py-2 text-xs bg-zinc-50 border border-zinc-300 rounded-lg text-zinc-700 focus:outline-none" value="{{ Auth::user()->email }}" readonly>
                     </div>
                     <div>
                         <label for="catatan" class="block text-xs font-semibold text-zinc-700 mb-1">Catatan Pengiriman untuk Kurir / Penjual (Opsional)</label>
@@ -133,7 +156,7 @@
 
                     <!-- Voucher & Kode Promo -->
                     <div class="pt-2 border-t border-zinc-100">
-                        <label class="block text-xs font-semibold text-zinc-700 mb-1">Kode Promo / Voucher</label>
+                        <label for="promoInput" class="block text-xs font-semibold text-zinc-700 mb-1">Kode Promo / Voucher</label>
                         <div class="flex gap-2">
                             <input type="text" id="promoInput" name="promo_code" placeholder="Masukkan kode promo (misal: DISKON10)" class="flex-grow px-3 py-2 text-xs uppercase bg-zinc-50 border border-zinc-300 rounded-lg focus:bg-white focus:border-zinc-900 focus:outline-none font-mono">
                             <button type="button" onclick="applyPromoCode()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white transition flex-shrink-0">
@@ -157,8 +180,8 @@
                         <span class="font-mono font-medium text-zinc-800">Rp{{ number_format($postingan->price, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span>Biaya Pengiriman (Ongkir)</span>
-                        <span class="font-mono font-medium text-zinc-800">Rp10.000</span>
+                        <span>Biaya Pengiriman (<span id="selectedCourierName">Kurir Lokal Sedagho Bengkalis</span>)</span>
+                        <span id="ongkirText" class="font-mono font-medium text-zinc-800">Rp10.000</span>
                     </div>
                     <!-- Diskon Ongkir BJPay -->
                     <div id="bjpayDiscountRow" class="flex justify-between text-blue-700 font-semibold">
@@ -198,14 +221,25 @@
 
 <script>
     const itemPrice = {{ $postingan->price }};
-    const standardOngkir = 10000;
+    let currentOngkir = 10000;
+    let selectedPayment = 'bjpay';
     let bjpayShippingDiscount = 5000; // default bjpay is checked
     let voucherDiscount = 0;
 
+    function updateCourier(ongkir, name) {
+        currentOngkir = ongkir;
+        document.getElementById('ongkirText').innerText = ongkir > 0 ? `Rp${ongkir.toLocaleString('id-ID')}` : 'Gratis (Rp0)';
+        document.getElementById('selectedCourierName').innerText = name;
+        updatePaymentMethod(selectedPayment);
+    }
+
     function updatePaymentMethod(method) {
+        selectedPayment = method;
         if (method === 'bjpay') {
-            bjpayShippingDiscount = 5000;
-            document.getElementById('bjpayDiscountRow').classList.remove('hidden');
+            bjpayShippingDiscount = Math.min(5000, currentOngkir);
+            const row = document.getElementById('bjpayDiscountRow');
+            row.classList.toggle('hidden', bjpayShippingDiscount === 0);
+            document.getElementById('bjpayDiscountText').innerText = `-Rp${bjpayShippingDiscount.toLocaleString('id-ID')}`;
         } else {
             bjpayShippingDiscount = 0;
             document.getElementById('bjpayDiscountRow').classList.add('hidden');
@@ -214,7 +248,7 @@
     }
 
     function recalcTotal() {
-        const total = Math.max(0, itemPrice + standardOngkir - bjpayShippingDiscount - voucherDiscount);
+        const total = Math.max(0, itemPrice + currentOngkir - bjpayShippingDiscount - voucherDiscount);
         document.getElementById('finalPriceText').innerText = `Rp${total.toLocaleString('id-ID')}`;
     }
 

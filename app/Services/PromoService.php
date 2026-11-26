@@ -11,6 +11,12 @@ use Illuminate\Support\Str;
 
 class PromoService
 {
+    protected array $defaultColumns = [
+        'id', 'title', 'slug', 'type', 'code', 'discount_percentage',
+        'discount_amount', 'min_purchase', 'banner_image', 'start_date',
+        'end_date', 'is_active', 'created_at',
+    ];
+
     /**
      * Get paginated promos for admin listing.
      * Loop-free and explicit column selection.
@@ -18,21 +24,7 @@ class PromoService
     public function getAllPromos(int $perPage = 10): LengthAwarePaginator
     {
         return Promo::query()
-            ->select([
-                'id',
-                'title',
-                'slug',
-                'type',
-                'code',
-                'discount_percentage',
-                'discount_amount',
-                'min_purchase',
-                'banner_image',
-                'start_date',
-                'end_date',
-                'is_active',
-                'created_at',
-            ])
+            ->select($this->defaultColumns)
             ->latest('id')
             ->paginate($perPage);
     }
@@ -44,7 +36,7 @@ class PromoService
     {
         return Cache::remember('bjbo_active_banners', 1800, function () {
             return Promo::query()
-                ->select(['id', 'title', 'slug', 'type', 'banner_image', 'description'])
+                ->select(['id', 'title', 'slug', 'type', 'code', 'discount_percentage', 'discount_amount', 'banner_image', 'description', 'end_date'])
                 ->where('is_active', true)
                 ->whereIn('type', ['banner_iklan', 'flash_sale'])
                 ->where(function ($q) {

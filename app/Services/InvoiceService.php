@@ -9,6 +9,12 @@ use Illuminate\Support\Str;
 
 class InvoiceService
 {
+    private const INVOICE_RELATIONS = [
+        'pesanan.postingan:id,name,image,price,lokasi,kondisi',
+        'user:id,name,email,phone,profile_picture',
+        'seller:id,name,email,phone,profile_picture',
+        'seller.store:id,user_id,store_name,status,address',
+    ];
     /**
      * Membuat atau memperbarui data invoice / struk digital untuk suatu pesanan.
      * Menerapkan pemrograman deklaratif tanpa looping.
@@ -63,12 +69,7 @@ class InvoiceService
      */
     public function getInvoiceByNumber(string $invoiceNumber): ?Invoice
     {
-        return Invoice::with([
-            'pesanan.postingan:id,name,image,harga,lokasi,kondisi',
-            'user:id,name,email,phone,avatar',
-            'seller:id,name,email,phone,avatar',
-            'seller.store:id,user_id,nama_toko,status,lokasi_toko',
-        ])->where('invoice_number', $invoiceNumber)->first();
+        return Invoice::with(self::INVOICE_RELATIONS)->where('invoice_number', $invoiceNumber)->first();
     }
 
     /**
@@ -76,12 +77,7 @@ class InvoiceService
      */
     public function getInvoiceByToken(string $receiptToken): ?Invoice
     {
-        return Invoice::with([
-            'pesanan.postingan:id,name,image,harga,lokasi,kondisi',
-            'user:id,name,email,phone,avatar',
-            'seller:id,name,email,phone,avatar',
-            'seller.store:id,user_id,nama_toko,status,lokasi_toko',
-        ])->where('receipt_token', $receiptToken)->first();
+        return Invoice::with(self::INVOICE_RELATIONS)->where('receipt_token', $receiptToken)->first();
     }
 
     /**
@@ -89,12 +85,7 @@ class InvoiceService
      */
     public function getInvoiceByOrderId(int $orderId): ?Invoice
     {
-        return Invoice::with([
-            'pesanan.postingan:id,name,image,harga,lokasi,kondisi',
-            'user:id,name,email,phone,avatar',
-            'seller:id,name,email,phone,avatar',
-            'seller.store:id,user_id,nama_toko,status,lokasi_toko',
-        ])->where('pesanan_id', $orderId)->first();
+        return Invoice::with(self::INVOICE_RELATIONS)->where('pesanan_id', $orderId)->first();
     }
 
     /**

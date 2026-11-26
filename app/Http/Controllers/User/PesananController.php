@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PesananController extends Controller
 {
+    private const ROUTE_PESANAN_DETAIL = 'user.pesanan.detail';
+
     protected PesananService $pesananService;
 
     public function __construct(PesananService $pesananService)
@@ -35,6 +37,7 @@ class PesananController extends Controller
             'postingan' => $postingan,
             'user' => $user,
             'saldoBjpay' => $user->saldo_bjpay ?? 0,
+            'couriers' => $this->pesananService->getCouriers(),
         ]);
     }
 
@@ -47,15 +50,17 @@ class PesananController extends Controller
             'catatan' => 'nullable|string|max:500',
             'promo_code' => 'nullable|string|max:50',
             'metode_pembayaran' => 'nullable|string|in:transfer,cod,bjpay',
+            'kurir_code' => 'nullable|string|in:sedagho,jnt,jne,pickup',
         ]);
 
         $userId = Auth::id();
         $catatan = $request->input('catatan');
         $promoCode = $request->input('promo_code');
         $metodePembayaran = $request->input('metode_pembayaran', 'transfer');
+        $kurirCode = $request->input('kurir_code', 'sedagho');
 
         try {
-            $pesanan = $this->pesananService->createOrder($userId, $postingan_id, $catatan, $promoCode, $metodePembayaran);
+            $pesanan = $this->pesananService->createOrder($userId, $postingan_id, $catatan, $promoCode, $metodePembayaran, $kurirCode);
 
             if ($metodePembayaran === 'bjpay') {
                 toast('Pembayaran menggunakan saldo BJPay berhasil! Pesanan langsung diproses penjual.', 'success');
@@ -65,7 +70,7 @@ class PesananController extends Controller
                 toast('Pesanan berhasil dibuat. Silakan lakukan pembayaran.', 'success');
             }
 
-            return redirect()->route('user.pesanan.detail', $pesanan->id);
+            return redirect()->route(self::ROUTE_PESANAN_DETAIL, $pesanan->id);
         } catch (\InvalidArgumentException $e) {
             toast($e->getMessage(), 'error');
 
@@ -166,7 +171,7 @@ class PesananController extends Controller
 
         toast('Pembayaran berhasil dikonfirmasi! Terima kasih.', 'success');
 
-        return redirect()->route('user.pesanan.detail', $id);
+        return redirect()->route(self::ROUTE_PESANAN_DETAIL, $id);
     }
 
     /**
@@ -178,6 +183,6 @@ class PesananController extends Controller
 
         toast('Pembayaran simulasi QRIS berhasil diverifikasi tanpa biaya!', 'success');
 
-        return redirect()->route('user.pesanan.detail', $id);
+        return redirect()->route(self::ROUTE_PESANAN_DETAIL, $id);
     }
 }

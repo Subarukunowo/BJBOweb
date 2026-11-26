@@ -21,23 +21,37 @@ class PesananService
         $this->midtransService = $midtransService;
     }
 
+    public const COURIERS = [
+        'sedagho' => ['code' => 'sedagho', 'name' => 'Kurir Lokal Sedagho Bengkalis', 'ongkir' => 10000, 'estimasi' => 'Hari Ini (2-4 Jam)'],
+        'jnt' => ['code' => 'jnt', 'name' => 'J&T Express Reguler', 'ongkir' => 18000, 'estimasi' => '1-2 Hari Kerja'],
+        'jne' => ['code' => 'jne', 'name' => 'JNE Reguler (CTC)', 'ongkir' => 20000, 'estimasi' => '2-3 Hari Kerja'],
+        'pickup' => ['code' => 'pickup', 'name' => 'COD / Ambil Langsung di Penjual', 'ongkir' => 0, 'estimasi' => 'Sesuai Kesepakatan'],
+    ];
+
+    public function getCouriers(): array
+    {
+        return array_values(self::COURIERS);
+    }
+
     /**
      * Create a new order for a posting and obtain a snap token.
-     * Supports optional promo voucher discount, COD, and BJPay wallet payments.
+     * Supports optional promo voucher discount, courier selection, COD, and BJPay wallet payments.
      */
     public function createOrder(
         int $buyerId,
         int $postinganId,
         ?string $catatan = null,
         ?string $promoCode = null,
-        string $metodePembayaran = 'transfer'
+        string $metodePembayaran = 'transfer',
+        string $kurirCode = 'sedagho'
     ): Pesanan {
         $postingan = Postingan::findOrFail($postinganId);
         $buyer = User::findOrFail($buyerId);
 
+        $courier = self::COURIERS[$kurirCode] ?? self::COURIERS['sedagho'];
         $totalPrice = $postingan->price;
-        $ongkir = 10000;
-        $diskonOngkir = $metodePembayaran === 'bjpay' ? 5000 : 0;
+        $ongkir = (int) $courier['ongkir'];
+        $diskonOngkir = $metodePembayaran === 'bjpay' ? min(5000, $ongkir) : 0;
         [$promoId, $discountAmount] = $this->resolvePromoDiscount($promoCode, $totalPrice);
         $finalPrice = max(0, $totalPrice + $ongkir - $discountAmount - $diskonOngkir);
 
@@ -55,9 +69,22 @@ class PesananService
             'discount_amount' => $discountAmount,
             'final_price' => $finalPrice,
             'metode_pembayaran' => $metodePembayaran,
+            'kurir_name' => $courier['name'],
+            'nomor_resi' => 'BKS-'.strtoupper(Str::random(7)),
+            'origin_lat' => 1.4877,
+            'origin_lng' => 102.1334,
+            'origin_address' => 'Toko Penjual - Bengkalis Kota',
+            'destination_lat' => 1.4725,
+            'destination_lng' => 102.1520,
+            'destination_address' => $catatan ?: 'Alamat Pembeli Bengkalis',
+            'current_lat' => 1.4835,
+            'current_lng' => 102.1390,
+            'last_checkpoint' => $status === 'paid'
+                ? 'Pembayaran lunas. Menunggu penjemputan '.$courier['name'].'.'
+                : 'Pesanan dibuat via '.$courier['name'].'.',
             'catatan' => $catatan,
             'status' => $status,
-            'shipping_status' => 'menunggu_konfirmasi',
+            'shipping_status' => $status === 'paid' ? 'diproses' : 'menunggu_konfirmasi',
             'payment_type' => $paymentType,
             'settlement_time' => $status === 'paid' ? now() : null,
         ]);
