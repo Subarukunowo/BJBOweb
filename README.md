@@ -37,20 +37,24 @@ Aplikasi ini memfasilitasi transaksi jual beli lokal dengan menyediakan fitur et
 | :---: | :---: | :---: |
 | ![Landing BJBO Web](docs/screenshots/web_01_landing.png) | ![Login BJBO Web](docs/screenshots/web_02_login.png) | ![Dashboard BJBO Web](docs/screenshots/web_03_dashboard.png) |
 
-### Checkout Kurir, Tracking Peta OpenStreetMap, & Pesanan
-| Pilih Kurir & Checkout | Pelacakan Peta OpenStreetMap | Daftar Pesanan (`/user/pesanan`) |
-| :---: | :---: | :---: |
-| ![Checkout Kurir Web](docs/screenshots/web_v2_checkout_courier.png) | ![Tracking Peta Web](docs/screenshots/web_v2_tracking_map.png) | ![Pesanan Web](docs/screenshots/web_08_pesanan.png) |
-
-### Dompet BJPay, Escrow Rekber, Keranjang, & Buka Toko
-| Dompet BJPay (`/user/bjpay`) | Escrow Rekber (`/user/rekber`) | Keranjang (`/user/cart`) | Buka Toko (`/user/buka-toko`) |
+### Checkout Kurir, Pembayaran QRIS/Midtrans, Tracking Peta, & Kontrol 2 POV
+| Pilih Kurir & Checkout | Pembayaran Midtrans / QRIS Modal | Pelacakan Peta OpenStreetMap (`Pembeli`) | Kontrol Pengiriman & Resi (`Penjual`) |
 | :---: | :---: | :---: | :---: |
-| ![BJPay Web](docs/screenshots/web_04_bjpay.png) | ![Rekber Web](docs/screenshots/web_05_rekber.png) | ![Cart Web](docs/screenshots/web_06_cart.png) | ![Buka Toko Web](docs/screenshots/web_07_buka_toko.png) |
+| ![Checkout Kurir Web](docs/screenshots/web_v2_checkout_courier.png) | ![Pembayaran QRIS Web](docs/screenshots/web_v2_pembayaran_midtrans.png) | ![Tracking Peta Web](docs/screenshots/web_v2_tracking_map.png) | ![Kontrol Penjual Web](docs/screenshots/web_v2_penjual_pesanan.png) |
 
-### Obrolan & Notifikasi Real-time (Laravel Reverb)
-| Ruang Obrolan (`/user/chat`) | Notifikasi Live (`/user/notifikasi`) |
-| :---: | :---: |
-| ![Chat Web](docs/screenshots/web_09_chat.png) | ![Notifikasi Web](docs/screenshots/web_10_notifikasi.png) |
+### Dompet BJPay, Escrow Rekber, Pesanan, & Buka Toko
+| Dompet BJPay (`/user/bjpay`) | Escrow Rekber (`/user/rekber`) | Daftar Pesanan (`/user/pesanan`) | Keranjang & Buka Toko |
+| :---: | :---: | :---: | :---: |
+| ![BJPay Web](docs/screenshots/web_04_bjpay.png) | ![Rekber Web](docs/screenshots/web_05_rekber.png) | ![Pesanan Web](docs/screenshots/web_08_pesanan.png) | ![Buka Toko Web](docs/screenshots/web_07_buka_toko.png) |
+
+### Obrolan & Notifikasi 2 POV (Pembeli vs Penjual)
+| Kotak Masuk Chat | Ruang Chat (`POV Pembeli`) | Ruang Chat (`POV Penjual`) |
+| :---: | :---: | :---: |
+| ![Chat Inbox Web](docs/screenshots/web_09_chat.png) | ![Chat Pembeli Web](docs/screenshots/web_v2_chat_pembeli.png) | ![Chat Penjual Web](docs/screenshots/web_v2_chat_penjual.png) |
+
+| Notifikasi (`POV Pembeli`) | Notifikasi (`POV Penjual`) | Keranjang Belanja |
+| :---: | :---: | :---: |
+| ![Notifikasi Pembeli Web](docs/screenshots/web_10_notifikasi.png) | ![Notifikasi Penjual Web](docs/screenshots/web_v2_notifikasi_penjual.png) | ![Cart Web](docs/screenshots/web_06_cart.png) |
 
 ---
 
