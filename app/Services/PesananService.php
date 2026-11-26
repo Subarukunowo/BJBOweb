@@ -84,7 +84,7 @@ class PesananService
                 : 'Pesanan dibuat via '.$courier['name'].'.',
             'catatan' => $catatan,
             'status' => $status,
-            'shipping_status' => $status === 'paid' ? 'diproses' : 'menunggu_konfirmasi',
+            'shipping_status' => 'menunggu_konfirmasi',
             'payment_type' => $paymentType,
             'settlement_time' => $status === 'paid' ? now() : null,
         ]);
@@ -171,11 +171,27 @@ class PesananService
     }
 
     /**
-     * Get all orders related to a user.
+     * Get all orders related to a user (buyer or seller).
      */
     public function getUserOrders(int $userId): Collection
     {
         return $this->pesananRepository->getOrdersByUserId($userId);
+    }
+
+    /**
+     * Get orders placed by the user (Buyer POV).
+     */
+    public function getUserPurchases(int $userId): Collection
+    {
+        return $this->pesananRepository->getBuyerOrders($userId);
+    }
+
+    /**
+     * Get incoming orders for the user (Seller POV).
+     */
+    public function getUserSales(int $userId): Collection
+    {
+        return $this->pesananRepository->getSellerOrders($userId);
     }
 
     /**

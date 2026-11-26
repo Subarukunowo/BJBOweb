@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 class PesananRepository
 {
     private const RELATION_INVOICE_SELECT = 'invoice:id,pesanan_id,invoice_number,status,receipt_token,total_bayar';
+
     /**
      * Create a new order.
      */
@@ -71,9 +72,9 @@ class PesananRepository
     }
 
     /**
-     * Get all orders for a user as buyer or seller with optimized columns.
+     * Shared query builder for listing user orders without duplicating select/eager-loading clauses.
      */
-    public function getOrdersByUserId(int $userId): Collection
+    private function baseListQuery()
     {
         return Pesanan::query()
             ->select([
@@ -88,10 +89,38 @@ class PesananRepository
                 'pembeli:id,name',
                 self::RELATION_INVOICE_SELECT,
             ])
+            ->latest('id');
+    }
+
+    /**
+     * Get all orders for a user as buyer or seller with optimized columns.
+     */
+    public function getOrdersByUserId(int $userId): Collection
+    {
+        return $this->baseListQuery()
             ->where(function ($q) use ($userId) {
                 $q->where('user_id', $userId)->orWhere('penjual_id', $userId);
             })
-            ->latest('id')
+            ->get();
+    }
+
+    /**
+     * Get orders where the user is the buyer.
+     */
+    public function getBuyerOrders(int $userId): Collection
+    {
+        return $this->baseListQuery()
+            ->where('user_id', $userId)
+            ->get();
+    }
+
+    /**
+     * Get orders where the user is the seller.
+     */
+    public function getSellerOrders(int $userId): Collection
+    {
+        return $this->baseListQuery()
+            ->where('penjual_id', $userId)
             ->get();
     }
 
