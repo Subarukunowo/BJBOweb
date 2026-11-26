@@ -14,6 +14,8 @@ class CategoryAnalyticsServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const PERIOD_1_MINGGU = '1_minggu';
+
     protected CategoryAnalyticsService $service;
 
     protected function setUp(): void
@@ -28,12 +30,12 @@ class CategoryAnalyticsServiceTest extends TestCase
         $data = $this->service->getAllPeriodsData();
 
         $this->assertIsArray($data);
-        $this->assertArrayHasKey('1_minggu', $data);
+        $this->assertArrayHasKey(self::PERIOD_1_MINGGU, $data);
         $this->assertArrayHasKey('1_bulan', $data);
         $this->assertArrayHasKey('1_tahun', $data);
         $this->assertArrayHasKey('all_time', $data);
 
-        $this->assertEquals('1 Minggu Terakhir', $data['1_minggu']['period_label']);
+        $this->assertEquals('1 Minggu Terakhir', $data[self::PERIOD_1_MINGGU]['period_label']);
         $this->assertEquals('1 Bulan Terakhir', $data['1_bulan']['period_label']);
         $this->assertEquals('1 Tahun Terakhir', $data['1_tahun']['period_label']);
         $this->assertEquals('Semua Waktu', $data['all_time']['period_label']);
@@ -87,7 +89,7 @@ class CategoryAnalyticsServiceTest extends TestCase
             'created_at' => now()->subDays(3),
         ]);
 
-        $result = $this->service->getCategorySalesData('1_minggu', now()->subDays(7));
+        $result = $this->service->getCategorySalesData(self::PERIOD_1_MINGGU, now()->subDays(7));
 
         $this->assertEquals(3, $result['total_sold']);
         $this->assertEquals(2500000, $result['total_revenue']);
@@ -110,7 +112,7 @@ class CategoryAnalyticsServiceTest extends TestCase
 
     public function test_get_category_sales_data_handles_empty_dataset_gracefully(): void
     {
-        $result = $this->service->getCategorySalesData('1_minggu', now()->subDays(7));
+        $result = $this->service->getCategorySalesData(self::PERIOD_1_MINGGU, now()->subDays(7));
 
         $this->assertEquals(0, $result['total_sold']);
         $this->assertEquals(0, $result['total_revenue']);

@@ -1,4 +1,4 @@
-<!-- Header Navigasi Pengguna Terdaftar (Tokopedia Style Popovers) -->
+<!-- Header Navigasi Pengguna Terdaftar -->
 <header class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50 shadow-xs py-2.5 sm:py-3 transition-colors">
     <div class="container mx-auto px-3 sm:px-4">
         <div class="flex items-center justify-between gap-2 sm:gap-4">
@@ -7,7 +7,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="BJBO Logo" class="h-11 sm:h-12 md:h-14 w-auto object-contain">
             </a>
 
-            <!-- 2. Shortcut Kategori (Tokopedia Style) -->
+            <!-- 2. Shortcut Kategori -->
             <a href="{{ route('layout') }}" class="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:text-bjbo-primary px-2.5 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition anim-press flex-shrink-0">
                 <span>Kategori</span>
                 <i class="bi bi-chevron-down text-[10px]"></i>
@@ -19,7 +19,7 @@
                 <input type="text" name="keyword" class="w-full h-10 pl-11 pr-4 text-xs sm:text-sm bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-300 dark:border-zinc-700 rounded-full focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:border-bjbo-primary focus:ring-2 focus:ring-bjbo-primary/20 focus:outline-none transition" placeholder="Cari di BJBO Sedagho..." value="{{ request('keyword') }}">
             </form>
 
-            <!-- 4. Aksi Pengguna Dikelompokkan Rata Kanan (Tokopedia Style) -->
+            <!-- 4. Aksi Pengguna Dikelompokkan Rata Kanan -->
             <div class="ml-auto flex items-center gap-1 sm:gap-2 flex-shrink-0">
                 @php
                     $userId = Auth::id();
@@ -330,7 +330,7 @@
                     </div>
                 </div>
 
-                <!-- GRUP 4: TOMBOL TOKO (PERSIS SEPERTI GAMBAR 1 TOKOPEDIA) -->
+                <!-- GRUP 4: TOMBOL TOKO -->
                 @if(Auth::check() && Auth::user()->hasActiveStore())
                     <a href="{{ route('user.profil') }}" class="hidden sm:inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition anim-press" title="Kelola Toko Saya">
                         <i class="bi bi-shop text-sm"></i>
@@ -347,7 +347,7 @@
                 <!-- PEMISAH VERTIKAL (DIVIDER) -->
                 <div class="h-5 w-px bg-zinc-200 dark:bg-zinc-700 mx-1 hidden sm:block"></div>
 
-                <!-- GRUP 5: PROFIL PENGGUNA RATA KANAN (TOKOPEDIA STYLE DROPDOWN) -->
+                <!-- GRUP 5: PROFIL PENGGUNA RATA KANAN (DROPDOWN) -->
                 <div class="relative inline-block text-left" id="userMenuDropdownContainer">
                     <button type="button" class="flex items-center gap-2 py-1 px-1.5 sm:px-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition anim-press focus:outline-none" id="userMenuBtn">
                         <img src="{{ Auth::user()->profile_picture_url }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-zinc-200 dark:border-zinc-700">

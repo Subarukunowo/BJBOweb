@@ -12,6 +12,8 @@ class CartFeatureTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const ROUTE_CART_ADD = 'user.cart.add';
+
     protected User $buyer;
 
     protected User $seller;
@@ -64,7 +66,7 @@ class CartFeatureTest extends TestCase
      */
     public function test_user_can_add_item_to_cart(): void
     {
-        $response = $this->actingAs($this->buyer)->post(route('user.cart.add', $this->postingan->id));
+        $response = $this->actingAs($this->buyer)->post(route(self::ROUTE_CART_ADD, $this->postingan->id));
 
         $response->assertRedirect();
         $this->assertDatabaseHas('carts', [
@@ -74,7 +76,7 @@ class CartFeatureTest extends TestCase
         ]);
 
         // Tambah lagi untuk memastikan kuantitas naik
-        $this->actingAs($this->buyer)->post(route('user.cart.add', $this->postingan->id));
+        $this->actingAs($this->buyer)->post(route(self::ROUTE_CART_ADD, $this->postingan->id));
         $this->assertDatabaseHas('carts', [
             'user_id' => $this->buyer->id,
             'postingan_id' => $this->postingan->id,
@@ -87,7 +89,7 @@ class CartFeatureTest extends TestCase
      */
     public function test_seller_cannot_add_own_item_to_cart(): void
     {
-        $response = $this->actingAs($this->seller)->post(route('user.cart.add', $this->postingan->id));
+        $response = $this->actingAs($this->seller)->post(route(self::ROUTE_CART_ADD, $this->postingan->id));
 
         $this->assertDatabaseMissing('carts', [
             'user_id' => $this->seller->id,

@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Hash;
 
 class PostinganSeeder extends Seeder
 {
+    private const LOKASI_BENGKALIS_KOTA = 'Bengkalis Kota';
+
+    private const LOKASI_MANDAU_DURI = 'Mandau, Duri';
     public function run(): void
     {
         $storagePostinganDir = storage_path('app/public/postingan');
@@ -79,7 +82,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Elektronik',
                 'description' => 'Kondisi mulus 92 persen, baterai masih awet 3-4 jam. Cocok untuk kerja kantor, kuliah, dan olah data. Lengkap charger original.',
                 'image' => 'postingan/lenovo.jpg',
-                'lokasi' => 'Bengkalis Kota',
+                'lokasi' => self::LOKASI_BENGKALIS_KOTA,
                 'user_id' => $user1->id,
                 'username' => $user1->name,
                 'status' => 'disetujui',
@@ -90,7 +93,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Elektronik',
                 'description' => 'AC Sharp 1 PK second terawat, baru dicuci dan diisi freon penuh. Dingin menusuk, pipa 3 meter include remote original.',
                 'image' => 'postingan/ac.jpg',
-                'lokasi' => 'Mandau, Duri',
+                'lokasi' => self::LOKASI_MANDAU_DURI,
                 'user_id' => $user2->id,
                 'username' => $user2->name,
                 'status' => 'disetujui',
@@ -123,7 +126,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Fashion',
                 'description' => 'Bahan tebal anti angin dan gerimis ringan, cocok untuk pengendara motor harian di wilayah Bengkalis dan sekitarnya.',
                 'image' => 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Bengkalis Kota',
+                'lokasi' => self::LOKASI_BENGKALIS_KOTA,
                 'user_id' => $user1->id,
                 'username' => $user1->name,
                 'status' => 'disetujui',
@@ -134,7 +137,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Fashion',
                 'description' => 'Kondisi 95 persen baru dipakai 2 kali ke acara kampus. Sol empuk tidak bikin pegal, box masih ada.',
                 'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Mandau, Duri',
+                'lokasi' => self::LOKASI_MANDAU_DURI,
                 'user_id' => $user2->id,
                 'username' => $user2->name,
                 'status' => 'disetujui',
@@ -156,7 +159,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Otomotif',
                 'description' => 'Visor bening anti gores, sistem ventilasi lancar, busa dalam masih wangi dan terawat.',
                 'image' => 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Mandau, Duri',
+                'lokasi' => self::LOKASI_MANDAU_DURI,
                 'user_id' => $user4->id,
                 'username' => $user4->name,
                 'status' => 'disetujui',
@@ -167,7 +170,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Otomotif',
                 'description' => 'Bahan parasut tebal dilapisi coating perak penolak panas matahari, pas untuk motor matic besar seperti NMAX atau PCX.',
                 'image' => 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Bengkalis Kota',
+                'lokasi' => self::LOKASI_BENGKALIS_KOTA,
                 'user_id' => $user1->id,
                 'username' => $user1->name,
                 'status' => 'disetujui',
@@ -189,7 +192,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Perabot',
                 'description' => 'Finishing vernis natural semi gloss, kaki besi hollow cat hitam doff anti karat, cocok untuk ruangan santai.',
                 'image' => 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Bengkalis Kota',
+                'lokasi' => self::LOKASI_BENGKALIS_KOTA,
                 'user_id' => $user3->id,
                 'username' => $user3->name,
                 'status' => 'disetujui',
@@ -200,7 +203,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Perabot',
                 'description' => 'Ketinggian bisa diatur dengan hidrolik lancar, sandaran bisa rebah sedikit, roda putar 360 derajat mulus.',
                 'image' => 'https://images.unsplash.com/photo-1580481077195-c328a37db71a?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Mandau, Duri',
+                'lokasi' => self::LOKASI_MANDAU_DURI,
                 'user_id' => $user4->id,
                 'username' => $user4->name,
                 'status' => 'disetujui',
@@ -222,7 +225,7 @@ class PostinganSeeder extends Seeder
                 'category' => 'Lainnya',
                 'description' => 'Neck lurus, action senar rendah tidak sakit di jari, bonus tas gitar dan pick.',
                 'image' => 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=600&q=80',
-                'lokasi' => 'Bengkalis Kota',
+                'lokasi' => self::LOKASI_BENGKALIS_KOTA,
                 'user_id' => $user2->id,
                 'username' => $user2->name,
                 'status' => 'disetujui',

@@ -66,13 +66,13 @@ class SecurityAndChatFeatureTest extends TestCase
 
         // Uji sensor nomor telepon
         $censored1 = $chatService->censorPhoneNumber('Nomor saya 081234567890');
-        $this->assertEquals('pesan ini tidak dapat dikirim', $censored1);
+        $this->assertEquals(ChatService::CENSORED_MESSAGE, $censored1);
 
         $censored2 = $chatService->censorPhoneNumber('Hubungi WA +62 812-3456-7890 ya mas');
-        $this->assertEquals('pesan ini tidak dapat dikirim', $censored2);
+        $this->assertEquals(ChatService::CENSORED_MESSAGE, $censored2);
 
         $censored3 = $chatService->censorPhoneNumber('Nomor hp 0 8 1 2 3 4 5 6 7 8');
-        $this->assertEquals('pesan ini tidak dapat dikirim', $censored3);
+        $this->assertEquals(ChatService::CENSORED_MESSAGE, $censored3);
 
         // Pesan normal tanpa nomor telepon
         $normal = $chatService->censorPhoneNumber('Halo, apakah stok barang ini masih ada?');

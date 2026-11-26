@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lacak Pengiriman Pesanan #{{ $pesanan->order_number }} - BJBO Sedagho</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     <!-- Leaflet.js Free OpenStreetMap -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         #deliveryMap {
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <!-- 4 Tahapan Siklus Pesanan (Tokopedia / Shopee Tracking Stepper) -->
+    <!-- 4 Tahapan Siklus Tracking Pesanan -->
     <div class="bg-white border border-bjbo-border rounded-2xl p-5 sm:p-6 mb-6 shadow-sm">
         <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-6">Status Perjalanan Paket</h2>
 
@@ -146,7 +146,7 @@
         <div class="bg-white border border-bjbo-border rounded-2xl p-5 sm:p-6 shadow-sm">
             <h3 class="text-sm font-bold text-gray-900 mb-3 pb-2 border-b border-bjbo-border">Detail Produk & Mitra</h3>
             <div class="flex items-center gap-3 mb-4">
-                <img src="{{ $pesanan->postingan->image_url ?? asset('images/bjbo.png') }}" class="w-16 h-16 rounded-xl object-cover border border-bjbo-border flex-shrink-0">
+                <img src="{{ $pesanan->postingan->image_url ?? asset('images/bjbo.png') }}" alt="{{ $pesanan->postingan->name ?? 'Produk' }}" class="w-16 h-16 rounded-xl object-cover border border-bjbo-border flex-shrink-0">
                 <div>
                     <h4 class="text-xs sm:text-sm font-bold text-gray-900 line-clamp-1">{{ $pesanan->postingan->name ?? 'Produk' }}</h4>
                     <p class="text-xs text-bjbo-primary font-bold">Rp{{ number_format($pesanan->getEffectivePrice(), 0, ',', '.') }}</p>
@@ -199,8 +199,8 @@
                         <form id="rejectForm" action="{{ route('user.pesanan.confirm', $pesanan->id) }}" method="POST" class="hidden mt-3 pt-3 border-t border-bjbo-border space-y-2">
                             @csrf
                             <input type="hidden" name="action" value="reject">
-                            <label class="block text-xs font-semibold text-gray-700">Alasan Penolakan Pesanan:</label>
-                            <input type="text" name="alasan_penolakan" required placeholder="Contoh: Stok barang sudah habis" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg">
+                            <label for="alasan_penolakan" class="block text-xs font-semibold text-gray-700">Alasan Penolakan Pesanan:</label>
+                            <input id="alasan_penolakan" type="text" name="alasan_penolakan" required placeholder="Contoh: Stok barang sudah habis" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg">
                             <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs py-2 rounded-lg font-bold">Kirim Penolakan</button>
                         </form>
 
@@ -212,12 +212,12 @@
                         <form action="{{ route('user.pesanan.ship', $pesanan->id) }}" method="POST" class="space-y-3">
                             @csrf
                             <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Pilih / Nama Ekspedisi / Kurir <span class="text-red-500">*</span></label>
-                                <input type="text" name="kurir_name" required placeholder="J&T Express, JNE, SiCepat, Kurir Lokal Bengkalis" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                                <label for="kurir_name" class="block text-xs font-semibold text-gray-700 mb-1">Pilih / Nama Ekspedisi / Kurir <span class="text-red-500">*</span></label>
+                                <input id="kurir_name" type="text" name="kurir_name" required placeholder="J&T Express, JNE, SiCepat, Kurir Lokal Bengkalis" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor Resi / Bukti Pengiriman <span class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_resi" required placeholder="Contoh: JT892193812" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none font-mono">
+                                <label for="nomor_resi" class="block text-xs font-semibold text-gray-700 mb-1">Nomor Resi / Bukti Pengiriman <span class="text-red-500">*</span></label>
+                                <input id="nomor_resi" type="text" name="nomor_resi" required placeholder="Contoh: JT892193812" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none font-mono">
                             </div>
                             <button type="submit" class="w-full bjbo-btn-primary text-xs py-2.5 rounded-xl font-bold shadow">
                                 <i class="bi bi-send-check"></i> Konfirmasi Barang Sedang Dikirim

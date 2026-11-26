@@ -46,7 +46,7 @@
         <img src="{{ $item->image_url }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-200 {{ $isSold ? 'grayscale' : '' }}" alt="{{ $item->name }}" loading="lazy" data-product-img="{{ $item->id }}">
     </div>
 
-    <!-- Rincian Produk Bergaya Shadcn UI & Tokopedia Style (Gambar 2) -->
+    <!-- Rincian Produk Bergaya Shadcn UI -->
     <div class="p-2.5 sm:p-3 flex flex-col flex-grow">
         <!-- Judul Produk -->
         <h3 class="font-medium text-xs sm:text-[13px] text-zinc-900 line-clamp-2 mb-1 leading-snug group-hover:text-blue-700 transition" title="{{ $item->name }}">

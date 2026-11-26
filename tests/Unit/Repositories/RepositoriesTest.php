@@ -17,6 +17,8 @@ class RepositoriesTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const TEST_ORDER_NUMBER = 'ORD-TEST-99';
+
     public function test_user_repository_crud(): void
     {
         $repo = new UserRepository;
@@ -109,7 +111,7 @@ class RepositoriesTest extends TestCase
         $repo = new PesananRepository;
 
         $pesanan = $repo->create([
-            'order_number' => 'ORD-TEST-99',
+            'order_number' => self::TEST_ORDER_NUMBER,
             'user_id' => $buyer->id,
             'penjual_id' => $seller->id,
             'postingan_id' => $postingan->id,
@@ -117,13 +119,13 @@ class RepositoriesTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $this->assertEquals('ORD-TEST-99', $pesanan->order_number);
+        $this->assertEquals(self::TEST_ORDER_NUMBER, $pesanan->order_number);
 
         $byId = $repo->findById($pesanan->id);
         $this->assertNotNull($byId);
         $this->assertEquals($pesanan->id, $byId->id);
 
-        $byOrderNumber = $repo->findByOrderNumber('ORD-TEST-99');
+        $byOrderNumber = $repo->findByOrderNumber(self::TEST_ORDER_NUMBER);
         $this->assertNotNull($byOrderNumber);
         $this->assertEquals($pesanan->id, $byOrderNumber->id);
 

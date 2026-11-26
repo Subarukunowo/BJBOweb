@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dompet Rekber Penjual & Pencairan Dana - BJBO Sedagho</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-bjbo-bg text-gray-900 font-sans min-h-screen flex flex-col">
@@ -85,10 +85,10 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nominal Penarikan (Rp) <span class="text-red-500">*</span></label>
+                        <label for="amount" class="block text-xs font-semibold text-gray-700 mb-1">Nominal Penarikan (Rp) <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">Rp</span>
-                            <input type="number" name="amount" required min="10000" max="{{ $balance }}" placeholder="Minimal Rp10.000" class="w-full text-xs pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                            <input id="amount" type="number" name="amount" required min="10000" max="{{ $balance }}" placeholder="Minimal Rp10.000" class="w-full text-xs pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                         </div>
                         <p class="text-[11px] text-gray-500 mt-1">Maksimal penarikan: Rp{{ number_format($balance, 0, ',', '.') }}</p>
                     </div>
@@ -190,13 +190,13 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor Rekening <span class="text-red-500">*</span></label>
-                <input type="text" name="account_number" required placeholder="Contoh: 1234567890" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                <label for="account_number" class="block text-xs font-semibold text-gray-700 mb-1">Nomor Rekening <span class="text-red-500">*</span></label>
+                <input id="account_number" type="text" name="account_number" required placeholder="Contoh: 1234567890" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemilik Rekening Sesuai Buku Tabungan <span class="text-red-500">*</span></label>
-                <input type="text" name="account_name" required placeholder="Contoh: AHMAD SUBARI" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none uppercase">
+                <label for="account_name" class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemilik Rekening Sesuai Buku Tabungan <span class="text-red-500">*</span></label>
+                <input id="account_name" type="text" name="account_name" required placeholder="Contoh: AHMAD SUBARI" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none uppercase">
             </div>
 
             <div class="pt-3 flex gap-2 justify-end">

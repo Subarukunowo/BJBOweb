@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buka Toko di BJBO - Toko Perorangan & Official Store</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-bjbo-bg text-gray-900 font-sans min-h-screen flex flex-col">
@@ -107,40 +107,40 @@
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Toko / Usaha <span class="text-red-500">*</span></label>
-                        <input type="text" name="store_name" required value="{{ old('store_name') }}" placeholder="Contoh: Toko Berkah Bengkalis" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                        <label for="store_name_perorangan" class="block text-xs font-semibold text-gray-700 mb-1">Nama Toko / Usaha <span class="text-red-500">*</span></label>
+                        <input type="text" id="store_name_perorangan" name="store_name" required value="{{ old('store_name') }}" placeholder="Contoh: Toko Berkah Bengkalis" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp / HP Aktif <span class="text-red-500">*</span></label>
-                        <input type="text" name="phone_number" required value="{{ old('phone_number') }}" placeholder="081234567890" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                        <label for="phone_number_perorangan" class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp / HP Aktif <span class="text-red-500">*</span></label>
+                        <input type="text" id="phone_number_perorangan" name="phone_number" required value="{{ old('phone_number') }}" placeholder="081234567890" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Korespondensi <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" required value="{{ old('email', $user->email) }}" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                        <label for="email_perorangan" class="block text-xs font-semibold text-gray-700 mb-1">Email Korespondensi <span class="text-red-500">*</span></label>
+                        <input type="email" id="email_perorangan" name="email" required value="{{ old('email', $user->email) }}" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor NIK KTP (16 Digit) <span class="text-red-500">*</span></label>
-                        <input type="text" name="ktp_number" required maxlength="16" minlength="16" value="{{ old('ktp_number') }}" placeholder="140301xxxxxxxxxx" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
+                        <label for="ktp_number" class="block text-xs font-semibold text-gray-700 mb-1">Nomor NIK KTP (16 Digit) <span class="text-red-500">*</span></label>
+                        <input type="text" id="ktp_number" name="ktp_number" required maxlength="16" minlength="16" value="{{ old('ktp_number') }}" placeholder="140301xxxxxxxxxx" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Foto KTP Asli (Maks 3MB) <span class="text-red-500">*</span></label>
-                    <input type="file" name="ktp_image" required accept="image/*" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                    <label for="ktp_image" class="block text-xs font-semibold text-gray-700 mb-1">Foto KTP Asli (Maks 3MB) <span class="text-red-500">*</span></label>
+                    <input type="file" id="ktp_image" name="ktp_image" required accept="image/*" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
                     <p class="text-[11px] text-gray-400 mt-1">Pastikan foto KTP terbaca jelas dan tidak buram untuk validasi KYC.</p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Toko / Lokasi Gudang <span class="text-red-500">*</span></label>
-                    <textarea name="address" required rows="2" placeholder="Jl. Antara No. 12, Bengkalis Kota" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">{{ old('address') }}</textarea>
+                    <label for="address_perorangan" class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Toko / Lokasi Gudang <span class="text-red-500">*</span></label>
+                    <textarea id="address_perorangan" name="address" required rows="2" placeholder="Jl. Antara No. 12, Bengkalis Kota" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">{{ old('address') }}</textarea>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Deskripsi Singkat Toko (Opsional)</label>
-                    <textarea name="description" rows="2" placeholder="Jual aneka produk olahan ikan lempuk durian khas Bengkalis..." class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">{{ old('description') }}</textarea>
+                    <label for="description_perorangan" class="block text-xs font-semibold text-gray-700 mb-1">Deskripsi Singkat Toko (Opsional)</label>
+                    <textarea id="description_perorangan" name="description" rows="2" placeholder="Jual aneka produk olahan ikan lempuk durian khas Bengkalis..." class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-bjbo-primary focus:outline-none">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="pt-2">
@@ -162,51 +162,51 @@
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Brand / Official Store <span class="text-red-500">*</span></label>
-                        <input type="text" name="store_name" required value="{{ old('store_name') }}" placeholder="Contoh: PT Bengkalis Maritime Official" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
+                        <label for="store_name_official" class="block text-xs font-semibold text-gray-700 mb-1">Nama Brand / Official Store <span class="text-red-500">*</span></label>
+                        <input type="text" id="store_name_official" name="store_name" required value="{{ old('store_name') }}" placeholder="Contoh: PT Bengkalis Maritime Official" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor Telepon Kantor / Hotline <span class="text-red-500">*</span></label>
-                        <input type="text" name="phone_number" required value="{{ old('phone_number') }}" placeholder="0766-xxxxx atau 08xxxx" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Resmi Perusahaan <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" required value="{{ old('email', $user->email) }}" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor Induk Berusaha (NIB) <span class="text-red-500">*</span></label>
-                        <input type="text" name="nib_number" required value="{{ old('nib_number') }}" placeholder="Contoh: 9120001234567" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
+                        <label for="phone_number_official" class="block text-xs font-semibold text-gray-700 mb-1">Nomor Telepon Kantor / Hotline <span class="text-red-500">*</span></label>
+                        <input type="text" id="phone_number_official" name="phone_number" required value="{{ old('phone_number') }}" placeholder="0766-xxxxx atau 08xxxx" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor NPWP Perusahaan <span class="text-red-500">*</span></label>
-                        <input type="text" name="npwp_company" required value="{{ old('npwp_company') }}" placeholder="01.234.567.8-901.000" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
+                        <label for="email_official" class="block text-xs font-semibold text-gray-700 mb-1">Email Resmi Perusahaan <span class="text-red-500">*</span></label>
+                        <input type="email" id="email_official" name="email" required value="{{ old('email', $user->email) }}" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Unggah Dokumen NPWP (PDF / Gambar) <span class="text-red-500">*</span></label>
-                        <input type="file" name="npwp_image" required accept="image/*,application/pdf" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                        <label for="nib_number" class="block text-xs font-semibold text-gray-700 mb-1">Nomor Induk Berusaha (NIB) <span class="text-red-500">*</span></label>
+                        <input type="text" id="nib_number" name="nib_number" required value="{{ old('nib_number') }}" placeholder="Contoh: 9120001234567" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor Sertifikat HAKI Merek <span class="text-red-500">*</span></label>
-                        <input type="text" name="haki_certificate_number" required value="{{ old('haki_certificate_number') }}" placeholder="Contoh: IDM000123456" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
+                        <label for="npwp_company" class="block text-xs font-semibold text-gray-700 mb-1">Nomor NPWP Perusahaan <span class="text-red-500">*</span></label>
+                        <input type="text" id="npwp_company" name="npwp_company" required value="{{ old('npwp_company') }}" placeholder="01.234.567.8-901.000" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Unggah Sertifikat HAKI (PDF / Gambar) <span class="text-red-500">*</span></label>
-                        <input type="file" name="haki_certificate_file" required accept="image/*,application/pdf" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                        <label for="npwp_image" class="block text-xs font-semibold text-gray-700 mb-1">Unggah Dokumen NPWP (PDF / Gambar) <span class="text-red-500">*</span></label>
+                        <input type="file" id="npwp_image" name="npwp_image" required accept="image/*,application/pdf" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="haki_certificate_number" class="block text-xs font-semibold text-gray-700 mb-1">Nomor Sertifikat HAKI Merek <span class="text-red-500">*</span></label>
+                        <input type="text" id="haki_certificate_number" name="haki_certificate_number" required value="{{ old('haki_certificate_number') }}" placeholder="Contoh: IDM000123456" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="haki_certificate_file" class="block text-xs font-semibold text-gray-700 mb-1">Unggah Sertifikat HAKI (PDF / Gambar) <span class="text-red-500">*</span></label>
+                        <input type="file" id="haki_certificate_file" name="haki_certificate_file" required accept="image/*,application/pdf" class="w-full text-xs p-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Kantor Pusat / Pabrik <span class="text-red-500">*</span></label>
-                    <textarea name="address" required rows="2" placeholder="Komplek Pergudangan Pelabuhan Roro, Bengkalis" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">{{ old('address') }}</textarea>
+                    <label for="address_official" class="block text-xs font-semibold text-gray-700 mb-1">Alamat Kantor Pusat / Pabrik <span class="text-red-500">*</span></label>
+                    <textarea id="address_official" name="address" required rows="2" placeholder="Komplek Pergudangan Pelabuhan Roro, Bengkalis" class="w-full text-xs p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:bg-white focus:border-purple-600 focus:outline-none">{{ old('address') }}</textarea>
                 </div>
 
                 <div class="pt-2">

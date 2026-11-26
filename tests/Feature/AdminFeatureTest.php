@@ -12,13 +12,15 @@ class AdminFeatureTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const ROUTE_ADMIN_DASHBOARD = 'admin.dashboard';
+
     public function test_admin_dashboard_requires_admin_guard(): void
     {
-        $response = $this->get(route('admin.dashboard'));
+        $response = $this->get(route(self::ROUTE_ADMIN_DASHBOARD));
         $response->assertRedirect(route('splash'));
 
         $admin = Admin::factory()->create();
-        $authResponse = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
+        $authResponse = $this->actingAs($admin, 'admin')->get(route(self::ROUTE_ADMIN_DASHBOARD));
         $authResponse->assertStatus(200);
     }
 
@@ -53,7 +55,7 @@ class AdminFeatureTest extends TestCase
     {
         $admin = Admin::factory()->create();
 
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.dashboard'));
+        $response = $this->actingAs($admin, 'admin')->get(route(self::ROUTE_ADMIN_DASHBOARD));
 
         $response->assertStatus(200);
         $response->assertViewHas('categoryAnalyticsData');

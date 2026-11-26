@@ -13,6 +13,8 @@ class UserControllerFeatureTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const ROUTE_USER_PROFIL = 'user.profil';
+
     public function test_user_can_access_dashboard_and_postingan_detail(): void
     {
         $user = User::factory()->create();
@@ -72,7 +74,7 @@ class UserControllerFeatureTest extends TestCase
             'image' => $image,
         ]);
 
-        $storeResponse->assertRedirect(route('user.profil'));
+        $storeResponse->assertRedirect(route(self::ROUTE_USER_PROFIL));
         $postingan = Postingan::where('name', 'Kursi Ergonomis')->first();
         $this->assertNotNull($postingan);
 
@@ -88,7 +90,7 @@ class UserControllerFeatureTest extends TestCase
             'description' => 'Sangat nyaman dan empuk',
             'lokasi' => 'Bandung Kota',
         ]);
-        $updateResponse->assertRedirect(route('user.profil'));
+        $updateResponse->assertRedirect(route(self::ROUTE_USER_PROFIL));
         $this->assertEquals('Kursi Ergonomis Gaming', $postingan->fresh()->name);
 
         // Delete
@@ -125,7 +127,7 @@ class UserControllerFeatureTest extends TestCase
         Storage::fake('public');
         $user = User::factory()->create(['name' => 'Original Name']);
 
-        $profilResponse = $this->actingAs($user)->get(route('user.profil'));
+        $profilResponse = $this->actingAs($user)->get(route(self::ROUTE_USER_PROFIL));
         $profilResponse->assertStatus(200);
 
         $avatar = UploadedFile::fake()->image('user_avatar.jpg');
@@ -134,12 +136,12 @@ class UserControllerFeatureTest extends TestCase
             'email' => $user->email,
             'profile_picture' => $avatar,
         ]);
-        $updateAccResponse->assertRedirect(route('user.profil'));
+        $updateAccResponse->assertRedirect(route(self::ROUTE_USER_PROFIL));
         $this->assertEquals('Updated Name', $user->fresh()->name);
 
         // Remove avatar
         $removeResponse = $this->actingAs($user)->delete(route('user.profil.removeAvatar'));
-        $removeResponse->assertRedirect(route('user.profil'));
+        $removeResponse->assertRedirect(route(self::ROUTE_USER_PROFIL));
         $this->assertNull($user->fresh()->profile_picture);
     }
 }

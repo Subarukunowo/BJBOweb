@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wishlist & Rekomendasi Spesial Untuk Anda - BJBO Sedagho</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-bjbo-bg text-gray-900 font-sans min-h-screen flex flex-col">
@@ -53,7 +53,7 @@
                             </a>
                             <form action="{{ route('user.wishlist.toggle', $item->id) }}" method="POST" class="absolute top-2 right-2">
                                 @csrf
-                                <button type="submit" class="w-8 h-8 rounded-full bg-white/90 text-pink-600 hover:bg-white flex items-center justify-center text-sm shadow transition" title="Hapus dari wishlist">
+                                <button type="submit" class="w-8 h-8 rounded-full bg-white/90 text-pink-600 hover:bg-white flex items-center justify-center text-sm shadow transition" title="Hapus dari wishlist" aria-label="Hapus dari wishlist">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>

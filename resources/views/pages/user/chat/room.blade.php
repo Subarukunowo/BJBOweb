@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat dengan {{ $otherUser->name }} - BJBO Sedagho</title>
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     <!-- Vite + Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -151,9 +151,11 @@
         <!-- Input Bar Form Chat -->
         <div class="p-3 bg-white border-t border-bjbo-border shrink-0">
             <!-- Peringatan live jika mengetik nomor HP -->
-            <div id="phone-warning" class="hidden mb-2 p-2 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-                <i class="bi bi-exclamation-triangle-fill text-red-500"></i>
-                <span>Terdeteksi format nomor telepon (+62 / 08). Pesan akan otomatis diubah menjadi <strong>"pesan ini tidak dapat dikirim"</strong>.</span>
+            <div id="phone-warning" class="hidden mb-2 p-2 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 shrink-0"></i>
+                    <span>Terdeteksi format nomor telepon (+62 / 08). Pesan akan otomatis diubah menjadi <strong>"pesan ini tidak dapat dikirim"</strong>.</span>
+                </div>
             </div>
 
             <form id="chat-form" action="{{ route('user.chat.send') }}" method="POST" class="flex items-center gap-2">
@@ -183,7 +185,7 @@
 </main>
 
 <!-- Modal Laporkan Pesan Tidak Pantas -->
-<div id="report-modal" class="fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+<div id="report-modal" class="fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-xs items-center justify-center p-4 hidden">
     <div class="bg-white border border-bjbo-border rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-xl animate-fade-in">
         <div class="flex items-center justify-between pb-3 border-b border-bjbo-border mb-4">
             <h3 class="text-sm sm:text-base font-bold text-gray-900 flex items-center gap-2">
@@ -420,11 +422,13 @@
         form.action = `/user/chat/report/${messageId}`;
         snippetEl.textContent = `"${snippet}"`;
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function closeReportModal() {
         const modal = document.getElementById('report-modal');
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 </script>
 

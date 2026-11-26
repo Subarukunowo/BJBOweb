@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ubah Rincian Produk: {{ $postingan->name }} - BJBO Sedagho</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq" crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-bjbo-bg text-gray-900 font-sans min-h-screen flex flex-col">
@@ -76,12 +76,12 @@
                             Kondisi Barang <span class="text-red-500">*</span>
                         </label>
                         <div class="grid grid-cols-2 gap-2">
-                            <label class="flex items-center justify-center gap-2 p-2.5 border rounded-xl cursor-pointer text-xs font-semibold transition hover:bg-gray-50 has-checked:bg-blue-50 has-checked:border-bjbo-primary has-checked:text-bjbo-primary border-gray-300">
-                                <input type="radio" name="kondisi" value="Bekas (Pre-loved)" {{ old('kondisi', $postingan->kondisi) == 'Bekas (Pre-loved)' ? 'checked' : '' }} class="text-bjbo-primary focus:ring-0">
+                            <label for="kondisi_bekas" class="flex items-center justify-center gap-2 p-2.5 border rounded-xl cursor-pointer text-xs font-semibold transition hover:bg-gray-50 has-checked:bg-blue-50 has-checked:border-bjbo-primary has-checked:text-bjbo-primary border-gray-300">
+                                <input id="kondisi_bekas" type="radio" name="kondisi" value="Bekas (Pre-loved)" {{ old('kondisi', $postingan->kondisi) == 'Bekas (Pre-loved)' ? 'checked' : '' }} class="text-bjbo-primary focus:ring-0">
                                 <span>Bekas (Pre-loved)</span>
                             </label>
-                            <label class="flex items-center justify-center gap-2 p-2.5 border rounded-xl cursor-pointer text-xs font-semibold transition hover:bg-gray-50 has-checked:bg-blue-50 has-checked:border-bjbo-primary has-checked:text-bjbo-primary border-gray-300">
-                                <input type="radio" name="kondisi" value="Baru / Segel" {{ old('kondisi', $postingan->kondisi) == 'Baru / Segel' ? 'checked' : '' }} class="text-bjbo-primary focus:ring-0">
+                            <label for="kondisi_baru" class="flex items-center justify-center gap-2 p-2.5 border rounded-xl cursor-pointer text-xs font-semibold transition hover:bg-gray-50 has-checked:bg-blue-50 has-checked:border-bjbo-primary has-checked:text-bjbo-primary border-gray-300">
+                                <input id="kondisi_baru" type="radio" name="kondisi" value="Baru / Segel" {{ old('kondisi', $postingan->kondisi) == 'Baru / Segel' ? 'checked' : '' }} class="text-bjbo-primary focus:ring-0">
                                 <span>Baru / Segel</span>
                             </label>
                         </div>
