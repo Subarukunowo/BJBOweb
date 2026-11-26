@@ -26,7 +26,31 @@
 
 **BJBO Sedagho** (Barang Jual Beli Online Sedagho) adalah aplikasi jual beli berbasis web untuk masyarakat di wilayah Kabupaten Bengkalis (Bengkalis Kota, Mandau, Duri, Pinggir, Bukit Batu, Siak Kecil, Bandar Laksamana, Rupat, Rupat Utara, Bathin Solapan, Talang Muandau, dan Bantan).
 
-Aplikasi ini memfasilitasi transaksi jual beli lokal dengan menyediakan fitur etalase produk, keranjang belanja, obrolan langsung antara penjual dan pembeli, sistem rekening bersama (rekber), struk invoice digital, saldo BJPay, serta dasbor analitik admin.
+Aplikasi ini memfasilitasi transaksi jual beli lokal dengan menyediakan fitur etalase produk, keranjang belanja, pemilihan kurir & pelacakan peta OpenStreetMap, obrolan langsung real-time, sistem rekening bersama (rekber), struk invoice digital, saldo BJPay, dasbor analitik admin, serta REST API `/api/v1` untuk aplikasi Android **BJBO Mobile**.
+
+---
+
+## 🖼️ Tangkapan Layar Aplikasi Web
+
+### Etalase Publik, Login, & Dasbor Pengguna
+| Halaman Utama (`/layout`) | Halaman Login (`/login`) | Dasbor Pengguna (`/user`) |
+| :---: | :---: | :---: |
+| ![Landing BJBO Web](docs/screenshots/web_01_landing.png) | ![Login BJBO Web](docs/screenshots/web_02_login.png) | ![Dashboard BJBO Web](docs/screenshots/web_03_dashboard.png) |
+
+### Checkout Kurir, Tracking Peta OpenStreetMap, & Pesanan
+| Pilih Kurir & Checkout | Pelacakan Peta OpenStreetMap | Daftar Pesanan (`/user/pesanan`) |
+| :---: | :---: | :---: |
+| ![Checkout Kurir Web](docs/screenshots/web_v2_checkout_courier.png) | ![Tracking Peta Web](docs/screenshots/web_v2_tracking_map.png) | ![Pesanan Web](docs/screenshots/web_08_pesanan.png) |
+
+### Dompet BJPay, Escrow Rekber, Keranjang, & Buka Toko
+| Dompet BJPay (`/user/bjpay`) | Escrow Rekber (`/user/rekber`) | Keranjang (`/user/cart`) | Buka Toko (`/user/buka-toko`) |
+| :---: | :---: | :---: | :---: |
+| ![BJPay Web](docs/screenshots/web_04_bjpay.png) | ![Rekber Web](docs/screenshots/web_05_rekber.png) | ![Cart Web](docs/screenshots/web_06_cart.png) | ![Buka Toko Web](docs/screenshots/web_07_buka_toko.png) |
+
+### Obrolan & Notifikasi Real-time (Laravel Reverb)
+| Ruang Obrolan (`/user/chat`) | Notifikasi Live (`/user/notifikasi`) |
+| :---: | :---: |
+| ![Chat Web](docs/screenshots/web_09_chat.png) | ![Notifikasi Web](docs/screenshots/web_10_notifikasi.png) |
 
 ---
 
@@ -62,12 +86,14 @@ Aplikasi ini memfasilitasi transaksi jual beli lokal dengan menyediakan fitur et
 * Rincian harga barang, ongkos kirim, diskon promo, dan potongan biaya pengiriman.
 * Tampilan struk digital siap cetak (*print-friendly*) dengan status pembayaran (*Lunas/Menunggu Pembayaran*).
 
-### 💳 4. Metode Pembayaran (Midtrans, COD, & BJPay)
+### 🚚 4. Metode Pembayaran (Midtrans, COD, & BJPay) serta Pilihan Kurir & Peta Tracking
+* **Pilihan Kurir & Ongkos Kirim:** Pemilihan ekspedisi saat checkout (*Kurir Lokal Sedagho Bengkalis*, *J&T Express Reguler*, *JNE Reguler*, atau *COD / Ambil Langsung*) beserta perhitungan ongkir otomatis.
+* **Pelacakan Peta Interaktif (Leaflet OpenStreetMap):** Menampilkan rute asal penjual, lokasi kurir terkini, checkpoint, dan alamat tujuan secara real-time di `/user/pesanan/{id}/lacak`.
 * **Gerbang Pembayaran Midtrans & QRIS:** Pembayaran via Midtrans Snap, QRIS, dan Virtual Account bank.
 * **COD (*Cash on Delivery*):** Pilihan pembayaran tunai saat barang diterima dari kurir.
 * **BJPay (Saldo Internal BJBO):**
   * Saldo internal pengguna untuk transaksi langsung.
-  * Potongan ongkos kirim sebesar Rp 5.000 untuk transaksi yang menggunakan saldo BJPay.
+  * Potongan ongkos kirim hingga Rp 5.000 untuk transaksi yang menggunakan saldo BJPay.
   * Pemotongan saldo otomatis dengan pengecekan kecukupan saldo.
 
 ### 📊 5. Dasbor Analitik Kategori Terlaris Admin (Shadcn UI)
@@ -242,7 +268,10 @@ BJBOweb/
 │       ├── layouts/          # Template tata letak admin dan publik
 │       └── pages/            # Halaman admin (analitik) & pengguna (cart, bjpay, invoice)
 ├── routes/
+│   ├── api.php               # Endpoint REST API v1 untuk aplikasi Mobile Android
 │   └── web.php               # Pendaftaran rute web aplikasi
+├── docs/
+│   └── screenshots/          # Tangkapan layar halaman web untuk dokumentasi README
 └── tests/
     ├── Feature/              # Pengujian integrasi alur fitur lengkap
     └── Unit/                 # Pengujian unit layanan dan kalkulasi matematika
